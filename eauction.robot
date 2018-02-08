@@ -9,6 +9,7 @@ Library  eauction_service.py
 *** Variables ***
 
 *** Keywords ***
+# CDB 1
 
 Підготувати клієнт для користувача
     [Arguments]  ${username}
