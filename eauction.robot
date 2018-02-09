@@ -56,7 +56,7 @@ Library  eauction_service.py
     Click Element  xpath=//li[@class="dropdown"]/descendant::*[@class="dropdown-toggle"][contains(@href, "tenders")]
     Click Element  xpath=//*[@class="dropdown-menu"]/descendant::*[contains(@href, "/tenders/index")]
     Click Element  xpath=//a[contains(@href, "/buyer/tender/create")]
-    Select From List By Value  xpath=//select[@class="tender-rent-select"]  rent
+    Select From List By Value  xpath=//select[@id="tender-method-select"]  open_${data.procurementMethodType}
     Convert Input Data To String  xpath=//input[@id="value-amount"]  ${tender_data.data.value.amount}
     Adapt And Select By Value  xpath=//select[@id="value-valueaddedtaxincluded"]  ${tender_data.data.value.valueAddedTaxIncluded}
     Convert Input Data To String  //input[@id="minimalstepvalue-amount"]  ${tender_data.data.minimalStep.amount}
@@ -64,10 +64,11 @@ Library  eauction_service.py
     Input Text  xpath=//*[@id="tender-title"]  ${tender_data.data.title}
     Input Text  xpath=//*[@id="tender-description"]  ${tender_data.data.description}
     Input Text  xpath=//*[@id="tender-dgfid"]  ${tender_data.data.dgfID}
+    ${decision_date}=  dgf_decision_date_for_site  ${data.dgfDecisionDate}
+    Input Text  xpath=//*[@id="dgf-decision-date"]  ${decision_date}
+    Input Text  xpath=//*[@id="tender-dgfdecisionid"]  ${data.dgfDecisionID}
     ${tenderAttempts}=  Convert To String  ${tender_data.data.tenderAttempts}
     Select From List By Value  xpath=//*[@id="tender-tenderattempts"]  ${tenderAttempts}
-    ${minNumberOfQualifiedBids}=  Convert To String  ${tender_data.data.minNumberOfQualifiedBids}
-    Select From List By Value  xpath=//*[@id="tender-minnumberofqualifiedbids"]  ${minNumberOfQualifiedBids}
     ${items_length}=  Get Length  ${items}
     :FOR  ${item}  IN RANGE  ${items_length}
     \  Log  ${items[${item}]}
@@ -88,8 +89,6 @@ Library  eauction_service.py
     [Arguments]  ${item}  ${item_data}
     Input Text  xpath=//*[@id="item-${item}-description"]  ${item_data.description}
     Convert Input Data To String  xpath=//*[@id="item-${item}-quantity"]  ${item_data.quantity}
-    ${classification_scheme}=  Convert To Lowercase  ${item_data.classification.scheme}
-    Select From List By Value  xpath=//*[@id="item-${item}-id"]/../../descendant::*[@id="classification-scheme"]  ${classification_scheme}
     Click Element  xpath=//*[@id="classification-${item}-description"]
     Wait Until Element Is Visible  xpath=//*[@class="modal-title"]
     Input Text  xpath=//*[@placeholder="Пошук по коду"]  ${item_data.classification.id}
@@ -106,10 +105,7 @@ Library  eauction_service.py
     Input Text  xpath=//*[@id="deliveryaddress-${item}-locality"]  ${item_data.deliveryAddress.locality}
     Input Text  xpath=//*[@id="deliveryaddress-${item}-streetaddress"]  ${item_data.deliveryAddress.streetAddress}
     Input Text  xpath=//*[@id="deliveryaddress-${item}-postalcode"]  ${item_data.deliveryAddress.postalCode}
-    ${contract_start_date}=  convert_date_for_item  ${item_data.contractPeriod.startDate}
-    ${contract_end_date}=  convert_date_for_item  ${item_data.contractPeriod.endDate}
-    Input Text  xpath=//*[@id="itemcontractperiod-${item}-startdate"]  ${contract_start_date}
-    Input Text  xpath=//*[@id="itemcontractperiod-${item}-enddate"]  ${contract_end_date}
+
 
 
 Скасувати закупівлю
@@ -130,7 +126,7 @@ Library  eauction_service.py
 
 
 Внести зміни в тендер
-    [Arguments]  ${tender_owner}  ${TENDER['TENDER_UAID']}  ${field_name}  ${field_value}
+    [Arguments]  ${tender_owner}  ${tender_uaid}  ${field_name}  ${field_value}
     Run Keyword And Ignore Error  Click Element  xpath=//*[@data-test-id="sidebar.edit"]
     Wait Until Element Is Visible  //*[@id="auction-form"]
     Run Keyword If
@@ -138,6 +134,8 @@ Library  eauction_service.py
     ...  ELSE IF  '${field_name}' == 'minimalStep.amount'  Convert Input Data To String  xpath=//input[@id="minimalstepvalue-amount"]  ${field_value}
     ...  ELSE IF  '${field_name}' == 'guarantee.amount'  Convert Input Data To String  xpath=//input[@id="guarantee-amount"]  ${field_value}
     ...  ELSE IF  '${field_name}' == 'tenderPeriod.startDate'  Input Text  xpath=//*[@id="auction-start-date"]  ${field_value}
+    ...  ELSE IF  '${field_name}' == 'title'  Input Text  xpath=//*[@id="tender-title"]  ${field_value}
+    ...  ELSE IF  '${field_name}' == 'description'  Input Text  xpath=//*[@id="tender-description"]  ${field_value}
     Scroll To And Click Element  //*[@name="simple_submit"]
 
 
@@ -225,7 +223,7 @@ Library  eauction_service.py
     Wait Until Keyword Succeeds  30 x  5 s  Run Keywords
     ...  Run Keyword And Ignore Error  Click Element  //button[@id="submit_bid"]
     ...  AND  Wait Until Page Contains  очікує модерації
-    Proposition  ${username}  ${bid.data.status}
+    Proposition  ${username}  ${bid.data}
     eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
     Page Should Contain Element  //*[contains(@class, "label-success")][contains(text(), "опубліковано")]
 
@@ -249,9 +247,9 @@ Library  eauction_service.py
 
 
 Proposition
-    [Arguments]  ${username}  ${status}
+    [Arguments]  ${username}  ${data}
     ${url}=  Get Location
-    Run Keyword If  '${status}' == 'draft'
+    Run Keyword If  'qualified' in '${data}'
     ...  Go To  http://eauction.byustudio.in.ua/bids/send/${url.split('/')[-1]}?token=465
     ...  ELSE  Go To  http://test.25h8.auction/bids/decline/${url.split('/')[-1]}?token=465
     Go To  ${USERS.users['${username}'].homepage}
@@ -306,6 +304,7 @@ Proposition
 
 Отримати інформацію із тендера
     [Arguments]  ${username}  ${tender_uaid}  ${field}
+    Switch Browser  my_alias
     Run Keyword If  'title' in '${field}'  Execute Javascript  $("[data-test-id|='title']").css("text-transform", "unset")
     ${value}=  Run Keyword If
     ...  '${field}' == 'title'  Get Text  xpath=//*[@data-test-id="title"]
@@ -339,7 +338,7 @@ Proposition
 Отримати кількість документів в тендері
     [Arguments]  ${username}  ${tender_uaid}
     eauction.Пошук Тендера По Ідентифікатору  ${viewer}  ${tender_uaid}
-    ${documents}=  Get Element Count  xpath=//div[@class="item-inf_t"][contains(text(), "Документи")]/../descendant::div[@data-test-id="document.title"]
+    ${documents}=  Get Matching Xpath Count  xpath=//div[@class="item-inf_t"][contains(text(), "Документи")]/../descendant::div[@data-test-id="document.title"]
     ${n_documents}=  Convert To Integer  ${documents}
     [Return]  ${n_documents}
 

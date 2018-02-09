@@ -11,7 +11,7 @@ tz = str(datetime.now(pytz.timezone('Europe/Kiev')))[26:]
 
 def prepare_tender_data(role, data):
     if role == 'tender_owner':
-        data['data']['procuringEntity']['name'] = u'Тестовый "ЗАКАЗЧИК" 2'
+        data['data']['procuringEntity']['name'] = u'Тестовый организатор "Банк Ликвидатор"'
     return data
 
 
@@ -35,8 +35,12 @@ def convert_date_for_auction(date):
     return '{}'.format(date)
 
 
-def dgf_decision_date(date):
+def dgf_decision_date_from_site(date):
     return u'{}-{}-{}'.format(date[-4:], date[-7:-5], date[-10:-8])
+
+
+def dgf_decision_date_for_site(date):
+    return u'{}/{}/{}'.format(date[-2:], date[-5:-3], date[-10:-6])
 
 
 def adapted_dictionary(value):
@@ -87,7 +91,7 @@ def adapt_data(field, value):
     elif 'tenderPeriod' in field or 'auctionPeriod' in field:
         value = convert_date(value)
     elif 'dgfDecisionDate' in field:
-        value = dgf_decision_date(value)
+        value = dgf_decision_date_from_site(value)
     elif 'dgfDecisionID' in field:
         value = value[-6:]
     else:
