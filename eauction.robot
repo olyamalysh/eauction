@@ -127,8 +127,7 @@ Library  eauction_service.py
 
 Внести зміни в тендер
     [Arguments]  ${tender_owner}  ${tender_uaid}  ${field_name}  ${field_value}
-    Run Keyword And Ignore Error  Click Element  xpath=//*[@data-test-id="sidebar.edit"]
-    Wait Until Element Is Visible  //*[@id="auction-form"]
+    Wait For Document Upload
     Run Keyword If
     ...  '${field_name}' == 'value.amount'  Convert Input Data To String  xpath=//input[@id="value-amount"]  ${field_value}
     ...  ELSE IF  '${field_name}' == 'minimalStep.amount'  Convert Input Data To String  xpath=//input[@id="minimalstepvalue-amount"]  ${field_value}
@@ -136,7 +135,17 @@ Library  eauction_service.py
     ...  ELSE IF  '${field_name}' == 'tenderPeriod.startDate'  Input Text  xpath=//*[@id="auction-start-date"]  ${field_value}
     ...  ELSE IF  '${field_name}' == 'title'  Input Text  xpath=//*[@id="tender-title"]  ${field_value}
     ...  ELSE IF  '${field_name}' == 'description'  Input Text  xpath=//*[@id="tender-description"]  ${field_value}
-    Scroll To And Click Element  //*[@name="simple_submit"]
+    ...  ELSE  Input text  name=Tender[${field_name}]  ${field_value}
+    Scroll To  xpath=//*[@action="/tender/fileupload"]/input
+    ${file}=  my_file_path
+    Choose File  xpath=(//*[@action="/tender/fileupload"]/input)[last()]  ${file}
+    Wait Until Element Is Visible  xpath=(//*[@class="document-title"])[last()]
+    Input Text  xpath=(//*[@class="document-title"])[last()]  Погодження змін до опису лоту
+    Select From List By Value  xpath=(//*[@class="document-type"])[last()]  clarifications
+    Select From List By Value  xpath=(//*[@class="document-related-item"])[last()]  tender
+    Scroll To And Click Element  xpath=//*[@name="simple_submit"]
+    Wait Until Element Is Visible  xpath=//*[@data-test-id="sidebar.edit"]
+    Page Should Contain Element  xpath=//div[contains(@class, "alert-success")]
 
 
 Завантажити документ
@@ -219,7 +228,6 @@ Library  eauction_service.py
     eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
     Wait Until Element Is Visible  //input[@id="value-amount"]
     Convert Input Data To String  xpath=//input[@id="value-amount"]  ${bid.data.value.amount}
-    Run Keyword And Ignore Error  Select Checkbox  xpath=//input[@id="rules_accept"]
     Wait Until Keyword Succeeds  30 x  5 s  Run Keywords
     ...  Run Keyword And Ignore Error  Click Element  //button[@id="submit_bid"]
     ...  AND  Wait Until Page Contains  очікує модерації
@@ -249,7 +257,8 @@ Library  eauction_service.py
 Proposition
     [Arguments]  ${username}  ${data}
     ${url}=  Get Location
-    Run Keyword If  'qualified' in '${data}'
+    ${status}=  Run Keyword And Return Status  Dictionary Should Contain Key  qualified
+    Run Keyword If  ${status}
     ...  Go To  http://eauction.byustudio.in.ua/bids/send/${url.split('/')[-1]}?token=465
     ...  ELSE  Go To  http://test.25h8.auction/bids/decline/${url.split('/')[-1]}?token=465
     Go To  ${USERS.users['${username}'].homepage}
@@ -348,6 +357,12 @@ Proposition
 Отримати інформацію із документа
     [Arguments]  ${username}  ${tender_uaid}  ${doc_id}  ${field}
     ${value}=  Get Text  //a[contains(text(), '${doc_id}')]
+    [Return]  ${value}
+
+
+Отримати інформацію із документа по індексу
+    [Arguments]  ${username}  ${tender_uaid}  ${document_index}  ${field}
+    ${value}=  Get Text  xpath=(//*[@data-test-id="document.title"])[${document_index}]
     [Return]  ${value}
 
 
