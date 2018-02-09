@@ -225,7 +225,7 @@ Library  eauction_service.py
     Wait Until Keyword Succeeds  30 x  5 s  Run Keywords
     ...  Run Keyword And Ignore Error  Click Element  //button[@id="submit_bid"]
     ...  AND  Wait Until Page Contains  очікує модерації
-    Proposition  ${username}  ${bid.data.qualified}
+    Proposition  ${username}  ${bid.data.status}
     eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
     Page Should Contain Element  //*[contains(@class, "label-success")][contains(text(), "опубліковано")]
 
@@ -251,7 +251,7 @@ Library  eauction_service.py
 Proposition
     [Arguments]  ${username}  ${status}
     ${url}=  Get Location
-    Run Keyword If  ${status}
+    Run Keyword If  '${status}' == 'draft'
     ...  Go To  http://eauction.byustudio.in.ua/bids/send/${url.split('/')[-1]}?token=465
     ...  ELSE  Go To  http://test.25h8.auction/bids/decline/${url.split('/')[-1]}?token=465
     Go To  ${USERS.users['${username}'].homepage}
@@ -334,6 +334,16 @@ Proposition
     ...  ELSE  Get Text  //div[contains(text(),'${object_id}')]/ancestor::div[contains(@class, "item-inf_txt")]/descendant::*[@data-test-id="item.${field}"]
     ${value}=  adapt_data  ${field}  ${value}
     [Return]  ${value}
+
+
+Отримати кількість документів в тендері
+    [Arguments]  ${username}  ${tender_uaid}
+    eauction.Пошук Тендера По Ідентифікатору  ${viewer}  ${tender_uaid}
+    ${documents}=  Get Element Count  xpath=//div[@class="item-inf_t"][contains(text(), "Документи")]/../descendant::div[@data-test-id="document.title"]
+    ${n_documents}=  Convert To Integer  ${documents}
+    [Return]  ${n_documents}
+
+
 
 
 Отримати інформацію із документа

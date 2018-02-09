@@ -35,6 +35,10 @@ def convert_date_for_auction(date):
     return '{}'.format(date)
 
 
+def dgf_decision_date(date):
+    return u'{}-{}-{}'.format(date[-4:], date[-7:-5], date[-10:-8])
+
+
 def adapted_dictionary(value):
     return{
         u"з урахуванням ПДВ": True,
@@ -58,7 +62,10 @@ def adapted_dictionary(value):
         u'На черзі': 'pending.waiting',
         u'Рiшення скасовано': 'cancelled',
         u'Оплачено, очікується підписання договору': 'active',
-        u'Дискваліфіковано': 'unsuccessful'
+        u'Дискваліфіковано': 'unsuccessful',
+        u'майна банків': 'dgfOtherAssets',
+        u'прав вимоги за кредитами': 'dgfFinancialAssets',
+        u'Голландський аукціон': 'dgfInsider'
     }.get(value, value)
 
 
@@ -79,6 +86,10 @@ def adapt_data(field, value):
         value = convert_date_from_item(value)
     elif 'tenderPeriod' in field or 'auctionPeriod' in field:
         value = convert_date(value)
+    elif 'dgfDecisionDate' in field:
+        value = dgf_decision_date(value)
+    elif 'dgfDecisionID' in field:
+        value = value[-6:]
     else:
         value = adapted_dictionary(value)
     return value
@@ -90,3 +101,4 @@ def download_file(url, filename, folder):
 
 def my_file_path():
     return os.path.join(os.getcwd(), 'src', 'robot_tests.broker.eauction', 'Doc.pdf')
+
