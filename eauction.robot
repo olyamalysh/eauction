@@ -135,6 +135,8 @@ Library  eauction_service.py
     ...  ELSE IF  '${field_name}' == 'tenderPeriod.startDate'  Input Text  xpath=//*[@id="auction-start-date"]  ${field_value}
     ...  ELSE IF  '${field_name}' == 'title'  Input Text  xpath=//*[@id="tender-title"]  ${field_value}
     ...  ELSE IF  '${field_name}' == 'description'  Input Text  xpath=//*[@id="tender-description"]  ${field_value}
+    ...  ELSE IF  '${field_name}' == 'dgfDecisionDate'  Change DGF Date  ${field_name}  ${field_value}
+    ...  ELSE IF  '${field_name}' == 'tenderAttempts'  Change Attempts  ${field_value}
     ...  ELSE  Input text  name=Tender[${field_name}]  ${field_value}
     Scroll To  xpath=//*[@action="/tender/fileupload"]/input
     ${file}=  my_file_path
@@ -231,7 +233,9 @@ Library  eauction_service.py
     Wait Until Keyword Succeeds  30 x  5 s  Run Keywords
     ...  Run Keyword And Ignore Error  Click Element  //button[@id="submit_bid"]
     ...  AND  Wait Until Page Contains  очікує модерації
-    Proposition  ${username}  ${bid.data}
+    ${qualified}=  Run Keyword And Return Status  Dictionary Should Contain Key  ${bid.data}  qualified
+    Run Keyword If  ${qualified}
+    ...  Proposition  ${username}  ${bid.data}
     eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
     Page Should Contain Element  //*[contains(@class, "label-success")][contains(text(), "опубліковано")]
 
@@ -255,10 +259,9 @@ Library  eauction_service.py
 
 
 Proposition
-    [Arguments]  ${username}  ${data}
+    [Arguments]  ${username}  ${status}
     ${url}=  Get Location
-    ${status}=  Run Keyword And Return Status  Dictionary Should Contain Key  qualified
-    Run Keyword If  ${status}
+    Run Keyword If  ${status.qualified}
     ...  Go To  http://eauction.byustudio.in.ua/bids/send/${url.split('/')[-1]}?token=465
     ...  ELSE  Go To  http://test.25h8.auction/bids/decline/${url.split('/')[-1]}?token=465
     Go To  ${USERS.users['${username}'].homepage}
@@ -362,7 +365,7 @@ Proposition
 
 Отримати інформацію із документа по індексу
     [Arguments]  ${username}  ${tender_uaid}  ${document_index}  ${field}
-    ${value}=  Get Text  xpath=(//*[@data-test-id="document.title"])[${document_index}]
+    ${value}=  Get Text  xpath=(//*[@data-test-id="document.title"])[${document_index + 1}]
     [Return]  ${value}
 
 
@@ -580,3 +583,16 @@ Wait For Document Upload
     ...  Reload Page
     ...  AND  Run Keyword And Ignore Error  Click Element  xpath=//*[@data-test-id="sidebar.edit"]
     ...  AND  Wait Until Element Is Visible  xpath=//*[@id="auction-form"]
+
+
+Change DGF Date
+    [Arguments]  ${field_name}  ${field_value}
+    ${dgf_date}=  dgf_decision_date_for_site  ${field_value}
+    Input text  name=Tender[${field_name}]  ${dgf_date}
+
+
+Change Attempts
+    [Arguments]  ${value}
+    ${value}=  Convert To String  ${value}
+    Scroll To    xpath=//*[@id="tender-tenderattempts"]
+    Select From List By Value    xpath=//*[@id="tender-tenderattempts"]  ${value}
