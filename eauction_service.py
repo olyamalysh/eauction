@@ -69,7 +69,18 @@ def adapted_dictionary(value):
         u'Дискваліфіковано': 'unsuccessful',
         u'майна банків': 'dgfOtherAssets',
         u'прав вимоги за кредитами': 'dgfFinancialAssets',
-        u'Голландський аукціон': 'dgfInsider'
+        u'Голландський аукціон': 'dgfInsider',
+        u'Юридична Інформація про Майданчики': 'x_dgfPlatformLegalDetails',
+        u'Презентація': 'x_presentation',
+        u'Договір NDA': 'x_nda',
+        u'Паспорт торгів': 'tenderNotice',
+        u'Публічний Паспорт Активу': 'technicalSpecifications',
+        u'Ілюстрації': 'illustration',
+        u'Кваліфікаційні вимоги': 'evaluationCriteria',
+        u'Типовий договір': 'contractProforma',
+        u'Погодження змін до опису лоту': 'clarifications',
+        u'Посилання на Публічний Паспорт Активу': 'x_dgfPublicAssetCertificate',
+        u'Інформація про деталі ознайомлення з майном у кімнаті даних': 'x_dgfAssetFamiliarization'
     }.get(value, value)
 
 

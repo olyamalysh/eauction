@@ -34,7 +34,7 @@ Library  eauction_service.py
 
 Оновити сторінку з тендером
     [Arguments]  ${tender_uaid}  ${username}
-    Switch Browser  my_alias
+    #Switch Browser  my_alias
     Reload Page
 
 
@@ -317,6 +317,7 @@ Proposition
 Отримати інформацію із тендера
     [Arguments]  ${username}  ${tender_uaid}  ${field}
     Switch Browser  my_alias
+    eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
     Run Keyword If  'title' in '${field}'  Execute Javascript  $("[data-test-id|='title']").css("text-transform", "unset")
     ${value}=  Run Keyword If
     ...  '${field}' == 'title'  Get Text  xpath=//*[@data-test-id="title"]
@@ -349,7 +350,7 @@ Proposition
 
 Отримати кількість документів в тендері
     [Arguments]  ${username}  ${tender_uaid}
-    eauction.Пошук Тендера По Ідентифікатору  ${viewer}  ${tender_uaid}
+    eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
     ${documents}=  Get Matching Xpath Count  xpath=//div[@class="item-inf_t"][contains(text(), "Документи")]/../descendant::div[@data-test-id="document.title"]
     ${n_documents}=  Convert To Integer  ${documents}
     [Return]  ${n_documents}
@@ -365,7 +366,8 @@ Proposition
 
 Отримати інформацію із документа по індексу
     [Arguments]  ${username}  ${tender_uaid}  ${document_index}  ${field}
-    ${value}=  Get Text  xpath=(//*[@data-test-id="document.title"])[${document_index + 1}]
+    ${value}=  Get Text  xpath=(//*[@data-test-id="documentType"])[${document_index + 1}]
+    ${value}=  adapted_dictionary  ${value}
     [Return]  ${value}
 
 
