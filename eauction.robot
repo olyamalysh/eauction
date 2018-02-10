@@ -33,7 +33,7 @@ Library  eauction_service.py
 
 
 Оновити сторінку з тендером
-    [Arguments]  ${tender_uaid}  ${username}
+    [Arguments]  ${username}  ${tender_uaid}
     Switch Browser  my_alias
     eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
     Reload Page
