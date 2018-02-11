@@ -231,6 +231,7 @@ Library  eauction_service.py
     eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
     Wait Until Element Is Visible  //input[@id="value-amount"]
     Convert Input Data To String  xpath=//input[@id="value-amount"]  ${bid.data.value.amount}
+    Run Keyword And Ignore Error  Click Element  xpath=//div[contains(@class, "field-bid-checkforunlicensed")]/label
     Wait Until Keyword Succeeds  30 x  5 s  Run Keywords
     ...  Run Keyword And Ignore Error  Click Element  //button[@id="submit_bid"]
     ...  AND  Wait Until Page Contains  очікує модерації
