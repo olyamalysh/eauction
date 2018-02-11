@@ -241,6 +241,17 @@ Library  eauction_service.py
     Page Should Contain Element  //*[contains(@class, "label-success")][contains(text(), "опубліковано")]
 
 
+Завантажити фінансову ліцензію
+    [Arguments]  ${username}  ${tender_uaid}  ${file_path}
+    eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
+    Scroll To  xpath=(//*[@action="/tender/fileupload"]/input)[last()]
+    Choose File  xpath=(//*[@action="/tender/fileupload"]/input)[last()]  ${file_path}
+    Wait Until Element Is Visible  xpath=(//input[@class="file_name"])[last()]
+    Input Text  xpath=(//input[@class="file_name"])[last()]  ${file_path.split('/')[-1]}
+    Select From List By Value  xpath=(//select[@class="select_document_type"])[last()]  financialLicense
+
+
+
 Змінити цінову пропозицію
     [Arguments]  ${username}  ${tender_uaid}  ${field}  ${value}
     eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
@@ -271,7 +282,7 @@ Proposition
 Завантажити документ в ставку
     [Arguments]  ${username}  ${file_path}  ${tender_uaid}
     eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
-    Scroll  //*[@action="/tender/fileupload"]/input
+    Scroll To  //*[@action="/tender/fileupload"]/input
     Choose File  xpath=//*[@action="/tender/fileupload"]/input  ${file_path}
     Input Text  xpath=(//input[@class="file_name"])[last()]  ${file_path.split('/')[-1]}
     Select From List By Value  xpath=(//select[@class="select_document_type"])[last()]  qualificationDocuments
