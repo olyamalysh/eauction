@@ -462,6 +462,9 @@ Proposition
 
 Підтвердити постачальника
     [Arguments]  ${username}  ${tender_uaid}  ${number}
+    Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
+    ...  eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
+    ...  AND  Click Element  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
     Wait Until Element Is Visible  //button[contains(text(), "Підтвердити отримання оплати")]
     Click Element  //button[contains(text(), "Підтвердити отримання оплати")]
     Wait Until Element Is Visible  //div[contains(text(), "Оплата буде підтверджена")]
