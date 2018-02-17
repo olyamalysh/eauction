@@ -393,9 +393,10 @@ Proposition
 
 Завантажити протокол аукціону в авард
     [Arguments]  ${username}  ${tender_uaid}  ${file_path}  ${award_index}
-    Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
+    Wait Until Keyword Succeeds  10 x  20 s  Run Keywords
     ...  eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
     ...  AND  Click Element  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
+    Run Keyword And Ignore Error  Click Element  xpath=//button[@data-dismiss="modal"]
     Wait Until Element Is Visible  //button[contains(text(), "Завантаження протоколу")]
     Click Element  xpath=//button[contains(text(), "Завантаження протоколу")]
     Wait Until Element Is Visible  //div[contains(text(), "Завантаження протоколу")]
