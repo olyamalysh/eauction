@@ -437,9 +437,9 @@ Proposition
 
 Завантажити протокол аукціону в авард
     [Arguments]  ${username}  ${tender_uaid}  ${file_path}  ${award_index}
-    Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
-    ...  eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
-    ...  AND  Click Element  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
+    eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
+    Wait Until Element Is Visible  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
+    Click Element  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
     Wait Until Element Is Visible  //button[contains(text(), "Завантаження протоколу")]
     Click Element  xpath=//button[contains(text(), "Завантаження протоколу")]
     Wait Until Element Is Visible  //div[contains(text(), "Завантаження протоколу")]
@@ -463,9 +463,9 @@ Proposition
 
 Підтвердити постачальника
     [Arguments]  ${username}  ${tender_uaid}  ${number}
-    Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
-    ...  eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
-    ...  AND  Click Element  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
+    eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
+    Wait Until Element Is Visible  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
+    Click Element  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
     Wait Until Element Is Visible  //button[contains(text(), "Підтвердити отримання оплати")]
     Click Element  //button[contains(text(), "Підтвердити отримання оплати")]
     Wait Until Element Is Visible  //div[contains(text(), "Оплата буде підтверджена")]
@@ -478,9 +478,9 @@ Proposition
 
 Скасування рішення кваліфікаційної комісії
     [Arguments]  ${username}  ${tender_uaid}  ${number}
-    Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
-    ...  eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
-    ...  AND  Click Element  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
+    eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
+    Wait Until Element Is Visible  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
+    Click Element  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
     Wait Until Element Is Visible  //button[contains(text(), "Забрати гарантійний внесок")]
     Click Element  //button[contains(text(), "Забрати гарантійний внесок")]
     Wait Until Element Is Visible  //div[contains(text(), "Подальшу участь буде скасовано")]
@@ -493,9 +493,9 @@ Proposition
 
 Завантажити угоду до тендера
     [Arguments]  ${username}  ${tender_uaid}  ${number}  ${file_path}
-    Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
-    ...  eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
-    ...  AND  Click Element  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
+    eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
+    Wait Until Element Is Visible  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
+    Click Element  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
     Wait Until Element Is Visible  xpath=//button[contains(text(), "Контракт")]
     Click Element  xpath=//button[contains(text(), "Контракт")]
     Wait Until Element Is Visible  //div[contains(@class, "h2")][contains(text(), "Контракт")]
@@ -524,9 +524,9 @@ Proposition
 
 Дискваліфікувати постачальника
     [Arguments]  ${username}  ${tender_uaid}  ${number}  ${description}
-    Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
-    ...  eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
-    ...  AND  Click Element  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
+    eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
+    Wait Until Element Is Visible  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
+    Click Element  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
     ${file}=  my_file_path
     Wait Until Element Is Visible  //button[@data-toggle="modal"][contains(text(), "Дисквалiфiкувати")]
     Click Element  //button[@data-toggle="modal"][contains(text(), "Дисквалiфiкувати")]
