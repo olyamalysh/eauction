@@ -312,7 +312,9 @@ Proposition
     Switch Browser  my_alias
     Go To  ${USERS.users['${username}'].homepage}
     Sleep  3
+    Run Keyword And Ignore Error  Wait Until Keyword Succeeds  10 x  1 s  Click Element  xpath=//button[@data-dismiss="modal"]
     Scroll  xpath=//li[@class="dropdown"]/descendant::*[@class="dropdown-toggle"][contains(@href, "tenders")]
+    Wait Until Element Is Visible  xpath=//li[@class="dropdown"]/descendant::*[@class="dropdown-toggle"][contains(@href, "tenders")]
     Click Element  xpath=//li[@class="dropdown"]/descendant::*[@class="dropdown-toggle"][contains(@href, "tenders")]
     Click Element  xpath=//*[@class="dropdown-menu"]/descendant::*[contains(@href, "/tenders/index")]
     Wait Until Element Is Visible  xpath=//*[@id="more-filter"]
