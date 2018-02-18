@@ -194,9 +194,26 @@ Library  eauction_service.py
     ...  AND  Wait Until Page Does Not Contain   Документ завантажується...  10
 
 
+Додати публічний паспорт активу
+    [Arguments]  ${tender_owner}  ${tender_uaid}  ${certificate_url}
+    Wait For Document Upload
+    Scroll To  xpath=//button[@data-type="x_dgfPublicAssetCertificate"]
+    Click Element  xpath=//button[@data-type="x_dgfPublicAssetCertificate"]
+    Wait Until Element Is Visible  //div[@class="panel-heading"]/span[contains(text(), "Посилання на публічний паспорт активу")]
+    Input Text  xpath=(//*[@class="document-title"])[last()]  Посилання на публічний паспорт активу
+    Input Text  xpath=(//*[@class="document-url"])[last()]  ${certificate_url}
+    Scroll To And Click Element  xpath=//*[@name="simple_submit"]
+    Wait Until Element Is Visible  xpath=//*[@data-test-id="sidebar.edit"]
+    Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
+    ...  Reload Page
+    ...  AND  Wait Until Page Does Not Contain   Документ завантажується...  10
+
+
 Відповісти на запитання
     [Arguments]  ${tender_owner}  ${tender_uaid}  ${answer}  ${question_id}
-    Run Keyword And Ignore Error  Click Element  xpath=//*[@data-test-id="sidebar.questions"]
+    eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
+    Click Element  xpath=//*[@data-test-id="sidebar.questions"]
+    Wait Until Element Is Not Visible  xpath=//*[@data-test-id="sidebar.questions"]
     Close Sidebar
     Input Text  //*[@data-test-id="question.title"][contains(text(), "${question_id}")]/following-sibling::form[contains(@action, "tender/questions")]/descendant::textarea  ${answer.data.answer}
     Click Element  //*[@data-test-id="question.title"][contains(text(), "${question_id}")]/../descendant::button[@name="answer_question_submit"]
