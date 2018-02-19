@@ -114,6 +114,9 @@ Library  eauction_service.py
     eauction.Пошук Тендера По Ідентифікатору  ${tender_owner}  ${tender_uaid}
     Wait For Document Upload
     Run Keyword And Ignore Error  Click Element  xpath=//button[@id="add-item"]
+    ${items}=  Get Matching Xpath Count  xpath=//textarea[@class="item-description"]
+    ${n_items}=  Convert To Integer  ${items}
+    [Return]  ${n_items}
 
 
 Видалити предмет закупівлі
