@@ -210,7 +210,7 @@ Library  eauction_service.py
 
 
 Відповісти на запитання
-    [Arguments]  ${tender_owner}  ${tender_uaid}  ${answer}  ${question_id}
+    [Arguments]  ${username}  ${tender_uaid}  ${answer}  ${question_id}
     eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
     Click Element  xpath=//*[@data-test-id="sidebar.questions"]
     Wait Until Element Is Not Visible  xpath=//*[@data-test-id="sidebar.questions"]
@@ -329,7 +329,7 @@ Proposition
     Switch Browser  my_alias
     Go To  ${USERS.users['${username}'].homepage}
     Sleep  3
-    Run Keyword And Ignore Error  Wait Until Keyword Succeeds  10 x  1 s  Click Element  xpath=//button[@data-dismiss="modal"]
+    Run Keyword And Ignore Error  Wait Until Keyword Succeeds  5 x  1 s  Click Element  xpath=//button[@data-dismiss="modal"]
     Scroll  xpath=//li[@class="dropdown"]/descendant::*[@class="dropdown-toggle"][contains(@href, "tenders")]
     Wait Until Element Is Visible  xpath=//li[@class="dropdown"]/descendant::*[@class="dropdown-toggle"][contains(@href, "tenders")]
     Click Element  xpath=//li[@class="dropdown"]/descendant::*[@class="dropdown-toggle"][contains(@href, "tenders")]
