@@ -109,6 +109,22 @@ Library  eauction_service.py
     Input Text  xpath=//*[@id="deliveryaddress-${item}-postalcode"]  ${item_data.deliveryAddress.postalCode}
 
 
+Додати предмет закупівлі
+    [Arguments]  ${tender_owner}  ${tender_uaid}  ${item}
+    eauction.Пошук Тендера По Ідентифікатору  ${tender_owner}  ${tender_uaid}
+    Wait For Document Upload
+    Run Keyword And Ignore Error  Click Element  xpath=//button[@id="add-item"]
+
+
+Видалити предмет закупівлі
+    [Arguments]  ${tender_owner}  ${tender_uaid}  ${item_id}
+    eauction.Пошук Тендера По Ідентифікатору  ${tender_owner}  ${tender_uaid}
+    Click Element  xpath=//*[@data-test-id="sidebar.edit"]
+    Wait Until Element Is Visible  xpath=//*[@id="auction-form"]
+    Run Keyword And Ignore Error  Click Element  xpath=(//button[@class="remove-item"])[last()]
+
+
+
 
 Скасувати закупівлю
     [Arguments]  ${tender_owner}  ${tender_uaid}  ${cancellation_reason}  ${file_path}  ${cancellation_description}
@@ -209,14 +225,33 @@ Library  eauction_service.py
     ...  AND  Wait Until Page Does Not Contain   Документ завантажується...  10
 
 
+Додати Virtual Data Room
+    [Arguments]  ${tender_owner}  ${tender_uaid}  ${vdr_url}
+    Wait For Document Upload
+    Scroll To  xpath=//button[@data-type="virtualDataRoom"]
+    Click Element  xpath=//button[@data-type="virtualDataRoom"]
+    Wait Until Element Is Visible  xpath=//div[@class="panel-heading"]/span[contains(text(), "Посилання на VDR")]
+    Input Text  xpath=(//*[@class="document-title"])[last()]  Посилання на VDR
+    Input Text  xpath=(//*[@class="document-url"])[last()]  ${vdr_url}
+    Scroll To And Click Element  xpath=//*[@name="simple_submit"]
+    Wait Until Element Is Visible  xpath=//*[@data-test-id="sidebar.edit"]
+    Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
+    ...  Reload Page
+    ...  AND  Wait Until Page Does Not Contain   Документ завантажується...  10
+
+
+
+
 Відповісти на запитання
     [Arguments]  ${username}  ${tender_uaid}  ${answer}  ${question_id}
     eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
     Click Element  xpath=//*[@data-test-id="sidebar.questions"]
     Wait Until Element Is Not Visible  xpath=//*[@data-test-id="sidebar.questions"]
+    Run Keyword And Ignore Error  Wait Until Keyword Succeeds  5 x  1 s  Click Element  xpath=//button[@data-dismiss="modal"]
     Close Sidebar
     Input Text  //*[@data-test-id="question.title"][contains(text(), "${question_id}")]/following-sibling::form[contains(@action, "tender/questions")]/descendant::textarea  ${answer.data.answer}
     Click Element  //*[@data-test-id="question.title"][contains(text(), "${question_id}")]/../descendant::button[@name="answer_question_submit"]
+    Wait Until Element Is Not Visible  xpath=//*[@data-test-id="question.title"][contains(text(), "${question_id}")]/following-sibling::form[contains(@action, "tender/questions")]/descendant::textarea
 
 
 Задати запитання на тендер
@@ -389,6 +424,13 @@ Proposition
     [Return]  ${n_documents}
 
 
+Отримати кількість предметів в тендері
+    [Arguments]  ${username}  ${tender_uaid}
+    ${items}=  Get Matching Xpath Count  xpath=//div[@data-test-id="item.description"]
+    ${n_items}=  Convert To Integer  ${items}
+    [Return]  ${n_items}
+
+
 
 
 Отримати інформацію із документа
@@ -456,8 +498,9 @@ Proposition
 
 Завантажити протокол аукціону в авард
     [Arguments]  ${username}  ${tender_uaid}  ${file_path}  ${award_index}
-    eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
-    Wait Until Element Is Visible  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
+    Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
+    ...  eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
+    ...  AND  Wait Until Element Is Visible  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
     Click Element  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
     Wait Until Element Is Visible  //button[contains(text(), "Завантаження протоколу")]
     Click Element  xpath=//button[contains(text(), "Завантаження протоколу")]
