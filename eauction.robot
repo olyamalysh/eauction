@@ -114,9 +114,6 @@ Library  eauction_service.py
     eauction.Пошук Тендера По Ідентифікатору  ${tender_owner}  ${tender_uaid}
     Wait For Document Upload
     Run Keyword And Ignore Error  Click Element  xpath=//button[@id="add-item"]
-    ${items}=  Get Matching Xpath Count  xpath=//textarea[@class="item-description"]
-    ${n_items}=  Convert To Integer  ${items}
-    [Return]  ${n_items}
 
 
 Видалити предмет закупівлі
@@ -429,7 +426,7 @@ Proposition
 
 Отримати кількість предметів в тендері
     [Arguments]  ${username}  ${tender_uaid}
-    ${items}=  Get Matching Xpath Count  xpath=//div[@data-test-id="item.description"]
+    ${items}=  Get Matching Xpath Count  xpath=//div[@data-test-id="item-description"]
     ${n_items}=  Convert To Integer  ${items}
     [Return]  ${n_items}
 
