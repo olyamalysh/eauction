@@ -587,8 +587,9 @@ Proposition
 
 Дискваліфікувати постачальника
     [Arguments]  ${username}  ${tender_uaid}  ${number}  ${description}
-    eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
-    Wait Until Element Is Visible  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
+    Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
+    ...  eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
+    ...  AND  Wait Until Element Is Visible  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
     Click Element  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
     ${file}=  my_file_path
     Wait Until Element Is Visible  //button[@data-toggle="modal"][contains(text(), "Дисквалiфiкувати")]
