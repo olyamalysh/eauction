@@ -457,6 +457,7 @@ Proposition
 Отримати інформацію із запитання
     [Arguments]  ${username}  ${tender_uaid}  ${object_id}  ${field}
     Run Keyword And Ignore Error  Click Element  xpath=//*[@data-test-id="sidebar.questions"]
+    Run Keyword And Ignore Error  Wait Until Keyword Succeeds  5 x  1 s  Click Element  xpath=//button[@data-dismiss="modal"]
     ${value}=  Get Text  //*[contains(text(), '${object_id}')]/../descendant::*[@data-test-id='question.${field}']
     [Return]  ${value}
 
