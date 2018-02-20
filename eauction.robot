@@ -517,8 +517,9 @@ Proposition
 
 Підтвердити наявність протоколу аукціону
     [Arguments]  @{ARGUMENTS}
-    eauction.Пошук Тендера По Ідентифікатору  ${ARGUMENTS[0]}  ${ARGUMENTS[1]}
-    Click Element  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
+    Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
+    ...  eauction.Пошук Тендера По Ідентифікатору  ${ARGUMENTS[0]}  ${ARGUMENTS[1]}
+    ...  Click Element  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
     Wait Until Page Contains  Очікується підписання договору
 
 
@@ -526,8 +527,9 @@ Proposition
 
 Підтвердити постачальника
     [Arguments]  ${username}  ${tender_uaid}  ${number}
-    eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
-    Wait Until Element Is Visible  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
+    Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
+    ...  eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
+    ...  AND  Wait Until Element Is Visible  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
     Click Element  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
     Wait Until Element Is Visible  //button[contains(text(), "Підтвердити отримання оплати")]
     Click Element  //button[contains(text(), "Підтвердити отримання оплати")]
@@ -541,8 +543,9 @@ Proposition
 
 Скасування рішення кваліфікаційної комісії
     [Arguments]  ${username}  ${tender_uaid}  ${number}
-    eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
-    Wait Until Element Is Visible  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
+    Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
+    ...  eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
+    ...  AND  Wait Until Element Is Visible  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
     Click Element  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
     Wait Until Element Is Visible  //button[contains(text(), "Забрати гарантійний внесок")]
     Click Element  //button[contains(text(), "Забрати гарантійний внесок")]
@@ -556,8 +559,9 @@ Proposition
 
 Завантажити угоду до тендера
     [Arguments]  ${username}  ${tender_uaid}  ${number}  ${file_path}
-    eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
-    Wait Until Element Is Visible  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
+    Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
+    ...  eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
+    ...  AND  Wait Until Element Is Visible  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
     Click Element  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
     Wait Until Element Is Visible  xpath=//button[contains(text(), "Контракт")]
     Click Element  xpath=//button[contains(text(), "Контракт")]
