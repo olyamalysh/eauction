@@ -516,9 +516,9 @@ Proposition
 
 
 Підтвердити наявність протоколу аукціону
-    [Arguments]  @{ARGUMENTS}
+    [Arguments]  ${username}  ${tender_uaid}  ${award_number}
     Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
-    ...  eauction.Пошук Тендера По Ідентифікатору  ${ARGUMENTS[0]}  ${ARGUMENTS[1]}
+    ...  eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
     ...  Click Element  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
     Wait Until Page Contains  Очікується підписання договору
 
