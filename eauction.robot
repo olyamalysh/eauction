@@ -374,6 +374,11 @@ Proposition
     Input Text  xpath=//input[@id="attribute-input"]  ${tender_uaid}
     Scroll To  xpath=//a[@id="search"]
     Click Element  xpath=//a[@id="search"]
+    : FOR    ${INDEX}    IN RANGE    1    5000
+    \    ${IsAjaxComplete}    Execute JavaScript    return window.jQuery!=undefined && jQuery.active==0
+    \    Log    ${INDEX}
+    \    Log    ${IsAjaxComplete}
+    \    Run Keyword If    ${IsAjaxComplete}==True    Exit For Loop
     Scroll To  xpath=//*[@class="mk-btn mk-btn_default"][contains(@href, "/tender/view/")]
     Wait Until Element Is Enabled  xpath=//*[@class="mk-btn mk-btn_default"][contains(@href, "/tender/view/")]
     Click Element  xpath=//*[@class="mk-btn mk-btn_default"][contains(@href, "/tender/view/")]
