@@ -21,7 +21,7 @@ Library  eauction_service.py
     ...  AND  Go To  ${USERS.users['${username}'].homepage}
     ...  ELSE  Open Browser  ${USERS.users['${username}'].homepage}  ${USERS.users['${username}'].browser}  alias=my_alias
     Set Window Size  ${USERS.users['${username}'].size[0]}  ${USERS.users['${username}'].size[1]}
-    Run Keyword If  '${username}' != 'eauction_Viewer_auction'  Run Keywords
+    Run Keyword If  '${username}' != 'eauction_Viewer'  Run Keywords
     ...  Авторизація  ${username}
     ...  AND  Run Keyword And Ignore Error  Закрити Модалку
 
