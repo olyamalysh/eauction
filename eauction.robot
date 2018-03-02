@@ -364,7 +364,8 @@ Proposition
     Switch Browser  my_alias
     Go To  ${USERS.users['${username}'].homepage}
     Sleep  3
-    Run Keyword And Ignore Error  Wait Until Keyword Succeeds  5 x  1 s  Click Element  xpath=//button[@data-dismiss="modal"]
+    ${status}=  Run Keyword And Return Status  Wait Until Element Is Visible  xpath=//button[@data-dismiss="modal"]  5
+    Run Keyword If  ${status}  Wait Until Keyword Succeeds  5 x  1 s  Click Element  xpath=//button[@data-dismiss="modal"]
 #    Scroll  xpath=//li[@class="dropdown"]/descendant::*[@class="dropdown-toggle"][contains(@href, "tenders")]
 #    Wait Until Element Is Visible  xpath=//li[@class="dropdown"]/descendant::*[@class="dropdown-toggle"][contains(@href, "tenders")]
 #    Click Element  xpath=//li[@class="dropdown"]/descendant::*[@class="dropdown-toggle"][contains(@href, "tenders")]
@@ -379,6 +380,8 @@ Proposition
 #    Wait Until Element Is Enabled  xpath=//*[@class="mk-btn mk-btn_default"][contains(@href, "/tender/view/")]
 #    Click Element  xpath=//*[@class="mk-btn mk-btn_default"][contains(@href, "/tender/view/")]
     Go To  ${USERS.users['${username}'].homepage}/tender/view/${tender_uaid}
+    ${status}=  Run Keyword And Return Status  Wait Until Element Is Visible  xpath=//button[@data-dismiss="modal"]  5
+    Run Keyword If  ${status}  Wait Until Keyword Succeeds  5 x  1 s  Click Element  xpath=//button[@data-dismiss="modal"]
     Wait Until Element Is Visible  xpath=//div[@data-test-id="tenderID"]
 
 
