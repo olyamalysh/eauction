@@ -486,7 +486,7 @@ Proposition
     [Arguments]  ${username}  ${tender_uaid}  ${lot_id}=${Empty}
     eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
     Scroll To And Click Element  //a[@class="auction_seller_url"]
-    Select Window  NEW
+    Wait Until Keyword Succeeds  30 x  20 s  Select Window  NEW
     Run Keyword And Ignore Error  Click Element  //button[@value="yes"][contains(@class, "btn-success")]
     ${link}=  Get Location
     Close Window
