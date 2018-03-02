@@ -366,20 +366,20 @@ Proposition
     Sleep  3
     ${status}=  Run Keyword And Return Status  Wait Until Element Is Visible  xpath=//button[@data-dismiss="modal"]  5
     Run Keyword If  ${status}  Wait Until Keyword Succeeds  5 x  1 s  Click Element  xpath=//button[@data-dismiss="modal"]
-#    Scroll  xpath=//li[@class="dropdown"]/descendant::*[@class="dropdown-toggle"][contains(@href, "tenders")]
-#    Wait Until Element Is Visible  xpath=//li[@class="dropdown"]/descendant::*[@class="dropdown-toggle"][contains(@href, "tenders")]
-#    Click Element  xpath=//li[@class="dropdown"]/descendant::*[@class="dropdown-toggle"][contains(@href, "tenders")]
-#    Click Element  xpath=//*[@class="dropdown-menu"]/descendant::*[contains(@href, "/tenders/index")]
-#    Wait Until Element Is Visible  xpath=//select[@id="attribute-select"]
-#    Select From List By Value  xpath=//select[@id="attribute-select"]  tender_cbd_id
-#    Input Text  xpath=//input[@id="attribute-input"]  ${tender_uaid}
-#    Scroll To  xpath=//a[@id="search"]
-#    Click Element  xpath=//a[@id="search"]
-#    Wait Until Element Is Visible  xpath=//div[@class="search-result_t"]/span[contains(text(), "${tender_uaid}")]
-#    Scroll To  xpath=//*[@class="mk-btn mk-btn_default"][contains(@href, "/tender/view/")]
-#    Wait Until Element Is Enabled  xpath=//*[@class="mk-btn mk-btn_default"][contains(@href, "/tender/view/")]
-#    Click Element  xpath=//*[@class="mk-btn mk-btn_default"][contains(@href, "/tender/view/")]
-    Go To  ${USERS.users['${username}'].homepage}/tender/view/${tender_uaid}
+    Scroll  xpath=//li[@class="dropdown"]/descendant::*[@class="dropdown-toggle"][contains(@href, "tenders")]
+    Wait Until Element Is Visible  xpath=//li[@class="dropdown"]/descendant::*[@class="dropdown-toggle"][contains(@href, "tenders")]
+    Click Element  xpath=//li[@class="dropdown"]/descendant::*[@class="dropdown-toggle"][contains(@href, "tenders")]
+    Click Element  xpath=//*[@class="dropdown-menu"]/descendant::*[contains(@href, "/tenders/index")]
+    Wait Until Element Is Visible  xpath=//select[@id="attribute-select"]
+    Select From List By Value  xpath=//select[@id="attribute-select"]  tender_cbd_id
+    Input Text  xpath=//input[@id="attribute-input"]  ${tender_uaid}
+    Scroll To  xpath=//a[@id="search"]
+    Click Element  xpath=//a[@id="search"]
+    Wait Until Element Is Visible  xpath=//div[@class="search-result_t"]/span[contains(text(), "${tender_uaid}")]
+    Scroll To  xpath=//*[@class="mk-btn mk-btn_default"][contains(@href, "/tender/view/")]
+    Wait Until Element Is Enabled  xpath=//*[@class="mk-btn mk-btn_default"][contains(@href, "/tender/view/")]
+    Click Element  xpath=//*[@class="mk-btn mk-btn_default"][contains(@href, "/tender/view/")]
+#    Go To  ${USERS.users['${username}'].homepage}/tender/view/${tender_uaid}
     ${status}=  Run Keyword And Return Status  Wait Until Element Is Visible  xpath=//button[@data-dismiss="modal"]  5
     Run Keyword If  ${status}  Wait Until Keyword Succeeds  5 x  1 s  Click Element  xpath=//button[@data-dismiss="modal"]
     Wait Until Element Is Visible  xpath=//div[@data-test-id="tenderID"]
