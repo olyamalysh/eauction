@@ -215,7 +215,7 @@ Library  eauction_service.py
     Wait For Document Upload
     Scroll To  xpath=//button[@data-type="x_dgfPublicAssetCertificate"]
     Click Element  xpath=//button[@data-type="x_dgfPublicAssetCertificate"]
-    Wait Until Element Is Visible  //div[@class="panel-heading"]/span[contains(text(), "Посилання на публічний паспорт активу")]
+    Wait Until Element Is Visible  xpath=//div[contains(@class, "panel-heading")]/span[contains(text(), "Посилання на публічний паспорт активу")]
     Input Text  xpath=(//*[@class="document-title"])[last()]  Посилання на публічний паспорт активу
     Input Text  xpath=(//*[@class="document-url"])[last()]  ${certificate_url}
     Scroll To And Click Element  xpath=//*[@name="simple_submit"]
@@ -230,7 +230,7 @@ Library  eauction_service.py
     Wait For Document Upload
     Scroll To  xpath=//button[@data-type="virtualDataRoom"]
     Click Element  xpath=//button[@data-type="virtualDataRoom"]
-    Wait Until Element Is Visible  xpath=//div[@class="panel-heading"]/span[contains(text(), "Посилання на VDR")]
+    Wait Until Element Is Visible  xpath=//div[contains(@class, "panel-heading")]/span[contains(text(), "Посилання на VDR")]
     Input Text  xpath=(//*[@class="document-title"])[last()]  Посилання на VDR
     Input Text  xpath=(//*[@class="document-url"])[last()]  ${vdr_url}
     Scroll To And Click Element  xpath=//*[@name="simple_submit"]
