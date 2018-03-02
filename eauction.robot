@@ -282,8 +282,10 @@ Library  eauction_service.py
 Подати цінову пропозицію
     [Arguments]   ${username}  ${tender_uaid}  ${bid}
     eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
-    Wait Until Element Is Visible  //input[@id="value-amount"]
-    Convert Input Data To String  xpath=//input[@id="value-amount"]  ${bid.data.value.amount}
+    Run Keyword If  '${MODE}' != 'dgfInsider'
+    ...  Wait Until Element Is Visible  //input[@id="value-amount"]
+    ...  AND  Convert Input Data To String  xpath=//input[@id="value-amount"]  ${bid.data.value.amount}
+    ...  ELSE  Click Element  xpath=//input[@id="bid-participate"]//..
     Run Keyword And Ignore Error  Click Element  xpath=//div[contains(@class, "field-bid-checkforunlicensed")]/label
     Wait Until Keyword Succeeds  30 x  5 s  Run Keywords
     ...  Run Keyword And Ignore Error  Click Element  //button[@id="submit_bid"]
