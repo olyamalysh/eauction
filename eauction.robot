@@ -282,7 +282,7 @@ Library  eauction_service.py
 Подати цінову пропозицію
     [Arguments]   ${username}  ${tender_uaid}  ${bid}
     eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
-    Run Keyword If  '${MODE}' != 'dgfInsider'
+    Run Keyword If  '${MODE}' != 'dgfInsider'  Run Keywords
     ...  Wait Until Element Is Visible  //input[@id="value-amount"]
     ...  AND  Convert Input Data To String  xpath=//input[@id="value-amount"]  ${bid.data.value.amount}
     ...  ELSE  Click Element  xpath=//input[@id="bid-participate"]//..
