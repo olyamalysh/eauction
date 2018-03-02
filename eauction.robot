@@ -510,7 +510,6 @@ Proposition
 Завантажити протокол аукціону в авард
     [Arguments]  ${username}  ${tender_uaid}  ${file_path}  ${award_index}
     eauction.Перейти На Страницу Квалификации  ${username}  ${tender_uaid}
-    Click Element  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
     Wait Until Element Is Visible  //button[contains(text(), "Завантаження протоколу")]
     Click Element  xpath=//button[contains(text(), "Завантаження протоколу")]
     Wait Until Element Is Visible  //div[contains(text(), "Завантаження протоколу")]
