@@ -331,7 +331,7 @@ Proposition
     ${url}=  Get Location
     Run Keyword If  ${status.qualified}
     ...  Go To  http://eauction.byustudio.in.ua/bids/send/${url.split('/')[-1]}?token=465
-    ...  ELSE  Go To  http://test.25h8.auction/bids/decline/${url.split('/')[-1]}?token=465
+    ...  ELSE  Go To  http://eauction.byustudio.in.ua/bids/decline/${url.split('/')[-1]}?token=465
     Go To  ${USERS.users['${username}'].homepage}
 
 
@@ -389,6 +389,9 @@ Proposition
     Go To  ${USERS.users['${username}'].homepage}/tender/view/${tender_uaid}
     ${status}=  Run Keyword And Return Status  Wait Until Element Is Visible  xpath=//button[@data-dismiss="modal"]  5
     Run Keyword If  ${status}  Wait Until Keyword Succeeds  5 x  1 s  Click Element  xpath=//button[@data-dismiss="modal"]
+    ${url}=  Get Element Attribute  xpath=//a[contains(@href, "tender/json")]@href
+    ${tid}=  Set Variable  ${url.split('/')[-1]}
+    Go To  ${USERS.users['${username}'].homepage}/tender/view/${tid}
     Wait Until Element Is Visible  xpath=//div[@data-test-id="tenderID"]
 
 
