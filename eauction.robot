@@ -375,7 +375,7 @@ Proposition
     Input Text  xpath=//input[@id="attribute-input"]  ${tender_uaid}
     Scroll To  xpath=//a[@id="search"]
     Click Element  xpath=//a[@id="search"]
-    : FOR    ${INDEX}    IN RANGE    1    5000
+    : FOR    ${INDEX}    IN RANGE    1    20
     \    ${IsAjaxComplete}    Execute JavaScript    return window.jQuery!=undefined && jQuery.active==0
     \    Log    ${INDEX}
     \    Log    ${IsAjaxComplete}
