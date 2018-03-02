@@ -507,9 +507,7 @@ Proposition
 
 Завантажити протокол аукціону в авард
     [Arguments]  ${username}  ${tender_uaid}  ${file_path}  ${award_index}
-    Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
-    ...  eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
-    ...  AND  Wait Until Element Is Visible  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
+    eauction.Перейти На Страницу Квалификации  ${username}  ${tender_uaid}
     Click Element  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
     Wait Until Element Is Visible  //button[contains(text(), "Завантаження протоколу")]
     Click Element  xpath=//button[contains(text(), "Завантаження протоколу")]
@@ -525,9 +523,7 @@ Proposition
 
 Підтвердити наявність протоколу аукціону
     [Arguments]  ${username}  ${tender_uaid}  ${award_number}
-    Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
-    ...  eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
-    ...  Click Element  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
+    eauction.Перейти На Страницу Квалификации  ${username}  ${tender_uaid}
     Wait Until Page Contains  Очікується підписання договору
 
 
@@ -567,9 +563,7 @@ Proposition
 
 Завантажити угоду до тендера
     [Arguments]  ${username}  ${tender_uaid}  ${number}  ${file_path}
-    Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
-    ...  eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
-    ...  AND  Wait Until Element Is Visible  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
+    eauction.Перейти На Страницу Квалификации  ${username}  ${tender_uaid}
     Click Element  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
     Wait Until Element Is Visible  xpath=//button[contains(text(), "Контракт")]
     Click Element  xpath=//button[contains(text(), "Контракт")]
@@ -587,9 +581,7 @@ Proposition
 
 Підтвердити підписання контракту
     [Arguments]  ${username}  ${tender_uaid}  ${number}
-    Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
-    ...  eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
-    ...  AND  Click Element  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
+    eauction.Перейти На Страницу Квалификации  ${username}  ${tender_uaid}
     Click Element  //button[@id="contract-activate"]
     Confirm Action
     Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
@@ -599,9 +591,7 @@ Proposition
 
 Дискваліфікувати постачальника
     [Arguments]  ${username}  ${tender_uaid}  ${number}  ${description}
-    Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
-    ...  eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
-    ...  AND  Wait Until Element Is Visible  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
+    eauction.Перейти На Страницу Квалификации  ${username}  ${tender_uaid}
     Click Element  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
     ${file}=  my_file_path
     Wait Until Element Is Visible  //button[@data-toggle="modal"][contains(text(), "Дисквалiфiкувати")]
@@ -691,3 +681,11 @@ Change Attempts
     ${value}=  Convert To String  ${value}
     Scroll To    xpath=//*[@id="tender-tenderattempts"]
     Select From List By Value    xpath=//*[@id="tender-tenderattempts"]  ${value}
+
+
+Перейти На Страницу Квалификации
+  [Arguments]  ${username}  ${tender_uaid}
+    Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
+    ...  eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
+    ...  AND  Click Element  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
+    ...  AND  Wait Until Element Is Not Visible  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
