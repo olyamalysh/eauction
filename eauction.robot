@@ -393,7 +393,7 @@ Proposition
 Отримати інформацію із тендера
     [Arguments]  ${username}  ${tender_uaid}  ${field}
     Switch Browser  my_alias
-    eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
+#    eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
     Run Keyword If  'title' in '${field}'  Execute Javascript  $("[data-test-id|='title']").css("text-transform", "unset")
     ${value}=  Run Keyword If
     ...  '${field}' == 'title'  Get Text  xpath=//*[@data-test-id="title"]
