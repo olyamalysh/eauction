@@ -478,6 +478,7 @@ Proposition
 
 Отримати посилання на аукціон для глядача
     [Arguments]  ${viewer}  ${tender_uaid}  ${lot_id}=${Empty}
+    Switch Browser  my_alias
     eauction.Пошук Тендера По Ідентифікатору  ${viewer}  ${tender_uaid}
     ${link}=  Get Element Attribute  xpath=//*[contains(text(), "Посилання")]/../descendant::*[@class="h4"]/a@href
     [Return]  ${link}
@@ -485,6 +486,7 @@ Proposition
 
 Отримати посилання на аукціон для учасника
     [Arguments]  ${username}  ${tender_uaid}  ${lot_id}=${Empty}
+    Switch Browser  my_alias
     eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
     Scroll To And Click Element  //a[@class="auction_seller_url"]
     Wait Until Keyword Succeeds  30 x  20 s  Select Window  NEW
