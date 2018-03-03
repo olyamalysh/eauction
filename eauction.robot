@@ -493,7 +493,7 @@ Proposition
     Wait Until Keyword Succeeds  30 x  20 s  Select Window  NEW
     Run Keyword And Ignore Error  Click Element  //button[@value="yes"][contains(@class, "btn-success")]
     ${link}=  Get Location
-    Close Window
+#    Close Window
     Select Window  MAIN
     [Return]  ${link}
 
