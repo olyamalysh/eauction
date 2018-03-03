@@ -36,7 +36,6 @@ Library  eauction_service.py
     [Arguments]  ${username}  ${tender_uaid}
     Switch Browser  my_alias
     eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
-    Reload Page
 
 
 Авторизація
@@ -469,8 +468,10 @@ Proposition
 
 Отримати інформацію із запитання
     [Arguments]  ${username}  ${tender_uaid}  ${object_id}  ${field}
-    Run Keyword And Ignore Error  Click Element  xpath=//*[@data-test-id="sidebar.questions"]
-    Run Keyword And Ignore Error  Wait Until Keyword Succeeds  5 x  1 s  Click Element  xpath=//button[@data-dismiss="modal"]
+    eauction.Закрити Модалку
+    Click Element  xpath=//*[@data-test-id="sidebar.questions"]
+    Wait Until Element Is Not Visible  xpath=//*[@data-test-id="sidebar.questions"]
+    eauction.Закрити Модалку
     ${value}=  Get Text  //*[contains(text(), '${object_id}')]/../descendant::*[@data-test-id='question.${field}']
     [Return]  ${value}
 
@@ -606,7 +607,7 @@ Proposition
     Choose File  //div[@id="disqualification-form-upload-file"]/descendant::input[@name="FileUpload[file][]"]  ${file}
     Input Text  //textarea[@id="award-description"]  ${description}
     Click Element  //button[@id="disqualification"]
-    Wait Until Element Is Visible  //div[contains(@class,'alert-success')]
+    Wait Until Page Contains  Оновити сторінку
 
 
 
@@ -640,8 +641,8 @@ Scroll To And Click Element
 
 
 Закрити Модалку
-    Wait Until Element Is Visible  xpath=//button[@data-dismiss="modal"]
-    Click Element  xpath=//button[@data-dismiss="modal"]
+    ${status}=  Run Keyword And Return Status  Wait Until Element Is Visible  xpath=//button[@data-dismiss="modal"]  5
+    Run Keyword If  ${status}  Wait Until Keyword Succeeds  5 x  1 s  Click Element  xpath=//button[@data-dismiss="modal"]
     Wait Until Element Is Not Visible  xpath=//*[contains(@class, "modal-backdrop")]
 
 
@@ -693,3 +694,4 @@ Change Attempts
     ...  eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
     ...  AND  Click Element  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
     ...  AND  Wait Until Element Is Not Visible  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
+
