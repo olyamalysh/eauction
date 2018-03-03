@@ -489,21 +489,13 @@ Proposition
     [Arguments]  ${username}  ${tender_uaid}  ${lot_id}=${Empty}
     Switch Browser  ${my_alias}
     eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
-#    Scroll To And Click Element  //a[@class="auction_seller_url"]
-#    Wait Until Keyword Succeeds  30 x  20 s  Select Window  NEW
-#    Run Keyword And Ignore Error  Click Element  //button[@value="yes"][contains(@class, "btn-success")]
-#    ${link}=  Get Location
-#    Close Window
-#    Select Window  MAIN
-#    [Return]  ${link}
-    Wait Until Keyword Succeeds  15 x  60 s  Run Keywords
-    ...  Click Element  xpath=//*[contains(@href, "tender/json/")]
-    ...  AND  Element Should Be Visible  xpath=//a[@class="auction_seller_url"]
-    ${current_url}=  Get Location
-    Execute Javascript  window['url'] = null; $.get( "http://${host}/seller/tender/updatebid", { id: "${current_url.split("/")[-1]}"}, function(data){ window['url'] = data.data.participationUrl },'json');
-    Wait Until Keyword Succeeds  20 x  1 s  JQuery Ajax Should Complete
-    ${auction_url}=  Execute Javascript  return window['url'];
-    [return]  ${auction_url}
+    Scroll To And Click Element  //a[@class="auction_seller_url"]
+    Wait Until Keyword Succeeds  30 x  20 s  Select Window  NEW
+    Run Keyword And Ignore Error  Click Element  //button[@value="yes"][contains(@class, "btn-success")]
+    ${link}=  Get Location
+    Close Window
+    Select Window  MAIN
+    [Return]  ${link}
 
 
 Статус Аварду
