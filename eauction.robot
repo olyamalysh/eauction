@@ -13,6 +13,7 @@ Library  eauction_service.py
 
 Підготувати клієнт для користувача
     [Arguments]  ${username}
+    Set Suite Variable  ${my_alias}  my_alias
     ${chrome_options}=    Evaluate    sys.modules['selenium.webdriver'].ChromeOptions()    sys
     #Open Browser  ${USERS.users['${username}'].homepage}  ${USERS.users['${username}'].browser}
     Run Keyword If  '${USERS.users['${username}'].browser}' in 'Chrome chrome'  Run Keywords
