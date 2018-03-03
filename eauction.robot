@@ -247,7 +247,7 @@ Library  eauction_service.py
     eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
     Click Element  xpath=//*[@data-test-id="sidebar.questions"]
     Wait Until Element Is Not Visible  xpath=//*[@data-test-id="sidebar.questions"]
-    Run Keyword And Ignore Error  Wait Until Keyword Succeeds  5 x  1 s  Click Element  xpath=//button[@data-dismiss="modal"]
+    eauction.Закрити Модалку
     Close Sidebar
     Input Text  //*[@data-test-id="question.title"][contains(text(), "${question_id}")]/following-sibling::form[contains(@action, "tender/questions")]/descendant::textarea  ${answer.data.answer}
     Click Element  //*[@data-test-id="question.title"][contains(text(), "${question_id}")]/../descendant::button[@name="answer_question_submit"]
