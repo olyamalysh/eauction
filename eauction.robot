@@ -701,3 +701,6 @@ Change Attempts
     ...  AND  Click Element  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
     ...  AND  Wait Until Element Is Not Visible  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
 
+JQuery Ajax Should Complete
+  ${active}=  Execute Javascript  return jQuery.active
+  Should Be Equal  "${active}"  "0"
