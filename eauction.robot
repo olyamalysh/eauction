@@ -13,9 +13,9 @@ Library  eauction_service.py
 
 Підготувати клієнт для користувача
     [Arguments]  ${username}
-    Set Suite Variable  ${my_alias}  my_alias
+    Set Suite Variable  ${my_alias}  ${username}
 #    ${chrome_options}=    Evaluate    sys.modules['selenium.webdriver'].ChromeOptions()    sys
-    Open Browser  ${USERS.users['${username}'].homepage}  ${USERS.users['${username}'].browser}  alias=my_alias
+    Open Browser  ${USERS.users['${username}'].homepage}  ${USERS.users['${username}'].browser}  alias=${my_alias}
 #    Run Keyword If  '${USERS.users['${username}'].browser}' in 'Chrome chrome'  Run Keywords
 #    ...  Call Method  ${chrome_options}  add_argument  --headless
 #    ...  AND  Create Webdriver  Chrome  alias=my_alias  chrome_options=${chrome_options}
@@ -35,7 +35,7 @@ Library  eauction_service.py
 
 Оновити сторінку з тендером
     [Arguments]  ${username}  ${tender_uaid}
-    Switch Browser  my_alias
+    Switch Browser  ${my_alias}
     eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
 
 
@@ -164,7 +164,7 @@ Library  eauction_service.py
     Select From List By Value  xpath=(//*[@class="document-type"])[last()]  clarifications
     Select From List By Value  xpath=(//*[@class="document-related-item"])[last()]  tender
     Scroll To And Click Element  xpath=//*[@name="simple_submit"]
-    Wait Until Element Is Visible  xpath=//*[@data-test-id="sidebar.edit"]
+#    Wait Until Element Is Visible  xpath=//*[@data-test-id="sidebar.edit"]
     Page Should Contain Element  xpath=//div[contains(@class, "alert-success")]
 
 
@@ -250,7 +250,7 @@ Library  eauction_service.py
     eauction.Закрити Модалку
     Close Sidebar
     Input Text  //*[@data-test-id="question.title"][contains(text(), "${question_id}")]/following-sibling::form[contains(@action, "tender/questions")]/descendant::textarea  ${answer.data.answer}
-    Click Element  //*[@data-test-id="question.title"][contains(text(), "${question_id}")]/../descendant::button[@name="answer_question_submit"]
+    Scroll To And Click Element  //*[@data-test-id="question.title"][contains(text(), "${question_id}")]/../descendant::button[@name="answer_question_submit"]
     Wait Until Element Is Not Visible  xpath=//*[@data-test-id="question.title"][contains(text(), "${question_id}")]/following-sibling::form[contains(@action, "tender/questions")]/descendant::textarea
 
 
@@ -363,7 +363,7 @@ Proposition
 
 Пошук тендера по ідентифікатору
     [Arguments]  ${username}  ${tender_uaid}
-    Switch Browser  my_alias
+    Switch Browser  ${my_alias}
     Go To  ${USERS.users['${username}'].homepage}
     Sleep  3
     ${status}=  Run Keyword And Return Status  Wait Until Element Is Visible  xpath=//button[@data-dismiss="modal"]  5
@@ -397,7 +397,7 @@ Proposition
 
 Отримати інформацію із тендера
     [Arguments]  ${username}  ${tender_uaid}  ${field}
-    Switch Browser  my_alias
+    Switch Browser  ${my_alias}
 #    eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
     Run Keyword If  'title' in '${field}'  Execute Javascript  $("[data-test-id|='title']").css("text-transform", "unset")
     ${value}=  Run Keyword If
@@ -479,7 +479,7 @@ Proposition
 
 Отримати посилання на аукціон для глядача
     [Arguments]  ${viewer}  ${tender_uaid}  ${lot_id}=${Empty}
-    Switch Browser  my_alias
+    Switch Browser  ${my_alias}
     eauction.Пошук Тендера По Ідентифікатору  ${viewer}  ${tender_uaid}
     ${link}=  Get Element Attribute  xpath=//*[contains(text(), "Посилання")]/../descendant::*[@class="h4"]/a@href
     [Return]  ${link}
@@ -487,7 +487,7 @@ Proposition
 
 Отримати посилання на аукціон для учасника
     [Arguments]  ${username}  ${tender_uaid}  ${lot_id}=${Empty}
-    Switch Browser  my_alias
+    Switch Browser  ${my_alias}
     eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
     Scroll To And Click Element  //a[@class="auction_seller_url"]
     Wait Until Keyword Succeeds  30 x  20 s  Select Window  NEW
