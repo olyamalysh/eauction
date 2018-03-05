@@ -603,7 +603,9 @@ Proposition
     Choose File  //div[@id="disqualification-form-upload-file"]/descendant::input[@name="FileUpload[file][]"]  ${file}
     Input Text  //textarea[@id="award-description"]  ${description}
     Click Element  //button[@id="disqualification"]
-    Wait Until Page Contains  Оновити сторінку
+    Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
+    ...  Reload Page
+    ...  AND  Page Should Not Contain Element  xpath=//button[@onclick="window.location.reload();"]
 
 
 
