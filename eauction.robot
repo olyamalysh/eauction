@@ -99,12 +99,12 @@ Library  eauction_service.py
     Wait Until Element Is Not Visible  xpath=//*[@class="fade modal"]
     Wait Until Element Is Visible  xpath=//*[@id="unit-${item}-code"]
     Select From List By Value  xpath=//*[@id="unit-${item}-code"]  ${item_data.unit.code}
-    Select From List By Value  xpath=//*[@id="deliveryaddress-${item}-countryname"]  ${item_data.deliveryAddress.countryName}
+    Select From List By Value  xpath=//*[@id="deliveryaddress-${item}-countryname"]  ${item_data.address.countryName}
     Scroll To  xpath=//*[@id="deliveryaddress-${item}-region"]
-    Select From List By Label  xpath=//*[@id="deliveryaddress-${item}-region"]  ${item_data.deliveryAddress.region}
-    Input Text  xpath=//*[@id="deliveryaddress-${item}-locality"]  ${item_data.deliveryAddress.locality}
-    Input Text  xpath=//*[@id="deliveryaddress-${item}-streetaddress"]  ${item_data.deliveryAddress.streetAddress}
-    Input Text  xpath=//*[@id="deliveryaddress-${item}-postalcode"]  ${item_data.deliveryAddress.postalCode}
+    Select From List By Label  xpath=//*[@id="deliveryaddress-${item}-region"]  ${item_data.address.region}
+    Input Text  xpath=//*[@id="deliveryaddress-${item}-locality"]  ${item_data.address.locality}
+    Input Text  xpath=//*[@id="deliveryaddress-${item}-streetaddress"]  ${item_data.address.streetAddress}
+    Input Text  xpath=//*[@id="deliveryaddress-${item}-postalcode"]  ${item_data.address.postalCode}
     ${contract_start_date}=  convert_date_for_item  ${item_data.contractPeriod.startDate}
     ${contract_end_date}=  convert_date_for_item  ${item_data.contractPeriod.endDate}
     Input Text  xpath=//*[@id="itemcontractperiod-${item}-startdate"]  ${contract_start_date}
