@@ -537,9 +537,10 @@ Scroll To And Click Element
 
 
 Закрити Модалку
-    Wait Until Element Is Visible  xpath=//button[@data-dismiss="modal"]
-    Click Element  xpath=//button[@data-dismiss="modal"]
-    Wait Until Element Is Not Visible  xpath=//*[contains(@class, "modal-backdrop")]
+    ${status}=  Run Keyword And Return Status  Wait Until Element Is Visible  xpath=//button[@data-dismiss="modal"]  5
+    Run Keyword If  ${status}  Wait Until Keyword Succeeds  5 x  1 s  Run Keywords
+    ...  Click Element  xpath=//button[@data-dismiss="modal"]
+    ...  AND  Wait Until Element Is Not Visible  xpath=//*[contains(@class, "modal-backdrop")]
 
 
 Adapt And Select By Value
