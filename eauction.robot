@@ -129,7 +129,7 @@ Library  eauction_service.py
 
 
 Внести зміни в тендер
-    [Arguments]  ${tender_owner}  ${TENDER['TENDER_UAID']}  ${field_name}  ${field_value}
+    [Arguments]  ${tender_owner}  ${tender_uaid}  ${field_name}  ${field_value}
     Run Keyword And Ignore Error  Click Element  xpath=//*[@data-test-id="sidebar.edit"]
     Wait Until Element Is Visible  //*[@id="auction-form"]
     Run Keyword If
@@ -138,6 +138,15 @@ Library  eauction_service.py
     ...  ELSE IF  '${field_name}' == 'guarantee.amount'  Convert Input Data To String  xpath=//input[@id="guarantee-amount"]  ${field_value}
     ...  ELSE IF  '${field_name}' == 'tenderPeriod.startDate'  Input Text  xpath=//*[@id="auction-start-date"]  ${field_value}
     Scroll To And Click Element  //*[@name="simple_submit"]
+
+Редагувати ПДВ
+    [Arguments]  ${tender_owner}  ${tender_uaid}
+    eauction.Пошук Тендера По Ідентифікатору  ${tender_owner}  ${tender_uaid}
+    Click Element  xpath=//*[@data-test-id="sidebar.edit"]
+    Wait Until Element Is Visible  //*[@id="auction-form"]
+    Select From List By Value  xpath=//select[@id="value-valueaddedtaxincluded"]  1
+    Scroll To And Click Element  //*[@name="simple_submit"]
+
 
 
 Завантажити документ
