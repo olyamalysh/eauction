@@ -374,7 +374,10 @@ Proposition
 
 Отримати інформацію із запитання
     [Arguments]  ${username}  ${tender_uaid}  ${object_id}  ${field}
-    Run Keyword And Ignore Error  Click Element  xpath=//*[@data-test-id="sidebar.questions"]
+    eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
+    Click Element  xpath=//*[@data-test-id="sidebar.questions"]
+    Wait Until Element Is Not Visible  xpath=//*[@data-test-id="sidebar.questions"]
+    eauction.Закрити Модалку
     ${value}=  Get Text  //*[contains(text(), '${object_id}')]/../descendant::*[@data-test-id='question.${field}']
     [Return]  ${value}
 
