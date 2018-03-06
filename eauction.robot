@@ -164,8 +164,7 @@ Library  eauction_service.py
     Select From List By Value  xpath=(//*[@class="document-type"])[last()]  clarifications
     Select From List By Value  xpath=(//*[@class="document-related-item"])[last()]  tender
     Scroll To And Click Element  xpath=//*[@name="simple_submit"]
-#    Wait Until Element Is Visible  xpath=//*[@data-test-id="sidebar.edit"]
-    Wait Until Element Is Visible  xpath=//div[contains(@class, "alert-success")]  10
+    Wait Until Keyword Succeeds  20 x  1 s  Element Should Be Visible  xpath=//div[contains(@class,'alert-success')]
 
 
 Завантажити документ
