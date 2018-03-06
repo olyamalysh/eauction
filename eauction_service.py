@@ -38,7 +38,7 @@ def convert_date_for_auction(date):
 def adapted_dictionary(value):
     return{
         u"з урахуванням ПДВ": True,
-        u"без урахуванням ПДВ": False,
+        u"без урахування ПДВ": False,
         u"True": "1",
         u"False": "0",
         u"Оголошення аукціону з Оренди": "dgfOtherAssets",
