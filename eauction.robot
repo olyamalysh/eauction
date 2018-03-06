@@ -49,11 +49,11 @@ Library  eauction_service.py
 
 Створити тендер
     [Arguments]  ${tender_owner}  ${tender_data}
-    Run Keyword And Ignore Error  Закрити Модалку
     ${data}=  Get Data  ${tender_data}
     ${items}=  Get From Dictionary  ${tender_data.data}  items
     Click Element  xpath=//li[@class="dropdown"]/descendant::*[@class="dropdown-toggle"][contains(@href, "tenders")]
     Click Element  xpath=//*[@class="dropdown-menu"]/descendant::*[contains(@href, "/tenders/index")]
+    eauction.Закрити Модалку
     Click Element  xpath=//a[contains(@href, "/buyer/tender/create")]
     Select From List By Value  xpath=//select[@class="tender-rent-select"]  rent
     Convert Input Data To String  xpath=//input[@id="value-amount"]  ${tender_data.data.value.amount}
