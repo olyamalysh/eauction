@@ -81,7 +81,7 @@ Library  eauction_service.py
     Input Text  //*[@id="contactpoint-email"]  ${data.procuringEntity.contactPoint.email}
     Input Text  //*[@id="contactpoint-telephone"]  '000${data.procuringEntity.contactPoint.telephone}'
     Click Element  //*[@name="simple_submit"]
-    Wait Until Element Is Visible  xpath=//div[@data-test-id="tenderID"]
+    Wait Until Element Is Visible  xpath=//div[@data-test-id="tenderID"]  20
     ${auction_id}=  Get Text  xpath=//div[@data-test-id="tenderID"]
     [Return]  ${auction_id}
 
