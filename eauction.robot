@@ -516,6 +516,13 @@ Proposition
     Wait Until Element Is Visible  //div[contains(@class,'alert-success')]
 
 
+Отримати кількість авардів в тендері
+    [Arguments]  ${username}  ${tender_uaid}
+    eauction.Перейти На Страницу Квалификации  ${username}  ${tender_uaid}
+    ${awards}=  Get Matching Xpath Count  xpath=//div[contains(@class, "qtable")]/descendant::div[@data-mtitle="№"]
+    ${n_awards}=  Convert To Integer  ${awards}
+    [Return]  ${n_awards}
+
 
 
 Scroll
@@ -580,3 +587,11 @@ Wait For Document Upload
     ...  Reload Page
     ...  AND  Run Keyword And Ignore Error  Click Element  xpath=//*[@data-test-id="sidebar.edit"]
     ...  AND  Wait Until Element Is Visible  xpath=//*[@id="auction-form"]
+
+
+Перейти На Страницу Квалификации
+    [Arguments]  ${username}  ${tender_uaid}
+    Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
+    ...  eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
+    ...  AND  Click Element  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
+    ...  AND  Wait Until Element Is Not Visible  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
