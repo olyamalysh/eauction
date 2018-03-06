@@ -305,6 +305,8 @@ Library  eauction_service.py
     Wait Until Element Is Visible  xpath=(//input[@class="file_name"])[last()]
     Input Text  xpath=(//input[@class="file_name"])[last()]  ${file_path.split('/')[-1]}
     Select From List By Value  xpath=(//select[@class="select_document_type"])[last()]  financialLicense
+    Click Element  //button[@id="submit_bid"]
+    Wait Until Keyword Succeeds  10 x  1 s  Element Should Be Visible  xpath=//div[contains(@class,'alert-success')]
 
 
 
@@ -342,6 +344,9 @@ Proposition
     Choose File  xpath=//*[@action="/tender/fileupload"]/input  ${file_path}
     Input Text  xpath=(//input[@class="file_name"])[last()]  ${file_path.split('/')[-1]}
     Select From List By Value  xpath=(//select[@class="select_document_type"])[last()]  qualificationDocuments
+    Click Element  //button[@id="submit_bid"]
+    Wait Until Keyword Succeeds  10 x  1 s  Element Should Be Visible  xpath=//div[contains(@class,'alert-success')]
+
 
 
 Змінити документ в ставці
