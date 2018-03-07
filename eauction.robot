@@ -146,7 +146,7 @@ Library  eauction_service.py
     ...  ELSE IF  '${field_name}' == 'dgfID'  Input Text  xpath=//*[@id="tender-dgfid"]  ${field_value}
     ...  ELSE IF  '${field_name}' == 'minimalStep.amount'  Convert Input Data To String  xpath=//input[@id="minimalstepvalue-amount"]  ${field_value}
     ...  ELSE IF  '${field_name}' == 'guarantee.amount'  Convert Input Data To String  xpath=//input[@id="guarantee-amount"]  ${field_value}
-    ...  ELSE  Input Text  xpath=//*[@id="${field_name}"]
+    ...  ELSE  Input Text  xpath=//*[@id="${field_name}"]  ${field_value}
     Scroll To And Click Element  //*[@name="simple_submit"]
     Wait Until Element Is Visible  xpath=//div[@data-test-id="tenderID"]
 
