@@ -12,8 +12,8 @@ tz = str(datetime.now(pytz.timezone('Europe/Kiev')))[26:]
 def prepare_tender_data(role, data):
     if role == 'tender_owner':
         data['data']['procuringEntity']['name'] = u'Тестовый "ЗАКАЗЧИК" 2'
-        for item in range(len(data['data']['items'])):
-            data['data']['items'][item]['address']['region'] = data['data']['items'][item]['address']['region'].replace(u' область', u'')
+        for item in data['data']['items']:
+            item['address']['region'] = item['address']['region'].replace(u' область', u'')
     return data
 
 
@@ -79,7 +79,7 @@ def adapt_data(field, value):
         value = int(value)
     elif 'contractPeriod' in field:
         value = convert_date_from_item(value)
-    elif 'tenderPeriod' in field or 'auctionPeriod' in field:
+    elif 'tenderPeriod' in field or 'auctionPeriod' in field or 'rectificationPeriod' in field:
         value = convert_date(value)
     else:
         value = adapted_dictionary(value)

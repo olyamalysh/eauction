@@ -130,14 +130,33 @@ Library  eauction_service.py
 
 Внести зміни в тендер
     [Arguments]  ${tender_owner}  ${tender_uaid}  ${field_name}  ${field_value}
-    Run Keyword And Ignore Error  Click Element  xpath=//*[@data-test-id="sidebar.edit"]
-    Wait Until Element Is Visible  //*[@id="auction-form"]
+    Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
+    ...  Reload Page
+    ...  AND  Click Element  xpath=//*[@data-test-id="sidebar.edit"]
+    ...  AND  Wait Until Element Is Visible  //*[@id="auction-form"]
     Run Keyword If
     ...  '${field_name}' == 'value.amount'  Convert Input Data To String  xpath=//input[@id="value-amount"]  ${field_value}
     ...  ELSE IF  '${field_name}' == 'minimalStep.amount'  Convert Input Data To String  xpath=//input[@id="minimalstepvalue-amount"]  ${field_value}
     ...  ELSE IF  '${field_name}' == 'guarantee.amount'  Convert Input Data To String  xpath=//input[@id="guarantee-amount"]  ${field_value}
     ...  ELSE IF  '${field_name}' == 'tenderPeriod.startDate'  Input Text  xpath=//*[@id="auction-start-date"]  ${field_value}
+    ...  ELSE IF  '${field_name}' == 'title'  Input Text  xpath=//*[@id="tender-title"]  ${field_value}
+    ...  ELSE IF  '${field_name}' == 'description'  Input Text  xpath=//*[@id="tender-description"]  ${field_value}
+    ...  ELSE IF  '${field_name}' == 'tenderAttempts'  Select From List By Converted Value  xpath=//*[@id="tender-tenderattempts"]  ${field_value}
+    ...  ELSE IF  '${field_name}' == 'dgfID'  Input Text  xpath=//*[@id="tender-dgfid"]  ${field_value}
+    ...  ELSE IF  '${field_name}' == 'minimalStep.amount'  Convert Input Data To String  xpath=//input[@id="minimalstepvalue-amount"]  ${field_value}
+    ...  ELSE IF  '${field_name}' == 'guarantee.amount'  Convert Input Data To String  xpath=//input[@id="guarantee-amount"]  ${field_value}
+    ...  ELSE  Input Text  xpath=//*[@id="${field_name}"]
     Scroll To And Click Element  //*[@name="simple_submit"]
+    Wait Until Element Is Visible  xpath=//div[@data-test-id="tenderID"]
+
+
+Отримати кількість предметів в тендері
+    [Arguments]  ${tender_owner}  ${tender_uaid}
+    eauction.Пошук Тендера По Ідентифікатору  ${tender_owner}  ${tender_uaid}
+    ${items}=  Get Matching Xpath Count  xpath=//div[@data-test-id="item.description"]
+    ${n_items}=  Convert To Integer  ${items}
+    [Return]  ${n_items}
+
 
 Редагувати ПДВ
     [Arguments]  ${tender_owner}  ${tender_uaid}
@@ -590,6 +609,12 @@ Wait For Document Upload
     ...  Reload Page
     ...  AND  Run Keyword And Ignore Error  Click Element  xpath=//*[@data-test-id="sidebar.edit"]
     ...  AND  Wait Until Element Is Visible  xpath=//*[@id="auction-form"]
+
+Select From List By Converted Value
+    [Arguments]  ${locator}  ${value}
+    ${converted_value}=  Convert To String  ${value}
+    Select From List By Value  ${locator}  ${converted_value}
+
 
 
 Перейти На Страницу Квалификации
