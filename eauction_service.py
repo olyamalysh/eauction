@@ -14,7 +14,6 @@ def prepare_tender_data(role, data):
         data['data']['procuringEntity']['name'] = u'Тестовый "ЗАКАЗЧИК" 2'
         for item in data['data']['items']:
             item['address']['region'] = item['address']['region'].replace(u' область', '')
-            print item['address']['region']
     return data
 
 
