@@ -130,6 +130,7 @@ Library  eauction_service.py
 
 Внести зміни в тендер
     [Arguments]  ${tender_owner}  ${tender_uaid}  ${field_name}  ${field_value}
+    eauction.Пошук Тендера По Ідентифікатору  ${tender_owner}  ${tender_uaid}
     Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
     ...  Reload Page
     ...  AND  Click Element  xpath=//*[@data-test-id="sidebar.edit"]
