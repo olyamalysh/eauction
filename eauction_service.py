@@ -12,8 +12,8 @@ tz = str(datetime.now(pytz.timezone('Europe/Kiev')))[26:]
 def prepare_tender_data(role, data):
     if role == 'tender_owner':
         data['data']['procuringEntity']['name'] = u'Тестовый "ЗАКАЗЧИК" 2'
-        for item in data['data']['items']:
-            item['address']['region'] = item['address']['region'].replace(u' область', u'')
+        for item in range(len(data['data']['items'])):
+            data['data']['items'][item]['address']['region'] = data['data']['items'][item]['address']['region'].replace(u' область', u'')
     return data
 
 
