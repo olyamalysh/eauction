@@ -101,7 +101,7 @@ Library  eauction_service.py
     Select From List By Value  xpath=//*[@id="unit-${item}-code"]  ${item_data.unit.code}
     Select From List By Value  xpath=//*[@id="deliveryaddress-${item}-countryname"]  ${item_data.address.countryName}
     Scroll To  xpath=//*[@id="deliveryaddress-${item}-region"]
-    Select From List By Label  xpath=//*[@id="deliveryaddress-${item}-region"]  ${item_data.address.region}
+    Select From List By Value  xpath=//*[@id="deliveryaddress-${item}-region"]  ${item_data.address.region}
     Input Text  xpath=//*[@id="deliveryaddress-${item}-locality"]  ${item_data.address.locality}
     Input Text  xpath=//*[@id="deliveryaddress-${item}-streetaddress"]  ${item_data.address.streetAddress}
     Input Text  xpath=//*[@id="deliveryaddress-${item}-postalcode"]  ${item_data.address.postalCode}
