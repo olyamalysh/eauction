@@ -71,7 +71,7 @@ Library  eauction_service.py
     :FOR  ${item}  IN RANGE  ${items_length}
     \  Log  ${items[${item}]}
     \  Run Keyword If  ${item} > 0  Scroll To And Click Element  xpath=//button[@id="add-item"]
-    \  Додати Предмет Закупівли  ${item}  ${items[${item}]}
+    \  Додати Предмет  ${item}  ${items[${item}]}
     ${auction_date}=  convert_date_for_auction  ${data.auctionPeriod.startDate}
     Input Text  //*[@id="auction-start-date"]  ${auction_date}
     Input Text  //*[@id="contactpoint-name"]  ${data.procuringEntity.contactPoint.name}
@@ -83,7 +83,7 @@ Library  eauction_service.py
     [Return]  ${auction_id}
 
 
-Додати Предмет Закупівли
+Додати Предмет
     [Arguments]  ${item}  ${item_data}
     Input Text  xpath=//*[@id="item-${item}-description"]  ${item_data.description}
     Convert Input Data To String  xpath=//*[@id="item-${item}-quantity"]  ${item_data.quantity}
@@ -101,7 +101,7 @@ Library  eauction_service.py
     Select From List By Value  xpath=//*[@id="unit-${item}-code"]  ${item_data.unit.code}
     Select From List By Value  xpath=//*[@id="deliveryaddress-${item}-countryname"]  ${item_data.address.countryName}
     Scroll To  xpath=//*[@id="deliveryaddress-${item}-region"]
-    Select From List By Value  xpath=//*[@id="deliveryaddress-${item}-region"]  ${item_data.address.region}
+    Select From List By Value  xpath=//*[@id="deliveryaddress-${item}-region"]  ${item_data.address.region.replace(u' область', u'')}
     Input Text  xpath=//*[@id="deliveryaddress-${item}-locality"]  ${item_data.address.locality}
     Input Text  xpath=//*[@id="deliveryaddress-${item}-streetaddress"]  ${item_data.address.streetAddress}
     Input Text  xpath=//*[@id="deliveryaddress-${item}-postalcode"]  ${item_data.address.postalCode}
@@ -109,6 +109,29 @@ Library  eauction_service.py
     ${contract_end_date}=  convert_date_for_item  ${item_data.contractPeriod.endDate}
     Input Text  xpath=//*[@id="itemcontractperiod-${item}-startdate"]  ${contract_start_date}
     Input Text  xpath=//*[@id="itemcontractperiod-${item}-enddate"]  ${contract_end_date}
+
+
+Додати Предмет Закупівлі
+    [Arguments]  ${tender_owner}  ${tender_uaid}  ${item_data}
+    eauction.Пошук Тендера По Ідентифікатору  ${tender_owner}  ${tender_uaid}
+    eauction.Wait For Document Upload
+    ${items}=  Get Matching Xpath Count  xpath=//span[@class="panel-title-item"]
+    ${n_items}=  Convert To Integer  ${items}
+    Scroll To And Click Element  xpath=//button[@id="add-item"]
+    eauction.Додати Предмет  ${n_items}  ${item_data}
+    Click Element  xpath=//*[@name="simple_submit"]
+    Wait Until Element Is Visible  xpath=//div[@data-test-id="tenderID"]
+    Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
+    ...  Reload Page
+    ...  AND  Compare Number Elements  xpath=//div[@data-test-id="item.description"]  ${n_items}
+
+
+
+Видалити предмет закупівлі
+    [Arguments]  ${tender_owner}  ${tender_uaid}  ${item_id}
+    eauction.Пошук Тендера По Ідентифікатору  ${tender_owner}  ${tender_uaid}
+    eauction.Wait For Document Upload
+    Run Keyword And Ignore Error  Click Element  xpath=(//button[contains(@class,'delete_item')])[last()]
 
 
 Скасувати закупівлю
@@ -162,8 +185,7 @@ Library  eauction_service.py
 Редагувати ПДВ
     [Arguments]  ${tender_owner}  ${tender_uaid}
     eauction.Пошук Тендера По Ідентифікатору  ${tender_owner}  ${tender_uaid}
-    Click Element  xpath=//*[@data-test-id="sidebar.edit"]
-    Wait Until Element Is Visible  //*[@id="auction-form"]
+    Wait For Document Upload
     Select From List By Value  xpath=//select[@id="value-valueaddedtaxincluded"]  1
     Scroll To And Click Element  //*[@name="simple_submit"]
 
@@ -624,3 +646,11 @@ Select From List By Converted Value
     ...  eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
     ...  AND  Click Element  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
     ...  AND  Wait Until Element Is Not Visible  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
+
+
+Compare Number Elements
+    [Arguments]  ${locator}  ${n_items}
+    Page Should Contain Element  ${locator}
+    ${items}=  Get Matching Xpath Count  ${locator}
+    ${actual_items}=  Convert To Integer  ${items}
+    Should Be Equal  ${actual_items}  ${n_items + 1}
