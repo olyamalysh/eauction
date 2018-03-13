@@ -122,8 +122,8 @@ Library  eauction_service.py
     Click Element  xpath=//*[@name="simple_submit"]
     Wait Until Element Is Visible  xpath=//div[@data-test-id="tenderID"]
     Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
-    ...  Reload Page
-    ...  AND  Compare Number Elements  xpath=//div[@data-test-id="item.description"]  ${n_items}
+    ...  eauction.Пошук Тендера По Ідентифікатору  ${tender_owner}  ${tender_uaid}
+    ...  AND  Compare Number Elements  ${n_items}
 
 
 
@@ -236,6 +236,7 @@ Library  eauction_service.py
 Відповісти на запитання
     [Arguments]  ${tender_owner}  ${tender_uaid}  ${answer}  ${question_id}
     Run Keyword And Ignore Error  Click Element  xpath=//*[@data-test-id="sidebar.questions"]
+    eauction.Закрити Модалку
     Close Sidebar
     Input Text  //*[@data-test-id="question.title"][contains(text(), "${question_id}")]/following-sibling::form[contains(@action, "tender/questions")]/descendant::textarea  ${answer.data.answer}
     Click Element  //*[@data-test-id="question.title"][contains(text(), "${question_id}")]/../descendant::button[@name="answer_question_submit"]
@@ -417,6 +418,7 @@ Proposition
 Отримати інформацію із запитання
     [Arguments]  ${username}  ${tender_uaid}  ${object_id}  ${field}
     eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
+    eauction.Закрити Модалку
     Click Element  xpath=//*[@data-test-id="sidebar.questions"]
     Wait Until Element Is Not Visible  xpath=//*[@data-test-id="sidebar.questions"]
     eauction.Закрити Модалку
@@ -649,8 +651,7 @@ Select From List By Converted Value
 
 
 Compare Number Elements
-    [Arguments]  ${locator}  ${n_items}
-    Page Should Contain Element  ${locator}
-    ${items}=  Get Matching Xpath Count  ${locator}
+    [Arguments]  ${n_items}
+    ${items}=  Get Matching Xpath Count  xpath=//div[@data-test-id="item.description"]
     ${actual_items}=  Convert To Integer  ${items}
     Should Be Equal  ${actual_items}  ${n_items + 1}
