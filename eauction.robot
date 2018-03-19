@@ -565,7 +565,7 @@ Proposition
 
 Отримати кількість авардів в тендері
     [Arguments]  ${username}  ${tender_uaid}
-    eauction.Перейти На Страницу Квалификации  ${username}  ${tender_uaid}
+    Run Keyword And Ignore Error  eauction.Перейти На Страницу Квалификации  ${username}  ${tender_uaid}
     ${awards}=  Get Matching Xpath Count  xpath=//div[contains(@class, "qtable")]/descendant::div[@data-mtitle="№"]
     ${n_awards}=  Convert To Integer  ${awards}
     [Return]  ${n_awards}
