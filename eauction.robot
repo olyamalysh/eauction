@@ -519,7 +519,7 @@ Proposition
 
 
 
-Завантажити протокол аукціону в авард
+Завантажити протокол аукціону
     [Arguments]  ${username}  ${tender_uaid}  ${file_path}  ${award_index}
     eauction.Перейти На Страницу Квалификации  ${username}  ${tender_uaid}
     Wait Until Element Is Visible  //button[contains(text(), "Завантаження протоколу")]
