@@ -550,7 +550,7 @@ Proposition
 #    Wait Until Element Is Visible  //div[contains(text(), "Оплата буде підтверджена")]
 #    Click Element  //*[@class="modal-footer"]/button[contains(text(), "Застосувати")]
 #    Wait Until Element Is Not Visible  //*[@class="modal-footer"]/button[contains(text(), "Застосувати")]
-    Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
+    Wait Until Keyword Succeeds  10 x  2 s  Run Keywords
     ...  Reload Page
     ...  AND  Page Should Contain Element  xpath=//button[contains(text(), "Контракт")]
 
