@@ -495,11 +495,10 @@ Proposition
     Switch Browser  ${my_alias}
     eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
     Scroll To And Click Element  //a[@class="auction_seller_url"]
-    Wait Until Keyword Succeeds  30 x  20 s  Select Window  NEW
-#    Run Keyword And Ignore Error  Click Element  //button[@value="yes"][contains(@class, "btn-success")]
-    ${link}=  Get Location
-    Close Window
-    Select Window  MAIN
+    ${current_url}=  Get Location
+    Execute Javascript  window['url'] = null; $.get( "http://${host}/seller/tender/updatebid", { id: "${current_url.split("/")[-1]}"}, function(data){ window['url'] = data.data.participationUrl },'json');
+    eauction.Ajax Complete
+    ${link}=  Execute Javascript  return window['url'];
     [Return]  ${link}
 
 
@@ -699,3 +698,10 @@ Change Attempts
     ...  AND  Click Element  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
     ...  AND  Wait Until Element Is Not Visible  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
 
+
+Ajax Complete
+    : FOR    ${INDEX}    IN RANGE    1    20
+    \    ${IsAjaxComplete}    Execute JavaScript    return window.jQuery!=undefined && jQuery.active==0
+    \    Log    ${INDEX}
+    \    Log    ${IsAjaxComplete}
+    \    Run Keyword If    ${IsAjaxComplete}==True    Exit For Loop
