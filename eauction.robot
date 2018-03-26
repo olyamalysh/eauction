@@ -497,7 +497,7 @@ Proposition
     [Arguments]  ${username}  ${tender_uaid}  ${lot_id}=${Empty}
     Switch Browser  ${my_alias}
     eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
-    Scroll To And Click Element  //a[@class="auction_seller_url"]
+    Wait Until Element Is Visible  //a[@class="auction_seller_url"]
     ${current_url}=  Get Location
     Execute Javascript  window['url'] = null; $.get( "http://${host}/seller/tender/updatebid", { id: "${current_url.split("/")[-1]}"}, function(data){ window['url'] = data.data.participationUrl },'json');
     eauction.Ajax Complete
