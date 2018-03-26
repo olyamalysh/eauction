@@ -7,6 +7,8 @@ Library  DateTime
 Library  eauction_service.py
 
 *** Variables ***
+${host}=  eauction.byustudio.in.ua
+
 
 *** Keywords ***
 # CDB 1
