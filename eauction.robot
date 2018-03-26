@@ -8,7 +8,7 @@ Library  eauction_service.py
 
 *** Variables ***
 ${host}=  eauction.byustudio.in.ua
-
+${acceleration}=  720
 
 *** Keywords ***
 # CDB 1
@@ -82,6 +82,7 @@ ${host}=  eauction.byustudio.in.ua
     Input Text  //*[@id="contactpoint-name"]  ${data.procuringEntity.contactPoint.name}
     Input Text  //*[@id="contactpoint-email"]  ${data.procuringEntity.contactPoint.email}
     Input Text  //*[@id="contactpoint-telephone"]  '000${data.procuringEntity.contactPoint.telephone}'
+    Execute Javascript  $('#draft-submit').before('<input type="hidden" name="procurementMethodDetails" value="quick, accelerator=${acceleration}">');
     Click Element  //*[@name="simple_submit"]
     Wait Until Element Is Visible  xpath=//div[@data-test-id="tenderID"]  20
     ${auction_id}=  Get Text  xpath=//div[@data-test-id="tenderID"]
