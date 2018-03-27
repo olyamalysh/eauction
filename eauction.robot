@@ -499,8 +499,11 @@ Proposition
     eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
     Wait Until Element Is Visible  //a[@class="auction_seller_url"]
     ${current_url}=  Get Location
+    Capture Page Screenshot
     Execute Javascript  window['url'] = null; $.get( "http://${host}/seller/tender/updatebid", { id: "${current_url.split("/")[-1]}"}, function(data){ window['url'] = data.data.participationUrl },'json');
+    Capture Page Screenshot
     eauction.Ajax Complete
+    Capture Page Screenshot
     ${link}=  Execute Javascript  return window['url'];
     [Return]  ${link}
 
