@@ -20,6 +20,12 @@ def convert_date_from_item(date):
     return '{}T00:00:00{}'.format(date, tz)
 
 
+def adapt_paid_date(sign_date, date_paid):
+    time = sign_date[-8:]
+    date = datetime.strptime(date_paid, '%Y-%m-%d')
+    return '{} {}'.format(datetime.strftime(date, '%d/%m/%Y'), time)
+
+
 def convert_date(date):
     date = datetime.strptime(date, '%d/%m/%Y %H:%M:%S').strftime('%Y-%m-%dT%H:%M:%S.%f')
     return '{}{}'.format(date, tz)
