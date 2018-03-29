@@ -588,6 +588,16 @@ Proposition
     ...  AND  Page Should Contain Element  //button[@id="contract-activate"]
 
 
+Вказати дату отримання оплати
+    [Arguments]  ${username}  ${tender_uaid}  ${contract_number}  ${datePaid}
+    eauction.Перейти На Страницу Квалификации  ${username}  ${tender_uaid}
+    Click Element  xpath=//button[contains(text(), "Контракт")]
+    Wait Until Element Is Visible  //div[contains(@class, "h2")][contains(text(), "Контракт")]
+    ${file}=  my_file_path
+    Choose File  //div[@id="uploadcontract"]/descendant::input  ${file}
+    Input Text  xpath=//input[@name="Contract[datePaid]"]  ${datePaid}
+    Click Element  //button[@id="contract-fill-data"]
+    Wait Until Element Is Not Visible  //div[contains(@class, "h2")][contains(text(), "Контракт")]
 
 
 Підтвердити підписання контракту
