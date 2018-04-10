@@ -415,7 +415,7 @@ Proposition
     ...  ELSE IF  '${field}' == 'description'  Get Text  xpath=//*[@data-test-id="description"]
     ...  ELSE IF  'tenderAttempts' in '${field}'  Get Element Attribute  xpath=//*[@data-test-id="tenderAttempts"]@data-test-value
     ...  ELSE IF  '${field}' == 'guarantee.amount'  Get Text  xpath=//*[@data-test-id="guarantee"]
-#    ...  ELSE IF  '${field}' == 'auctionPeriod.startDate'  Get Text  xpath=//div[@data-test-id="auctionPeriod.startDate"]
+    ...  ELSE IF  '${field}' == 'auctionPeriod.startDate'  Get Text  xpath=//div[@data-test-id="auctionPeriod.startDate"]
     ...  ELSE  Get Text  xpath=//*[@data-test-id='${field.replace('auction', 'tender')}']
 
     ${value}=  adapt_data  ${field}  ${value}
