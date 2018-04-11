@@ -425,10 +425,16 @@ Proposition
 
 Get End Date
     [Arguments]  ${username}  ${tender_uaid}
-    ${url}=  Get Location
+    Open Browser  ${USERS.users['${username}'].homepage}  ${USERS.users['${username}'].browser}  alias=${new_alias}
+    Set Window Size  ${USERS.users['${username}'].size[0]}  ${USERS.users['${username}'].size[1]}
+    Run Keyword If  '${username}' != 'eauction_Viewer'  Run Keywords
+    ...  Авторизація  ${username}
+    ...  AND  Run Keyword And Ignore Error  Закрити Модалку
     eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
     ${value}=  Get Text  xpath=//div[@data-test-id="tenderPeriod.endDate"]
-    Go To  ${url}
+    Capture Page Screenshot
+    Switch Browser  ${my_alias}
+    Capture Page Screenshot
     [Return]  ${value}
 
 
