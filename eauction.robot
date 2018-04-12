@@ -405,7 +405,6 @@ Proposition
 Отримати інформацію із тендера
     [Arguments]  ${username}  ${tender_uaid}  ${field}
     Switch Browser  ${my_alias}
-#    eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
     Run Keyword If  'title' in '${field}'  Execute Javascript  $("[data-test-id|='title']").css("text-transform", "unset")
     ${value}=  Run Keyword If
     ...  '${field}' == 'title'  Get Text  xpath=//*[@data-test-id="title"]
@@ -416,40 +415,10 @@ Proposition
     ...  ELSE IF  'tenderAttempts' in '${field}'  Get Element Attribute  xpath=//*[@data-test-id="tenderAttempts"]@data-test-value
     ...  ELSE IF  '${field}' == 'guarantee.amount'  Get Text  xpath=//*[@data-test-id="guarantee"]
     ...  ELSE IF  '${field}' == 'auctionPeriod.startDate'  Get Text  xpath=//div[@data-test-id="auctionPeriod.startDate"]
-#    ...  ELSE IF  '${field}' == 'tenderPeriod.endDate'  Get End Date  ${username}  ${tender_uaid}
     ...  ELSE  Get Text  xpath=//*[@data-test-id='${field.replace('auction', 'tender')}']
 
     ${value}=  adapt_data  ${field}  ${value}
     [Return]  ${value}
-
-#Пошук тендера по ідентифікатору Н
-#    [Arguments]  ${username}  ${tender_uaid}
-#    Go To  ${USERS.users['${username}'].homepage}
-#    Sleep  3
-#    ${status}=  Run Keyword And Return Status  Wait Until Element Is Visible  xpath=//button[@data-dismiss="modal"]  5
-#    Run Keyword If  ${status}  Wait Until Keyword Succeeds  5 x  1 s  Click Element  xpath=//button[@data-dismiss="modal"]
-#    Go To  ${USERS.users['${username}'].homepage}/tender/view/${tender_uaid}
-#    ${status}=  Run Keyword And Return Status  Wait Until Element Is Visible  xpath=//button[@data-dismiss="modal"]  5
-#    Run Keyword If  ${status}  Wait Until Keyword Succeeds  5 x  1 s  Click Element  xpath=//button[@data-dismiss="modal"]
-#    ${url}=  Get Element Attribute  xpath=//a[contains(@href, "tender/json")]@href
-#    ${tid}=  Set Variable  ${url.split('/')[-1]}
-#    Go To  ${USERS.users['${username}'].homepage}/tender/view/${tid}
-#    Wait Until Element Is Visible  xpath=//div[@data-test-id="tenderID"]
-#
-#
-#Get End Date
-#    [Arguments]  ${username}  ${tender_uaid}
-#    Open Browser  ${USERS.users['${username}'].homepage}  ${USERS.users['${username}'].browser}
-#    Set Window Size  ${USERS.users['${username}'].size[0]}  ${USERS.users['${username}'].size[1]}
-#    Run Keyword If  '${username}' != 'eauction_Viewer'  Run Keywords
-#    ...  Авторизація  ${username}
-#    ...  AND  Run Keyword And Ignore Error  Закрити Модалку
-#    eauction.Пошук Тендера По Ідентифікатору Н  ${username}  ${tender_uaid}
-#    ${value}=  Get Text  xpath=//div[@data-test-id="tenderPeriod.endDate"]
-#    Capture Page Screenshot
-##    Switch Browser  ${my_alias}
-##    Capture Page Screenshot
-#    [Return]  ${value}
 
 
 Отримати інформацію із предмету
