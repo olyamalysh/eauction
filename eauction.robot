@@ -15,7 +15,7 @@ ${acceleration}=  720
 
 Підготувати клієнт для користувача
     [Arguments]  ${username}
-    Set Suite Variable  ${my_alias}  ${username}
+    Set Suite Variable  ${my_alias}  my_${username}
 #    ${chrome_options}=    Evaluate    sys.modules['selenium.webdriver'].ChromeOptions()    sys
     Open Browser  ${USERS.users['${username}'].homepage}  ${USERS.users['${username}'].browser}  alias=${my_alias}
 #    Run Keyword If  '${USERS.users['${username}'].browser}' in 'Chrome chrome'  Run Keywords
