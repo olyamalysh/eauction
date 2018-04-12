@@ -447,8 +447,8 @@ Get End Date
     eauction.Пошук Тендера По Ідентифікатору Н  ${username}  ${tender_uaid}
     ${value}=  Get Text  xpath=//div[@data-test-id="tenderPeriod.endDate"]
     Capture Page Screenshot
-    Switch Browser  ${my_alias}
-    Capture Page Screenshot
+#    Switch Browser  ${my_alias}
+#    Capture Page Screenshot
     [Return]  ${value}
 
 
