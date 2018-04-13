@@ -516,6 +516,7 @@ Proposition
     ...  AND  Page Should Contain  Квалiфiкацiя учасникiв
     Page Should Not Contain Element  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
     ${award}=  Convert To Integer  ${field[7:8]}
+    Capture Page Screenshot
     ${status}=  Get Text  xpath=(//div[@data-mtitle="Статус:"])[${award + 1}]
     [Return]  ${status}
 
