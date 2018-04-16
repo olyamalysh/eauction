@@ -8,7 +8,7 @@ Library  eauction_service.py
 
 *** Variables ***
 ${host}=  eauction.byustudio.in.ua
-${acceleration}=  720
+${acceleration}=  1440
 
 *** Keywords ***
 # CDB 1
