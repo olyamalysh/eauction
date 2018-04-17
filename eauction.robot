@@ -278,6 +278,7 @@ ${acceleration}=  1440
     ${item_name}=  Get Text  xpath=//*[@id="question-questionof"]/descendant::*[contains(text(), "${item_id}")]
     Select From List By Label  xpath=//select[@id="question-questionof"]  ${item_name}
     Click Element  //button[@name="question_submit"]
+    Click Element  xpath=//a[contains(@href, "tender/json")]
     Wait Until Page Contains  ${question.data.title}
 
 
