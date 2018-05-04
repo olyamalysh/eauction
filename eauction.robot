@@ -20,9 +20,11 @@ Library  eauction_service.py
     ...  AND  Go To  ${USERS.users['${username}'].homepage}
     ...  ELSE  Open Browser  ${USERS.users['${username}'].homepage}  ${USERS.users['${username}'].browser}  alias=my_alias
     Set Window Size  ${USERS.users['${username}'].size[0]}  ${USERS.users['${username}'].size[1]}
-    Run Keyword If  '${username}' != 'eauction_Viewer'  Run Keywords
-    ...  Авторизація  ${username}
-    ...  AND  Run Keyword And Ignore Error  Закрити Модалку
+#    Run Keyword If  '${username}' != 'eauction_Viewer'  Run Keywords
+#    ...  Авторизація  ${username}
+#    ...  AND  Run Keyword And Ignore Error  Закрити Модалку
+    Авторизація  ${username}
+    Run Keyword And Ignore Error  Закрити Модалку
 
 
 Підготувати дані для оголошення тендера
@@ -341,30 +343,26 @@ Proposition
     Sleep  3
     ${status}=  Run Keyword And Return Status  Wait Until Element Is Visible  xpath=//button[@data-dismiss="modal"]  5
     Run Keyword If  ${status}  Wait Until Keyword Succeeds  5 x  1 s  Click Element  xpath=//button[@data-dismiss="modal"]
-#    Scroll  xpath=//li[@class="dropdown"]/descendant::*[@class="dropdown-toggle"][contains(@href, "tenders")]
-#    Wait Until Element Is Visible  xpath=//li[@class="dropdown"]/descendant::*[@class="dropdown-toggle"][contains(@href, "tenders")]
-#    Click Element  xpath=//li[@class="dropdown"]/descendant::*[@class="dropdown-toggle"][contains(@href, "tenders")]
-#    Click Element  xpath=//*[@class="dropdown-menu"]/descendant::*[contains(@href, "/tenders/index")]
-#    Wait Until Element Is Visible  xpath=//select[@id="attribute-select"]
-#    Select From List By Value  xpath=//select[@id="attribute-select"]  tender_cbd_id
-#    Input Text  xpath=//input[@id="attribute-input"]  ${tender_uaid}
-#    Scroll To  xpath=//a[@id="search"]
-#    Click Element  xpath=//a[@id="search"]
-#    : FOR    ${INDEX}    IN RANGE    1    20
-#    \    ${IsAjaxComplete}    Execute JavaScript    return window.jQuery!=undefined && jQuery.active==0
-#    \    Log    ${INDEX}
-#    \    Log    ${IsAjaxComplete}
-#    \    Run Keyword If    ${IsAjaxComplete}==True    Exit For Loop
-#    Wait Until Element Is Visible  xpath=//div[@class="search-result_t"]/span[contains(text(), "${tender_uaid}")]
-#    Scroll To  xpath=//*[@class="mk-btn mk-btn_default"][contains(@href, "/tender/view/")]
-#    Wait Until Element Is Enabled  xpath=//*[@class="mk-btn mk-btn_default"][contains(@href, "/tender/view/")]
-#    Click Element  xpath=//*[@class="mk-btn mk-btn_default"][contains(@href, "/tender/view/")]
-    Go To  ${USERS.users['${username}'].homepage}/tender/view/${tender_uaid}
+    Scroll  xpath=//li[@class="dropdown"]/descendant::*[@class="dropdown-toggle"][contains(@href, "tenders")]
+    Wait Until Element Is Visible  xpath=//li[@class="dropdown"]/descendant::*[@class="dropdown-toggle"][contains(@href, "tenders")]
+    Click Element  xpath=//li[@class="dropdown"]/descendant::*[@class="dropdown-toggle"][contains(@href, "tenders")]
+    Click Element  xpath=//*[@class="dropdown-menu"]/descendant::*[contains(@href, "/tenders/index")]
+    Wait Until Element Is Visible  xpath=//select[@id="attribute-select"]
+    Select From List By Value  xpath=//select[@id="attribute-select"]  tender_cbd_id
+    Input Text  xpath=//input[@id="attribute-input"]  ${tender_uaid}
+    Scroll To  xpath=//a[@id="search"]
+    Click Element  xpath=//a[@id="search"]
+    Wait Until Keyword Succeeds  20 x  1 s  JQuery Ajax Should Complete
+    Wait Until Element Is Visible  xpath=//div[@class="search-result_t"]/span[contains(text(), "${tender_uaid}")]
+    Scroll To  xpath=//*[@class="mk-btn mk-btn_default"][contains(@href, "/tender/view/")]
+    Wait Until Element Is Enabled  xpath=//*[@class="mk-btn mk-btn_default"][contains(@href, "/tender/view/")]
+    Click Element  xpath=//*[@class="mk-btn mk-btn_default"][contains(@href, "/tender/view/")]
+#    Go To  ${USERS.users['${username}'].homepage}/tender/view/${tender_uaid}
     ${status}=  Run Keyword And Return Status  Wait Until Element Is Visible  xpath=//button[@data-dismiss="modal"]  5
     Run Keyword If  ${status}  Wait Until Keyword Succeeds  5 x  1 s  Click Element  xpath=//button[@data-dismiss="modal"]
-    ${url}=  Get Element Attribute  xpath=//a[contains(@href, "tender/json")]@href
-    ${tid}=  Set Variable  ${url.split('/')[-1]}
-    Go To  ${USERS.users['${username}'].homepage}/tender/view/${tid}
+#    ${url}=  Get Element Attribute  xpath=//a[contains(@href, "tender/json")]@href
+#    ${tid}=  Set Variable  ${url.split('/')[-1]}
+#    Go To  ${USERS.users['${username}'].homepage}/tender/view/${tid}
     Wait Until Element Is Visible  xpath=//div[@data-test-id="tenderID"]
 
 
@@ -655,3 +653,7 @@ Compare Number Elements
     ${items}=  Get Matching Xpath Count  xpath=//div[@data-test-id="item.description"]
     ${actual_items}=  Convert To Integer  ${items}
     Should Be Equal  ${actual_items}  ${n_items + 1}
+
+JQuery Ajax Should Complete
+    ${active}=  Execute Javascript  return jQuery.active
+    Should Be Equal  "${active}"  "0"
