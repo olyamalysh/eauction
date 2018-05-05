@@ -361,9 +361,9 @@ Proposition
 
 Отримати інформацію із тендера
     [Arguments]  ${username}  ${tender_uaid}  ${field}
+    Refresh Page
     Run Keyword If  'title' in '${field}'  Execute Javascript  $("[data-test-id|='title']").css("text-transform", "unset")
     Run Keyword If  '${field}' == 'value.amount'  eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
-    Refresh Page
     ${value}=  Run Keyword If
     ...  '${field}' == 'title'  Get Text  xpath=//*[@data-test-id="title"]
     ...  ELSE IF  'awards' in '${field}'  Статус Аварду  ${username}  ${tender_uaid}  ${field}
@@ -383,7 +383,7 @@ Proposition
 Get invalidationDate
     Wait Until Keyword Succeeds  20 x  20 s  Run Keywords
     ...  Click Element  xpath=//a[contains(@href, "tender/json")]
-    ...  Wait Until Element Is Visible  xpath=//div[contains(text(), "Час інвалідації")]
+    ...  AND  Wait Until Element Is Visible  xpath=//div[contains(text(), "Час інвалідації")]
     ${value}=  Get Text  xpath=//div[contains(text(), "Час інвалідації")]
     ${value}=  convert_invalidation_date  ${value}
     [Return]  ${value}
