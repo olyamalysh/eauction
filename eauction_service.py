@@ -79,11 +79,15 @@ def adapt_data(field, value):
         value = int(value)
     elif 'contractPeriod' in field:
         value = convert_date_from_item(value)
-    elif 'tenderPeriod' in field or 'auctionPeriod' in field or 'rectificationPeriod' in field:
+    elif 'tenderPeriod' in field or 'auctionPeriod' in field or 'rectificationPeriod' in field and 'invalidationDate' not in field:
         value = convert_date(value)
     else:
         value = adapted_dictionary(value)
     return value
+
+
+def convert_invalidation_date(data):
+    return convert_date(' '.join(data.split(' ')[2:]).strip())
 
 
 def download_file(url, filename, folder):

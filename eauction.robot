@@ -363,6 +363,7 @@ Proposition
     [Arguments]  ${username}  ${tender_uaid}  ${field}
     Run Keyword If  'title' in '${field}'  Execute Javascript  $("[data-test-id|='title']").css("text-transform", "unset")
     Run Keyword If  '${field}' == 'value.amount'  eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
+    Refresh Page
     ${value}=  Run Keyword If
     ...  '${field}' == 'title'  Get Text  xpath=//*[@data-test-id="title"]
     ...  ELSE IF  'awards' in '${field}'  Статус Аварду  ${username}  ${tender_uaid}  ${field}
@@ -372,9 +373,19 @@ Proposition
     ...  ELSE IF  'tenderAttempts' in '${field}'  Get Element Attribute  xpath=//*[@data-test-id="tenderAttempts"]@data-test-value
     ...  ELSE IF  '${field}' == 'guarantee.amount'  Get Text  xpath=//*[@data-test-id="guarantee"]
     ...  ELSE IF  '${field}' == 'rectificationPeriod.endDate'  Get Text  xpath=(//*[@data-test-id="tenderPeriod.endDate"])[2]
+    ...  ELSE IF  'invalidationDate' in '${field}'  Get invalidationDate
     ...  ELSE  Get Text  xpath=//*[@data-test-id='${field.replace('auction', 'tender')}']
 
     ${value}=  adapt_data  ${field}  ${value}
+    [Return]  ${value}
+
+
+Get invalidationDate
+    Wait Until Keyword Succeeds  20 x  20 s  Run Keywords
+    ...  Click Element  xpath=//a[contains(@href, "tender/json")]
+    ...  Wait Until Element Is Visible  xpath=//div[contains(text(), "Час інвалідації")]
+    ${value}=  Get Text  xpath=//div[contains(text(), "Час інвалідації")]
+    ${value}=  convert_invalidation_date  ${value}
     [Return]  ${value}
 
 
@@ -388,6 +399,7 @@ Proposition
 Отримати інформацію із предмету
     [Arguments]  ${username}  ${tender_uaid}  ${object_id}  ${field}
     ${red}=  Evaluate  "\\033[1;31m"
+    Run Keyword If  'description' in '${field}'  eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
     ${field}=  Set Variable If  '[' in '${field}'  ${field.split('[')[0]}${field.split(']')[1]}  ${field}
     ${value}=  Run Keyword If
     ...  '${field}' == 'classification.scheme'  Get Text  //*[contains(text(),'${object_id}')]/ancestor::div[2]/descendant::div[@data-test-id="item.classification.scheme"]
@@ -667,3 +679,6 @@ Compare Number Elements
 JQuery Ajax Should Complete
     ${active}=  Execute Javascript  return jQuery.active
     Should Be Equal  "${active}"  "0"
+
+Refresh Page
+  Click Element  xpath=//a[contains(@href, "tender/json")]
