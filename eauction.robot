@@ -176,13 +176,6 @@ Library  eauction_service.py
     Wait Until Element Is Visible  xpath=//div[@data-test-id="tenderID"]
 
 
-Отримати кількість предметів в тендері
-    [Arguments]  ${tender_owner}  ${tender_uaid}
-    eauction.Пошук Тендера По Ідентифікатору  ${tender_owner}  ${tender_uaid}
-    ${items}=  Get Matching Xpath Count  xpath=//div[@data-test-id="item.description"]
-    ${n_items}=  Convert To Integer  ${items}
-    [Return]  ${n_items}
-
 
 Редагувати ПДВ
     [Arguments]  ${tender_owner}  ${tender_uaid}
@@ -287,7 +280,7 @@ Library  eauction_service.py
     [Arguments]  ${username}  ${tender_uaid}  ${field}  ${value}
     eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
     Wait Until Element Is Visible  //input[@id="value-amount"]
-    Convert Input Data To String  xpath=//input[@id="value-amount"]  ${value}
+    Run Keyword If  '${value}' != 'active'  Convert Input Data To String  xpath=//input[@id="value-amount"]  ${value}
     Click Element  //button[@id="submit_bid"]
     Page Should Contain Element  //*[contains(@class, "label-success")][contains(text(), "опубліковано")]
 
@@ -369,6 +362,7 @@ Proposition
 Отримати інформацію із тендера
     [Arguments]  ${username}  ${tender_uaid}  ${field}
     Run Keyword If  'title' in '${field}'  Execute Javascript  $("[data-test-id|='title']").css("text-transform", "unset")
+    Run Keyword If  '${field}' == 'value.amount'  eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
     ${value}=  Run Keyword If
     ...  '${field}' == 'title'  Get Text  xpath=//*[@data-test-id="title"]
     ...  ELSE IF  'awards' in '${field}'  Статус Аварду  ${username}  ${tender_uaid}  ${field}
@@ -384,6 +378,13 @@ Proposition
     [Return]  ${value}
 
 
+Отримати кількість документів в тендері
+  [Arguments]  ${username}  ${tender_uaid}
+  ${docs}=  Get Matching Xpath Count  xpath=//*[@data-test-id='document.title']
+  ${docs}=  Convert To Integer  ${docs}
+  [Return]  ${docs}
+
+
 Отримати інформацію із предмету
     [Arguments]  ${username}  ${tender_uaid}  ${object_id}  ${field}
     ${red}=  Evaluate  "\\033[1;31m"
@@ -397,6 +398,15 @@ Proposition
     ...  ELSE  Get Text  //div[contains(text(),'${object_id}')]/ancestor::div[contains(@class, "item-inf_txt")]/descendant::*[@data-test-id="item.${field}"]
     ${value}=  adapt_data  ${field}  ${value}
     [Return]  ${value}
+
+
+
+Отримати кількість предметів в тендері
+    [Arguments]  ${tender_owner}  ${tender_uaid}
+    eauction.Пошук Тендера По Ідентифікатору  ${tender_owner}  ${tender_uaid}
+    ${items}=  Get Matching Xpath Count  xpath=//div[@data-test-id="item.description"]
+    ${n_items}=  Convert To Integer  ${items}
+    [Return]  ${n_items}
 
 
 Отримати інформацію із документа
