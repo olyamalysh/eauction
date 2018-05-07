@@ -453,15 +453,19 @@ Get invalidationDate
     [Return]  ${link}
 
 
+
 Отримати посилання на аукціон для учасника
     [Arguments]  ${username}  ${tender_uaid}  ${lot_id}=${Empty}
+    Switch Browser  ${my_alias}
     eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
-    Scroll To And Click Element  //a[@class="auction_seller_url"]
-    Select Window  NEW
-    Run Keyword And Ignore Error  Click Element  //button[@value="yes"][contains(@class, "btn-success")]
-    ${link}=  Get Location
-    Close Window
-    Select Window  MAIN
+    Wait Until Element Is Visible  //a[@class="auction_seller_url"]
+    ${current_url}=  Get Location
+    Capture Page Screenshot
+    Execute Javascript  window['url'] = null; $.get( "http://${host}/seller/tender/updatebid", { id: "${current_url.split("/")[-1]}"}, function(data){ window['url'] = data.data.participationUrl },'json');
+    Capture Page Screenshot
+    Wait Until Keyword Succeeds  20 x  1 s  JQuery Ajax Should Complete
+    Capture Page Screenshot
+    ${link}=  Execute Javascript  return window['url'];
     [Return]  ${link}
 
 
