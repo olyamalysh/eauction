@@ -55,12 +55,12 @@ def adapted_dictionary(value):
         u'Продаж завершений': 'complete',
         u'Торги скасовано': 'cancelled',
         u'Торги були відмінені.': 'active',
-        u'Очікується підписання договору': 'pending.payment',
-        u'Очікується протокол': 'pending.verification',
-        u'На черзі': 'pending.waiting',
-        u'Рiшення скасовано': 'cancelled',
-        u'Оплачено, очікується підписання договору': 'active',
-        u'Дискваліфіковано': 'unsuccessful'
+        # u'Очікується підписання договору': 'pending.payment',
+        # u'Очікується протокол': 'pending.verification',
+        # u'На черзі': 'pending.waiting',
+        # u'Рiшення скасовано': 'cancelled',
+        # u'Оплачено, очікується підписання договору': 'active',
+        # u'Дискваліфіковано': 'unsuccessful'
     }.get(value, value)
 
 

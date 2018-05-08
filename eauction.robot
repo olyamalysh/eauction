@@ -480,7 +480,8 @@ Get invalidationDate
     ${award}=  Convert To Integer  ${field[7:8]}
     Refresh Page
     Capture Page Screenshot
-    ${status}=  Get Text  xpath=(//div[@data-mtitle="Статус:"])[${award + 1}]
+#    ${status}=  Get Text  xpath=(//div[@data-mtitle="Статус:"])[${award + 1}]
+    ${status}=  Get Element Attribute  xpath=(//div[@data-mtitle="Статус:"]/input)[${award + 1}]@award_status
     [Return]  ${status}
 
 
