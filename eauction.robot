@@ -363,7 +363,7 @@ Proposition
     [Arguments]  ${username}  ${tender_uaid}  ${field}
     Refresh Page
     Run Keyword If  'title' in '${field}'  Execute Javascript  $("[data-test-id|='title']").css("text-transform", "unset")
-    Run Keyword If  '${field}' == 'value.amount'  eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
+    Run Keyword If  '${field}' == 'value.amount' or '${field}' == 'title'  eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
     ${value}=  Run Keyword If
     ...  '${field}' == 'title'  Get Text  xpath=//*[@data-test-id="title"]
     ...  ELSE IF  'awards' in '${field}'  Статус Аварду  ${username}  ${tender_uaid}  ${field}
@@ -456,7 +456,7 @@ Get invalidationDate
 
 Отримати посилання на аукціон для учасника
     [Arguments]  ${username}  ${tender_uaid}  ${lot_id}=${Empty}
-    Switch Browser  ${my_alias}
+    Switch Browser  my_alias
     eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
     Wait Until Element Is Visible  //a[@class="auction_seller_url"]
     ${current_url}=  Get Location
