@@ -282,7 +282,7 @@ Library  eauction_service.py
     Wait Until Element Is Visible  //input[@id="value-amount"]
     Run Keyword If  '${value}' != 'active'  Convert Input Data To String  xpath=//input[@id="value-amount"]  ${value}
     Click Element  //button[@id="submit_bid"]
-    Page Should Contain Element  //*[contains(@class, "label-success")][contains(text(), "опубліковано")]
+    Wait Until Keyword Succeeds  30 x  1 s  Page Should Contain Element  //*[contains(@class, "label-success")][contains(text(), "опубліковано")]
 
 
 Скасувати цінову пропозицію
@@ -478,6 +478,8 @@ Get invalidationDate
     ...  AND  Page Should Contain  Квалiфiкацiя учасникiв
     Page Should Not Contain Element  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
     ${award}=  Convert To Integer  ${field[7:8]}
+    Refresh Page
+    Capture Page Screenshot
     ${status}=  Get Text  xpath=(//div[@data-mtitle="Статус:"])[${award + 1}]
     [Return]  ${status}
 
