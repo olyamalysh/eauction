@@ -7,6 +7,7 @@ Library  DateTime
 Library  eauction_service.py
 
 *** Variables ***
+${host}=  dz3.byustudio.in.ua
 
 *** Keywords ***
 
@@ -281,8 +282,11 @@ Library  eauction_service.py
     eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
     Wait Until Element Is Visible  //input[@id="value-amount"]
     Run Keyword If  '${value}' != 'active'  Convert Input Data To String  xpath=//input[@id="value-amount"]  ${value}
+    Capture Page Screenshot
     Click Element  //button[@id="submit_bid"]
+    Capture Page Screenshot
     Wait Until Keyword Succeeds  30 x  1 s  Page Should Contain Element  //*[contains(@class, "label-success")][contains(text(), "опубліковано")]
+    Capture Page Screenshot
 
 
 Скасувати цінову пропозицію
