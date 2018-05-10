@@ -7,7 +7,7 @@ Library  DateTime
 Library  eauction_service.py
 
 *** Variables ***
-${host}=  dz3.byustudio.in.ua
+${host}=  eauction.byustudio.in.ua
 
 *** Keywords ***
 
