@@ -156,13 +156,16 @@ ${host}=  eauction.byustudio.in.ua
 
 Внести зміни в тендер
     [Arguments]  ${tender_owner}  ${tender_uaid}  ${field_name}  ${field_value}
+    ${red}=  Evaluate  "\\033[1;31m"
     eauction.Пошук Тендера По Ідентифікатору  ${tender_owner}  ${tender_uaid}
     Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
     ...  Reload Page
     ...  AND  Click Element  xpath=//*[@data-test-id="sidebar.edit"]
     ...  AND  Wait Until Element Is Visible  //*[@id="auction-form"]
     Run Keyword If
-    ...  '${field_name}' == 'value.amount'  Convert Input Data To String  xpath=//input[@id="value-amount"]  ${field_value}
+    ...  '_ru' in '${field}'  Log To Console  ${red}\n\t\t\t ***** SITENAME не підтримує локалізацію російською мовою *****
+    ...  ELSE IF  '_en' in '${field}'  Log To Console  ${red}\n\t\t\t ***** SITENAME не підтримує локалізацію англійською мовою *****
+    ...  ELSE IF  '${field_name}' == 'value.amount'  Convert Input Data To String  xpath=//input[@id="value-amount"]  ${field_value}
     ...  ELSE IF  '${field_name}' == 'minimalStep.amount'  Convert Input Data To String  xpath=//input[@id="minimalstepvalue-amount"]  ${field_value}
     ...  ELSE IF  '${field_name}' == 'guarantee.amount'  Convert Input Data To String  xpath=//input[@id="guarantee-amount"]  ${field_value}
     ...  ELSE IF  '${field_name}' == 'tenderPeriod.startDate'  Input Text  xpath=//*[@id="auction-start-date"]  ${field_value}
@@ -366,11 +369,14 @@ Proposition
 
 Отримати інформацію із тендера
     [Arguments]  ${username}  ${tender_uaid}  ${field}
+    ${red}=  Evaluate  "\\033[1;31m"
     Run Keyword If  '${field}' == 'value.amount' or '${field}' == 'title'  eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
     Refresh Page
     Run Keyword If  'title' in '${field}'  Execute Javascript  $("[data-test-id|='title']").css("text-transform", "unset")
     ${value}=  Run Keyword If
-    ...  '${field}' == 'title'  Get Text  xpath=//*[@data-test-id="title"]
+    ...  '_ru' in '${field}'  Log To Console  ${red}\n\t\t\t ***** SITENAME не підтримує локалізацію російською мовою *****
+    ...  ELSE IF  '_en' in '${field}'  Log To Console  ${red}\n\t\t\t ***** SITENAME не підтримує локалізацію англійською мовою *****
+    ...  ELSE IF  '${field}' == 'title'  Get Text  xpath=//*[@data-test-id="title"]
     ...  ELSE IF  'awards' in '${field}'  Статус Аварду  ${username}  ${tender_uaid}  ${field}
     ...  ELSE IF  'status' in '${field}'  Отримати Статус  ${field}
     ...  ELSE IF  'cancellations' in '${field}'  Get Text  xpath=//*[@data-test-id="${field.replace('[0]','')}"]
