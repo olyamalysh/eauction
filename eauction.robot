@@ -163,8 +163,8 @@ ${host}=  eauction.byustudio.in.ua
     ...  AND  Click Element  xpath=//*[@data-test-id="sidebar.edit"]
     ...  AND  Wait Until Element Is Visible  //*[@id="auction-form"]
     Run Keyword If
-    ...  '_ru' in '${field}'  Log To Console  ${red}\n\t\t\t ***** SITENAME не підтримує локалізацію російською мовою *****
-    ...  ELSE IF  '_en' in '${field}'  Log To Console  ${red}\n\t\t\t ***** SITENAME не підтримує локалізацію англійською мовою *****
+    ...  '_ru' in '${field_name}'  Log To Console  ${red}\n\t\t\t ***** SITENAME не підтримує локалізацію російською мовою *****
+    ...  ELSE IF  '_en' in '${field_name}'  Log To Console  ${red}\n\t\t\t ***** SITENAME не підтримує локалізацію англійською мовою *****
     ...  ELSE IF  '${field_name}' == 'value.amount'  Convert Input Data To String  xpath=//input[@id="value-amount"]  ${field_value}
     ...  ELSE IF  '${field_name}' == 'minimalStep.amount'  Convert Input Data To String  xpath=//input[@id="minimalstepvalue-amount"]  ${field_value}
     ...  ELSE IF  '${field_name}' == 'guarantee.amount'  Convert Input Data To String  xpath=//input[@id="guarantee-amount"]  ${field_value}
