@@ -473,10 +473,10 @@ Get invalidationDate
     ${current_url}=  Get Location
     Capture Page Screenshot
     Execute Javascript  window['url'] = null; $.get( "http://${host}/seller/tender/updatebid", { id: "${current_url.split("/")[-1]}"}, function(data){ window['url'] = data.data.participationUrl },'json');
-    Capture Page Screenshot
     Wait Until Keyword Succeeds  20 x  1 s  JQuery Ajax Should Complete
     Capture Page Screenshot
     ${link}=  Execute Javascript  return window['url'];
+    Log  ${link}
     [Return]  ${link}
 
 
