@@ -370,7 +370,7 @@ Proposition
 Отримати інформацію із тендера
     [Arguments]  ${username}  ${tender_uaid}  ${field}
     ${red}=  Evaluate  "\\033[1;31m"
-    Run Keyword If  '${field}' == 'value.amount' or '${field}' == 'title'  eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
+    Run Keyword If  '${field}' == 'value.amount' or 'title' in '${field}'  eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
     Refresh Page
     Run Keyword If  'title' in '${field}'  Execute Javascript  $("[data-test-id|='title']").css("text-transform", "unset")
     ${value}=  Run Keyword If
