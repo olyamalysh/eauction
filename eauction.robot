@@ -384,7 +384,8 @@ Proposition
     ...  ELSE IF  'tenderAttempts' in '${field}'  Get Element Attribute  xpath=//*[@data-test-id="tenderAttempts"]@data-test-value
     ...  ELSE IF  '${field}' == 'guarantee.amount'  Get Text  xpath=//*[@data-test-id="guarantee"]
     ...  ELSE IF  '${field}' == 'rectificationPeriod.endDate'  Get Text  xpath=(//*[@data-test-id="tenderPeriod.endDate"])[2]
-    ...  ELSE IF  'invalidationDate' in '${field}'  Get invalidationDate
+    ...  ELSE IF  '${field}' == 'rectificationPeriod.invalidationDate'  Get Element Attribute  name=invalidationDate@value
+#    ...  ELSE IF  'invalidationDate' in '${field}'  Get invalidationDate
     ...  ELSE  Get Text  xpath=//*[@data-test-id='${field.replace('auction', 'tender')}']
 
     ${value}=  adapt_data  ${field}  ${value}
