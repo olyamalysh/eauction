@@ -288,7 +288,9 @@ ${host}=  eauction.byustudio.in.ua
     Capture Page Screenshot
     Click Element  //button[@id="submit_bid"]
     Capture Page Screenshot
-    Wait Until Keyword Succeeds  30 x  1 s  Page Should Contain Element  //*[contains(@class, "label-success")][contains(text(), "опубліковано")]
+    Wait Until Keyword Succeeds  30 x  1 s  Run Keywords
+    ...  Refresh Page
+    ...  AND  Page Should Contain Element  //*[contains(@class, "label-success")][contains(text(), "опубліковано")]
     Capture Page Screenshot
 
 
