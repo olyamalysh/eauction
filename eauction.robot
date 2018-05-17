@@ -307,7 +307,7 @@ Proposition
     ${url}=  Get Location
     Run Keyword If  ${status}
     ...  Go To  http://eauction.byustudio.in.ua/bids/send/${url.split('/')[-1]}?token=465
-    ...  ELSE  Go To  http://test.25h8.auction/bids/decline/${url.split('/')[-1]}?token=465
+    ...  ELSE  Go To  http://eauction.byustudio.in.ua/bids/decline/${url.split('/')[-1]}?token=465
     Go To  ${USERS.users['${username}'].homepage}
 
 
