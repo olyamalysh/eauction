@@ -285,6 +285,7 @@ ${host}=  eauction.byustudio.in.ua
     eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
     Wait Until Element Is Visible  //input[@id="value-amount"]
     Run Keyword If  '${value}' != 'active'  Convert Input Data To String  xpath=//input[@id="value-amount"]  ${value}
+    Refresh Page
     Capture Page Screenshot
     Wait Until Keyword Succeeds  30 x  1 s  Run Keywords
     ...  Click Element  //button[@id="submit_bid"]
