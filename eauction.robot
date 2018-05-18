@@ -158,7 +158,7 @@ ${host}=  eauction.byustudio.in.ua
     [Arguments]  ${tender_owner}  ${tender_uaid}  ${field_name}  ${field_value}
     ${red}=  Evaluate  "\\033[1;31m"
     eauction.Пошук Тендера По Ідентифікатору  ${tender_owner}  ${tender_uaid}
-    Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
+    Wait Until Keyword Succeeds  10 x  12 s  Run Keywords
     ...  Reload Page
     ...  AND  Click Element  xpath=//*[@data-test-id="sidebar.edit"]
     ...  AND  Wait Until Element Is Visible  //*[@id="auction-form"]
