@@ -365,10 +365,9 @@ Proposition
     Input Text  id=tenderssearch-tender_cbd_id  ${tender_uaid}
     Click Element  xpath=//button[contains(text(), "Шукати")]
     Wait Until Element Is Visible  xpath=//span[contains(text(), "майна замовника")]/../../descendant::div[contains(text(), ${tender_uaid})]/../following-sibling::div/a
-    Wait Until Keyword Succeeds  5 x  1 s  Run Keywords
-    ...  Click Element  xpath=//span[contains(text(), "майна замовника")]/../../descendant::div[contains(text(), ${tender_uaid})]/../following-sibling::div/a
-    ...  AND  Закрити Модалку
-    ...  AND  Wait Until Element Is Visible  xpath=//div[@data-test-id="tenderID"]
+    Click Element  xpath=//span[contains(text(), "майна замовника")]/../../descendant::div[contains(text(), ${tender_uaid})]/../following-sibling::div/a
+    Закрити Модалку
+    Wait Until Element Is Visible  xpath=//div[@data-test-id="tenderID"]
 
 
 Отримати інформацію із тендера
