@@ -158,10 +158,7 @@ ${host}=  eauction.byustudio.in.ua
     [Arguments]  ${tender_owner}  ${tender_uaid}  ${field_name}  ${field_value}
     ${red}=  Evaluate  "\\033[1;31m"
     eauction.Пошук Тендера По Ідентифікатору  ${tender_owner}  ${tender_uaid}
-    Wait Until Keyword Succeeds  10 x  20 s  Run Keywords
-    ...  Reload Page
-    ...  AND  Click Element  xpath=//*[@data-test-id="sidebar.edit"]
-    ...  AND  Wait Until Element Is Visible  //*[@id="auction-form"]
+    Wait For Document Upload
     Run Keyword If
     ...  '_ru' in '${field_name}'  Log To Console  ${red}\n\t\t\t ***** SITENAME не підтримує локалізацію російською мовою *****
     ...  ELSE IF  '_en' in '${field_name}'  Log To Console  ${red}\n\t\t\t ***** SITENAME не підтримує локалізацію англійською мовою *****
@@ -674,8 +671,8 @@ Close Sidebar
 
 
 Wait For Document Upload
-    Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
-    ...  Reload Page
+    Wait Until Keyword Succeeds  30 x  10 s  Run Keywords
+    ...  Refresh Page
     ...  AND  Run Keyword And Ignore Error  Click Element  xpath=//*[@data-test-id="sidebar.edit"]
     ...  AND  Wait Until Element Is Visible  xpath=//*[@id="auction-form"]
 
