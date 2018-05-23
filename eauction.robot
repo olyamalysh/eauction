@@ -201,6 +201,7 @@ ${host}=  eauction.byustudio.in.ua
 
 Завантажити документ в тендер з типом
     [Arguments]  ${tender_owner}  ${tender_uaid}  ${file_path}  ${doc_type}
+    eauction.Пошук Тендера По Ідентифікатору  ${tender_owner}  ${tender_uaid}
     Wait For Document Upload
     Scroll To  xpath=//*[@action="/tender/fileupload"]/input
     Choose File  xpath=(//*[@action="/tender/fileupload"]/input)[last()]  ${file_path}
