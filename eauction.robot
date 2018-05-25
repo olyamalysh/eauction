@@ -672,7 +672,7 @@ Close Sidebar
 
 
 Wait For Document Upload
-    Wait Until Keyword Succeeds  30 x  10 s  Run Keywords
+    Wait Until Keyword Succeeds  30 x  5 s  Run Keywords
     ...  Refresh Page
     ...  AND  Run Keyword And Ignore Error  Click Element  xpath=//*[@data-test-id="sidebar.edit"]
     ...  AND  Wait Until Element Is Visible  xpath=//*[@id="auction-form"]
