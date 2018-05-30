@@ -165,11 +165,24 @@ ${host}=  eauction.byustudio.in.ua
     ${red}=  Evaluate  "\\033[1;31m"
     Run Keyword If  'title' in '${field}'  Execute Javascript  $("[data-test-id|='title']").css("text-transform", "unset")
     ${value}=  Run Keyword If
-    ...  'status' in '${field}'  Get Element Attribute
+    ...  'status' in '${field}'  Get Element Attribute  xpath=//input[@id="asset_status"]@value
+    ...  ELSE IF  '${field}' == 'assetID'  Get Text  xpath=//div[@data-test-id="tenderID"]
+    ...  ELSE IF  '${field}' == 'description'  Get Text  xpath=//div[@data-test-id="item.description"]
+    ...  ELSE IF  'decisions' in '${field}'  Отримати інформацію про decisions  ${field}
     ...  ELSE  Get Text  xpath=//*[@data-test-id='${field.replace('auction', 'asset')}']
-
     ${value}=  adapt_asset_data  ${field}  ${value}
     [Return]  ${value}
+
+
+Отримати інформацію про decisions
+  [Arguments]  ${field}
+  ${index}=  Set Variable  ${field.split('[')[1].split(']')[0]}
+  ${index}=  Convert To Integer  ${index}
+  ${value}=  Run Keyword If  'title' in '${field}'  Get Text  xpath=(//div[@data-test-id="asset.decision.title"])["${index + 1}"]
+  ...  ELSE IF  'decisionDate' in '${field}'  Get Text  xpath=(//div[@data-test-id="asset.decision.decisionDate"])["${index + 1}"]
+  ...  ELSE IF  'decisionID' in '${field}'  Get Text  xpath=(//div[@data-test-id="asset.decision.decisionID"])["${index + 1}"]
+  [Return]  ${value}
+
 
 ##################################################################################
 

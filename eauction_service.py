@@ -37,6 +37,11 @@ def convert_date_for_auction(date):
     return '{}'.format(date)
 
 
+def convert_date_from_decision(date):
+    date = datetime.strptime(date, '%d/%m/%Y'.format(tz)).strftime('%Y-%m-%dT%H:%M:%S.%f')
+    return '{}{}'.format(date, tz)
+
+
 def convert_date_for_decision(date):
     date = datetime.strptime(date, '%Y-%m-%dT%H:%M:%S.%f{}'.format(tz)).strftime('%d/%m/%Y')
     return '{}'.format(date)
@@ -92,7 +97,12 @@ def adapt_data(field, value):
 
 
 def adapt_asset_data(field, value):
-    value = adapted_dictionary(value)
+    if field == 'date':
+        value = convert_date(value)
+    elif 'decisionDate' in field:
+        value = convert_date_from_decision(value)
+    else:
+        value = adapted_dictionary(value)
     return value
 
 
