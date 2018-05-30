@@ -37,6 +37,11 @@ def convert_date_for_auction(date):
     return '{}'.format(date)
 
 
+def convert_date_for_decision(date):
+    date = datetime.strptime(date, '%Y-%m-%dT%H:%M:%S.%f{}'.format(tz)).strftime('%d/%m/%Y')
+    return '{}'.format(date)
+
+
 def adapted_dictionary(value):
     return{
         u"з урахуванням ПДВ": True,
@@ -83,6 +88,11 @@ def adapt_data(field, value):
         value = convert_date(value)
     else:
         value = adapted_dictionary(value)
+    return value
+
+
+def adapt_asset_data(field, value):
+    value = adapted_dictionary(value)
     return value
 
 

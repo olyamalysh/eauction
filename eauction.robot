@@ -21,10 +21,10 @@ ${host}=  eauction.byustudio.in.ua
     ...  AND  Go To  ${USERS.users['${username}'].homepage}
     ...  ELSE  Open Browser  ${USERS.users['${username}'].homepage}  ${USERS.users['${username}'].browser}  alias=my_alias
     Set Window Size  ${USERS.users['${username}'].size[0]}  ${USERS.users['${username}'].size[1]}
-#    Run Keyword If  '${username}' != 'eauction_Viewer'  Run Keywords
-#    ...  Авторизація  ${username}
-#    ...  AND  Run Keyword And Ignore Error  Закрити Модалку
-    Авторизація  ${username}
+    Run Keyword If  '${username}' != 'eauction_Viewer'  Run Keywords
+    ...  Авторизація  ${username}
+    ...  AND  Run Keyword And Ignore Error  Закрити Модалку
+#    Авторизація  ${username}
     Run Keyword And Ignore Error  Закрити Модалку
 
 
@@ -48,6 +48,130 @@ ${host}=  eauction.byustudio.in.ua
     Input Text  xpath=//input[@id="loginform-password"]  ${USERS.users['${username}'].password}
     Click Element  xpath=//button[@name="login-button"]
 
+
+###############################################################################################################
+########################################### ASSETS ############################################################
+###############################################################################################################
+
+Створити об'єкт МП   # !!!
+    [Arguments]  ${username}  ${tender_data}
+    ${data}=  Get Data  ${tender_data}
+    ${decisions}=   Get From Dictionary   ${tender_data.data}   decisions
+    ${items}=  Get From Dictionary  ${tender_data.data}  items
+    Click Element  xpath=//button[@data-target="#toggleRight"]
+    Wait Until Element Is Visible  xpath=//nav[@id="toggleRight"]/descendant::a[contains(@href, "/assets/index")]
+    Click Element  xpath=//nav[@id="toggleRight"]/descendant::a[contains(@href, "/assets/index")]
+    eauction.Закрити Модалку
+    Click Element  xpath=//a[contains(@href, "/buyer/asset/create")]
+    Input Text  id=asset-title  ${data.title}
+    Input Text  id=asset-description  ${data.description}
+    Input Text  id=decision-0-title  ${decisions[0].title}
+    Input Text  id=decision-0-decisionid  ${decisions[0].decisionID}
+    ${decision_date}=  convert_date_for_decision  ${decisions[0].decisionDate}
+    Input Text  id=decision-0-decisiondate  ${decision_date}
+    ${items_length}=  Get Length  ${items}
+    :FOR  ${item}  IN RANGE  ${items_length}
+    \  Log  ${items[${item}]}
+    \  Run Keyword If  ${item} > 0  Scroll To And Click Element  xpath=//button[@id="add-item"]
+    \  Додати Предмет МП  ${item}  ${items[${item}]}
+    Select From List By Index  id=contact-point-select  1
+    Click Element  id=btn-submit-form
+    Wait Until Element Is Visible  xpath=//div[@data-test-id="tenderID"]
+    ${auction_id}=  Get Text  xpath=//div[@data-test-id="tenderID"]
+    [Return]  ${auction_id}
+
+
+
+
+
+Додати предмет МП  # !!!
+    [Arguments]  ${item}  ${item_data}
+    Input Text  xpath=//*[@id="asset-${item}-description"]  ${item_data.description}
+    Convert Input Data To String  xpath=//*[@id="asset-${item}-quantity"]  ${item_data.quantity}
+    ${classification_scheme}=  Convert To Lowercase  ${item_data.classification.scheme}
+    Click Element  xpath=//*[@id="classification-${item}-description"]
+    Wait Until Element Is Visible  xpath=//*[@class="modal-title"]
+    Input Text  xpath=//*[@placeholder="Пошук по коду"]  ${item_data.classification.id}
+    Wait Until Element Is Visible  xpath=//*[@id="${item_data.classification.id}"]
+    Scroll To And Click Element  xpath=//*[@id="${item_data.classification.id}"]
+    Wait Until Element Is Enabled  xpath=//button[@id="btn-ok"]
+    Click Element  xpath=//button[@id="btn-ok"]
+    Wait Until Element Is Not Visible  xpath=//*[@class="fade modal"]
+    Wait Until Element Is Visible  xpath=//*[@id="unit-${item}-code"]
+    Select From List By Value  xpath=//*[@id="unit-${item}-code"]  ${item_data.unit.code}
+    Select From List By Value  xpath=//*[@id="address-${item}-countryname"]  ${item_data.address.countryName}
+    Scroll To  xpath=//*[@id="address-${item}-region"]
+    Select From List By Value  xpath=//*[@id="address-${item}-region"]  ${item_data.address.region.replace(u' область', u'')}
+    Input Text  xpath=//*[@id="address-${item}-locality"]  ${item_data.address.locality}
+    Input Text  xpath=//*[@id="address-${item}-streetaddress"]  ${item_data.address.streetAddress}
+    Input Text  xpath=//*[@id="address-${item}-postalcode"]  ${item_data.address.postalCode}
+    Select From List By Value  id=registration-${item}-status  ${item_data.registrationDetails.status}
+
+
+
+Пошук об’єкта МП по ідентифікатору
+    [Arguments]  ${username}  ${tender_uaid}
+    Switch Browser  my_alias
+    Go To  ${USERS.users['${username}'].homepage}
+    Sleep  3
+    Закрити Модалку
+    Click Element  xpath=//*[@id="h-menu"]/descendant::a[contains(@href, "assets/index")]
+    Wait Until Element Is Visible  xpath=//button[contains(text(), "Шукати")]
+    Input Text  id=assetssearch-asset_cbd_id  ${tender_uaid}
+    Click Element  xpath=//button[contains(text(), "Шукати")]
+    Wait Until Element Is Visible  xpath=//div[@class="search-result"]/descendant::div[contains(text(), "${tender_uaid}")]
+    Wait Until Keyword Succeeds  20 x  3 s  Run Keywords
+    ...  Click Element  xpath=//div[@class="search-result"]/descendant::div[contains(text(), "${tender_uaid}")]/../../div[2]/a[contains(@href, "/asset/view")]
+    ...  AND  Wait Until Element Is Not Visible  xpath=//div[@class="search-result"]/descendant::div[contains(text(), "${tender_uaid}")]/../../div[2]/a[contains(@href, "/asset/view")]
+    Закрити Модалку
+    Wait Until Element Is Visible  xpath=//div[@data-test-id="tenderID"]  20
+
+
+Завантажити документ для видалення об'єкта МП  # !!!
+    [Arguments]  ${username}  ${tender_uaid}  ${file_path}
+    eauction.Завантажити документ в ассет з типом  ${tender_owner}  ${tender_uaid}  ${file_path}  cancellationDetails
+
+
+Завантажити документ в ассет з типом
+    [Arguments]  ${username}  ${tender_uaid}  ${file_path}  ${doc_type}
+    eauction.Пошук об’єкта МП по ідентифікатору  ${username}  ${tender_uaid}
+    Click Element  xpath=//a[contains(@href, "asset/update")]
+    Wait Until Element Is Visible  xpath=//form[@id="asset-form"]
+    Choose File  xpath=(//*[@action="/tender/fileupload"]/input)[last()]  ${file_path}
+    Input Text  xpath=(//*[@class="document-title"])[last()]  ${file_path.split('/')[-1]}
+    Select From List By Value  xpath=(//*[@class="document-type"])[last()]  ${doc_type}
+    Select From List By Label  xpath=(//*[@class="document-related-item"])[last()]  Загальний
+    Scroll To And Click Element  id=btn-submit-form
+    Wait Until Element Is Visible  xpath=//div[@data-test-id="tenderID"]
+    Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
+    ...  Reload Page
+    ...  AND  Wait Until Page Does Not Contain   Документ завантажується...  10
+
+
+
+Видалити об'єкт МП  # !!!
+    [Arguments]  ${username}  ${tender_uaid}
+    eauction.Пошук об’єкта МП по ідентифікатору  ${username}  ${tender_uaid}
+    Click Element  id=delete_btn
+    Wait Until Element Is Visible  xpath=//div[@class="modal-footer"]
+    Click Element  xpath=//button[@data-bb-handler="confirm"]
+    Wait Until Element Is Visible  //div[contains(@class,'alert-success')]
+
+
+
+
+Отримати інформацію із об'єкта МП
+    [Arguments]  ${username}  ${tender_uaid}  ${field}
+    ${red}=  Evaluate  "\\033[1;31m"
+    Run Keyword If  'title' in '${field}'  Execute Javascript  $("[data-test-id|='title']").css("text-transform", "unset")
+    ${value}=  Run Keyword If
+    ...  'status' in '${field}'  Get Element Attribute
+    ...  ELSE  Get Text  xpath=//*[@data-test-id='${field.replace('auction', 'asset')}']
+
+    ${value}=  adapt_asset_data  ${field}  ${value}
+    [Return]  ${value}
+
+##################################################################################
 
 
 Створити тендер
