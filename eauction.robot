@@ -130,6 +130,8 @@ ${host}=  eauction.byustudio.in.ua
 Внести зміни в об'єкт МП
     [Arguments]  ${username}  ${tender_uaid}  ${fieldname}  ${fieldvalue}
     eauction.Пошук об’єкта МП по ідентифікатору  ${tender_owner}  ${tender_uaid}
+    Click Element  xpath=//a[contains(@href, "asset/update")]
+    Wait Until Element Is Visible  xpath=//form[@id="asset-form"]
     Run Keyword If  '${fieldname}' == 'title'  Input Text  id=asset-title  ${fieldvalue}
     ...  ELSE IF  '${fieldname}' == 'description'  Input Text  id=asset-description  ${fieldvalue}
     ...  ELSE  Input Text  xpath=//*[@id="${field_name}"]  ${field_value}
