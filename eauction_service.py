@@ -9,12 +9,24 @@ import os
 tz = str(datetime.now(pytz.timezone('Europe/Kiev')))[26:]
 
 
+def prepare_tender_data_asset(tender_data):
+    tender_data['data']['assetCustodian']['identifier']['id'] = u'01010122'
+    tender_data['data']['assetCustodian']['identifier']['legalName'] = u'ТОВ Орган Приватизации'
+    tender_data['data']['assetCustodian']['contactPoint']['name'] = u'Гоголь Микола Васильович'
+    tender_data['data']['assetCustodian']['contactPoint']['telephone'] = u'+38(101)010-10-10'
+    tender_data['data']['assetCustodian']['contactPoint']['email'] = u'primatization@aditus.info'
+    return tender_data
+
+
 def prepare_tender_data(role, data):
-    if role == 'tender_owner':
+    if role == 'tender_owner' and 'procuringEntity' in data['data']:
         data['data']['procuringEntity']['name'] = u'Тестовый "ЗАКАЗЧИК" 2'
         for item in data['data']['items']:
             item['address']['region'] = item['address']['region'].replace(u' область', u'')
+    else:
+        data = prepare_tender_data_asset(data)
     return data
+
 
 
 def convert_date_from_item(date):
@@ -65,6 +77,8 @@ def adapted_dictionary(value):
         u'Продаж завершений': 'complete',
         u'Торги скасовано': 'cancelled',
         u'Торги були відмінені.': 'active',
+        u'об’єкт реєструється': u'registering',
+        u'об’єкт зареєстровано': u'complete',
         # u'Очікується підписання договору': 'pending.payment',
         # u'Очікується протокол': 'pending.verification',
         # u'На черзі': 'pending.waiting',
@@ -99,8 +113,12 @@ def adapt_data(field, value):
 def adapt_asset_data(field, value):
     if field == 'date':
         value = convert_date(value)
-    elif 'decisionDate' in field:
+    elif 'decisionDate' in field and len(value) == 10:
         value = convert_date_from_decision(value)
+    elif 'decisionDate' in field and len(value) > 10:
+        value = convert_date(value)
+    elif 'documentType' in field:
+        value = value.split(' ')[0]
     else:
         value = adapted_dictionary(value)
     return value

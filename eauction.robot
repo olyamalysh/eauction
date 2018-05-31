@@ -127,12 +127,36 @@ ${host}=  eauction.byustudio.in.ua
     Wait Until Element Is Visible  xpath=//div[@data-test-id="tenderID"]  20
 
 
+Внести зміни в об'єкт МП
+    [Arguments]  ${username}  ${tender_uaid}  ${fieldname}  ${fieldvalue}
+    eauction.Пошук об’єкта МП по ідентифікатору  ${tender_owner}  ${tender_uaid}
+    Run Keyword If  '${fieldname}' == 'title'  Input Text  id=asset-title  ${fieldvalue}
+    ...  ELSE IF  '${fieldname}' == 'description'  Input Text  id=asset-description  ${fieldvalue}
+    ...  ELSE  Input Text  xpath=//*[@id="${field_name}"]  ${field_value}
+    Scroll To And Click Element  //*[@name="simple_submit"]
+    Wait Until Element Is Visible  xpath=//div[@data-test-id="tenderID"]
+
+
+Внести зміни в актив об'єкта МП
+    [Arguments]  ${username}  ${item_id}  ${tender_uaid}  ${field_name}  ${field_value}
+    eauction.Пошук об’єкта МП по ідентифікатору  ${tender_owner}  ${tender_uaid}
+    ${quantity}=  Convert To String  ${field_value}
+    Run Keyword If   '${field_name}' == 'quantity'  Ввести текст  xpath=//textarea[contains(@data-old-value, "${item_id}")]/../../following-sibling::div/descendant::input[contains(@id, "quantity")]  ${quantity}
+    Scroll To And Click Element  //*[@name="simple_submit"]
+    Wait Until Element Is Visible  xpath=//div[@data-test-id="tenderID"]
+
+
 Завантажити документ для видалення об'єкта МП  # !!!
     [Arguments]  ${username}  ${tender_uaid}  ${file_path}
-    eauction.Завантажити документ в ассет з типом  ${tender_owner}  ${tender_uaid}  ${file_path}  cancellationDetails
+    eauction.Завантажити документ в об'єкт МП з типом  ${username}  ${tender_uaid}  ${file_path}  cancellationDetails
 
 
-Завантажити документ в ассет з типом
+Завантажити ілюстрацію в об'єкт МП
+  [Arguments]  ${username}  ${tender_uaid}  ${filepath}
+  eauction.Завантажити документ в об'єкт МП з типом  ${username}  ${tender_uaid}  ${filepath}  illustration
+
+
+Завантажити документ в об'єкт МП з типом
     [Arguments]  ${username}  ${tender_uaid}  ${file_path}  ${doc_type}
     eauction.Пошук об’єкта МП по ідентифікатору  ${username}  ${tender_uaid}
     Click Element  xpath=//a[contains(@href, "asset/update")]
@@ -148,7 +172,6 @@ ${host}=  eauction.byustudio.in.ua
     ...  AND  Wait Until Page Does Not Contain   Документ завантажується...  10
 
 
-
 Видалити об'єкт МП  # !!!
     [Arguments]  ${username}  ${tender_uaid}
     eauction.Пошук об’єкта МП по ідентифікатору  ${username}  ${tender_uaid}
@@ -159,19 +182,44 @@ ${host}=  eauction.byustudio.in.ua
 
 
 
-
 Отримати інформацію із об'єкта МП
     [Arguments]  ${username}  ${tender_uaid}  ${field}
     ${red}=  Evaluate  "\\033[1;31m"
     Run Keyword If  'title' in '${field}'  Execute Javascript  $("[data-test-id|='title']").css("text-transform", "unset")
-    ${value}=  Run Keyword If
-    ...  'status' in '${field}'  Get Element Attribute  xpath=//input[@id="asset_status"]@value
+    ${value}=  Run Keyword If  '${field}' == 'assetCustodian.identifier.legalName'  Fail    ***** Офіційне ім’я замовника не виводиться на EAUCTION (відповідає найменуванню замовника) *****
+    ...  ELSE IF  '${field}' == 'assetCustodian.identifier.scheme'  Log To Console  ${red}\n\t\t\t Це поле не виводиться на eauction.byustudio.in.ua
+    ...  ELSE IF  'assetHolder' in '${field}'  Log To Console  ${red}\n\t\t\t Це поле не виводиться на eauction.byustudio.in.ua
+    ...  ELSE IF  'status' in '${field}'  Get Element Attribute  xpath=//input[@id="asset_status"]@value
     ...  ELSE IF  '${field}' == 'assetID'  Get Text  xpath=//div[@data-test-id="tenderID"]
     ...  ELSE IF  '${field}' == 'description'  Get Text  xpath=//div[@data-test-id="item.description"]
+    ...  ELSE IF  '${field}' == 'documents[0].documentType'  Get Text  xpath=//a[contains(@href, "info/ssp_details")]/../following-sibling::div[1]
     ...  ELSE IF  'decisions' in '${field}'  Отримати інформацію про decisions  ${field}
-    ...  ELSE  Get Text  xpath=//*[@data-test-id='${field.replace('auction', 'asset')}']
+    ...  ELSE  Get Text  xpath=//*[@data-test-id='${field.replace('assetCustodian', 'procuringEntity')}']
     ${value}=  adapt_asset_data  ${field}  ${value}
     [Return]  ${value}
+
+
+Отримати інформацію з активу об'єкта МП
+    [Arguments]  ${username}  ${tender_uaid}  ${object_id}  ${field}
+    ${red}=  Evaluate  "\\033[1;31m"
+#    Run Keyword If  'description' in '${field}'  eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
+    ${field}=  Set Variable If  '[' in '${field}'  ${field.split('[')[0]}${field.split(']')[1]}  ${field}
+    ${value}=  Run Keyword If
+    ...  '${field}' == 'classification.scheme'  Get Text  //*[contains(text(),'${object_id}')]/ancestor::div[2]/descendant::div[@data-test-id="item.classification.scheme"]
+    ...  ELSE IF  '${field}' == 'additionalClassifications.description'  Get Text  xpath=//*[contains(text(),'${object_id}')]/ancestor::div[2]/descendant::*[text()='PA01-7']/following-sibling::span
+    ...  ELSE IF  'description' in '${field}'  Get Text  //div[contains(text(),'${object_id}')]/ancestor::div[contains(@class, "item-inf_txt")]/descendant::*[@data-test-id="asset.item.${field}"]
+    ...  ELSE IF  'registrationDetails.status' in '${field}'  Get Text  //div[contains(text(),'${object_id}')]/ancestor::div[contains(@class, "item-inf_txt")]/descendant::*[@data-test-id="item.address.status"]
+    ...  ELSE  Get Text  //div[contains(text(),'${object_id}')]/ancestor::div[contains(@class, "item-inf_txt")]/descendant::*[@data-test-id="item.${field}"]
+    ${value}=  adapt_data  ${field}  ${value}
+    [Return]  ${value}
+
+
+Отримати кількість активів в об'єкті МП
+  [Arguments]  ${username}  ${tender_uaid}
+  dzo.Пошук об’єкта МП по ідентифікатору  ${username}  ${tender_uaid}
+  ${number_of_items}=  Get Matching Xpath Count  xpath=//div[@data-test-id="asset.item.description"]
+  ${number_of_items}=  Convert To Integer  ${number_of_items}
+  [Return]  ${number_of_items}
 
 
 Отримати інформацію про decisions
@@ -581,7 +629,7 @@ Get invalidationDate
 
 Отримати документ
     [Arguments]  ${username}  ${TENDER['TENDER_UAID']}  ${doc_id}
-    ${file_name}=  Get Text  xpath=//*[@data-test-id='document.title']/a[contains(text(), '${doc_id}')]
+    ${file_name}=  Get Text  xpath=//a[contains(text(), '${doc_id}')]
     ${url}=  Get Element Attribute  xpath=//a[contains(text(), '${doc_id}')]@href
     download_file  ${url}  ${file_name}  ${OUTPUT_DIR}
     [Return]  ${file_name}
