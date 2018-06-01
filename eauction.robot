@@ -134,6 +134,9 @@ ${host}=  eauction.byustudio.in.ua
     Закрити Модалку
     Wait Until Element Is Visible  xpath=//div[@data-test-id="tenderID"]  20
 
+Оновити сторінку з об'єктом МП
+    [Arguments]  ${username}  ${tender_uaid}
+    eauction.Пошук об’єкта МП по ідентифікатору  ${username}  ${tender_uaid}
 
 Внести зміни в об'єкт МП
     [Arguments]  ${username}  ${tender_uaid}  ${fieldname}  ${fieldvalue}
@@ -179,9 +182,9 @@ ${host}=  eauction.byustudio.in.ua
     Select From List By Label  xpath=(//*[@class="document-related-item"])[last()]  Загальний
     Scroll To And Click Element  id=btn-submit-form
     Wait Until Element Is Visible  xpath=//div[@data-test-id="tenderID"]
-    Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
-    ...  Reload Page
-    ...  AND  Wait Until Page Does Not Contain   Документ завантажується...  10
+#    Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
+#    ...  Reload Page
+#    ...  AND  Wait Until Page Does Not Contain   Документ завантажується...  10
 
 
 Видалити об'єкт МП  # !!!
@@ -244,6 +247,12 @@ ${host}=  eauction.byustudio.in.ua
   [Return]  ${value}
 
 
+############################################## ЛОТИ #######################################
+
+
+Оновити сторінку з лотом
+    [Arguments]  ${username}  ${tender_uaid}
+    eauction.Пошук лоту по ідентифікатору  ${username}  ${tender_uaid}
 ##################################################################################
 
 
