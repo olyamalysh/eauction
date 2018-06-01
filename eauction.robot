@@ -73,7 +73,7 @@ ${host}=  eauction.byustudio.in.ua
     :FOR  ${item}  IN RANGE  ${items_length}
     \  Log  ${items[${item}]}
     \  Run Keyword If  ${item} > 0  Scroll To And Click Element  xpath=//button[@id="add-item"]
-    \  Додати Предмет МП  ${item}  ${items[${item}]}
+    \  Додати Предмет МП  ${items[${item}]}
     Select From List By Index  id=contact-point-select  1
     Click Element  id=btn-submit-form
     Wait Until Element Is Visible  xpath=//div[@data-test-id="tenderID"]
@@ -81,11 +81,10 @@ ${host}=  eauction.byustudio.in.ua
     [Return]  ${auction_id}
 
 
-
-
-
 Додати предмет МП  # !!!
-    [Arguments]  ${item}  ${item_data}
+    [Arguments]  ${item_data}
+    ${item}=   Get Element Attribute   xpath=(//textarea[contains(@class, "item-description") and not (contains(@id, "__empty__"))])[last()]@id
+    ${item}=  Set Variable  ${item.split('-')[1]}
     Input Text  xpath=//*[@id="asset-${item}-description"]  ${item_data.description}
     Convert Input Data To String  xpath=//*[@id="asset-${item}-quantity"]  ${item_data.quantity}
     ${classification_scheme}=  Convert To Lowercase  ${item_data.classification.scheme}
@@ -109,12 +108,12 @@ ${host}=  eauction.byustudio.in.ua
 
 
 Додати актив до об'єкта МП
-    [Arguments]  ${username}  ${tender_uaid}  ${item}
+    [Arguments]  ${username}  ${tender_uaid}  ${item_data}
     eauction.Пошук об’єкта МП по ідентифікатору  ${username}  ${tender_uaid}
     Click Element  xpath=//a[contains(@href, "asset/update")]
     Wait Until Element Is Visible  xpath=//form[@id="asset-form"]
-    Click Element  xpath=//button[@id="add-item"]
-    Run Keyword And Ignore Error  eauction.Додати предмет МП  ${item}
+    Click Element  xpath=//button[@id="add-item-to-asset"]
+    Run Keyword And Ignore Error  eauction.Додати предмет МП  ${item_data}
     Run Keyword And Ignore Error  Клікнути по елементу   xpath=//button[@value="save"]
 
 

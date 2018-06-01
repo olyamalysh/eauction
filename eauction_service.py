@@ -24,7 +24,7 @@ def prepare_tender_data(role, data):
         data['data']['procuringEntity']['name'] = u'Тестовый "ЗАКАЗЧИК" 2'
         for item in data['data']['items']:
             item['address']['region'] = item['address']['region'].replace(u' область', u'')
-    else:
+    elif role == 'tender_owner' and 'procuringEntity' not in data['data']:
         data = prepare_tender_data_asset(data)
     return data
 
@@ -111,11 +111,11 @@ def adapt_data(field, value):
 
 
 def adapt_asset_data(field, value):
-    if field == 'date':
+    if 'date' in field:
         value = convert_date(value)
-    elif 'decisionDate' in field and len(value) == 10:
+    elif field == 'decisionDate' and len(value) == 10:
         value = convert_date_from_decision(value)
-    elif 'decisionDate' in field and len(value) > 10:
+    elif field == 'decisionDate' and len(value) > 10:
         value = convert_date(value)
     elif 'documentType' in field:
         value = value.split(' ')[0]
