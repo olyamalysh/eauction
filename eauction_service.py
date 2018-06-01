@@ -15,6 +15,7 @@ def prepare_tender_data_asset(tender_data):
     tender_data['data']['assetCustodian']['contactPoint']['name'] = u'Гоголь Микола Васильович'
     tender_data['data']['assetCustodian']['contactPoint']['telephone'] = u'+38(101)010-10-10'
     tender_data['data']['assetCustodian']['contactPoint']['email'] = u'primatization@aditus.info'
+    tender_data['data']['decisions'][0]['decisionDate'] = "{}T00:00:00.000000+03:00".format(tender_data['data']['decisions'][0]['decisionDate'].split("T")[0])
     return tender_data
 
 
@@ -26,7 +27,6 @@ def prepare_tender_data(role, data):
     else:
         data = prepare_tender_data_asset(data)
     return data
-
 
 
 def convert_date_from_item(date):

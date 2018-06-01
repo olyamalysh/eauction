@@ -108,6 +108,15 @@ ${host}=  eauction.byustudio.in.ua
     Select From List By Value  id=registration-${item}-status  ${item_data.registrationDetails.status}
 
 
+Додати актив до об'єкта МП
+    [Arguments]  ${username}  ${tender_uaid}  ${item}
+    eauction.Пошук об’єкта МП по ідентифікатору  ${username}  ${tender_uaid}
+    Click Element  xpath=//a[contains(@href, "asset/update")]
+    Wait Until Element Is Visible  xpath=//form[@id="asset-form"]
+    Click Element  xpath=//button[@id="add-item"]
+    Run Keyword And Ignore Error  eauction.Додати предмет МП  ${item}
+    Run Keyword And Ignore Error  Клікнути по елементу   xpath=//button[@value="save"]
+
 
 Пошук об’єкта МП по ідентифікатору
     [Arguments]  ${username}  ${tender_uaid}
@@ -142,8 +151,10 @@ ${host}=  eauction.byustudio.in.ua
 Внести зміни в актив об'єкта МП
     [Arguments]  ${username}  ${item_id}  ${tender_uaid}  ${field_name}  ${field_value}
     eauction.Пошук об’єкта МП по ідентифікатору  ${tender_owner}  ${tender_uaid}
+    Click Element  xpath=//a[contains(@href, "asset/update")]
+    Wait Until Element Is Visible  xpath=//form[@id="asset-form"]
     ${quantity}=  Convert To String  ${field_value}
-    Run Keyword If   '${field_name}' == 'quantity'  Ввести текст  xpath=//textarea[contains(@data-old-value, "${item_id}")]/../../following-sibling::div/descendant::input[contains(@id, "quantity")]  ${quantity}
+    Run Keyword If   '${field_name}' == 'quantity'  Input Text  xpath=//textarea[contains(@data-old-value, "${item_id}")]/../../following-sibling::div/descendant::input[contains(@id, "quantity")]  ${quantity}
     Scroll To And Click Element  //*[@name="simple_submit"]
     Wait Until Element Is Visible  xpath=//div[@data-test-id="tenderID"]
 
@@ -218,7 +229,7 @@ ${host}=  eauction.byustudio.in.ua
 
 Отримати кількість активів в об'єкті МП
   [Arguments]  ${username}  ${tender_uaid}
-  dzo.Пошук об’єкта МП по ідентифікатору  ${username}  ${tender_uaid}
+  eauction.Пошук об’єкта МП по ідентифікатору  ${username}  ${tender_uaid}
   ${number_of_items}=  Get Matching Xpath Count  xpath=//div[@data-test-id="asset.item.description"]
   ${number_of_items}=  Convert To Integer  ${number_of_items}
   [Return]  ${number_of_items}
