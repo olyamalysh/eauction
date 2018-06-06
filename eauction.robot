@@ -205,7 +205,7 @@ ${host}=  eauction.byustudio.in.ua
     ${red}=  Evaluate  "\\033[1;31m"
     Run Keyword If  'title' in '${field}'  Execute Javascript  $("[data-test-id|='title']").css("text-transform", "unset")
     ${value}=  Run Keyword If  '${field}' == 'assetCustodian.identifier.legalName'  Get Text  xpath=//div[@data-test-id="procuringEntity.name"]
-    ...  ELSE IF  '${field}' == 'assetCustodian.identifier.scheme'  Log To Console  ${red}\n\t\t\t Це поле не виводиться на eauction.byustudio.in.ua
+#    ...  ELSE IF  '${field}' == 'assetCustodian.identifier.scheme'  Log To Console  ${red}\n\t\t\t Це поле не виводиться на eauction.byustudio.in.ua
     ...  ELSE IF  'assetHolder' in '${field}'  Log To Console  ${red}\n\t\t\t Це поле не виводиться на eauction.byustudio.in.ua
     ...  ELSE IF  'status' in '${field}'  Get Element Attribute  xpath=//input[@id="asset_status"]@value
     ...  ELSE IF  '${field}' == 'assetID'  Get Text  xpath=//div[@data-test-id="tenderID"]
@@ -213,6 +213,7 @@ ${host}=  eauction.byustudio.in.ua
     ...  ELSE IF  '${field}' == 'documents[0].documentType'  Get Text  xpath=//a[contains(@href, "info/ssp_details")]/../following-sibling::div[1]
     ...  ELSE IF  'rectificationPeriod' in '${field}'  Get Text  xpath=//div[@data-test-id="rectificationPeriod"]
     ...  ELSE IF  'decisions' in '${field}'  Отримати інформацію про decisions  ${field}
+    ...  ELSE IF  'assetCustodian.identifier.id' in '${field}'  Get Text  xpath=(//*[@data-test-id='${field.replace('assetCustodian', 'procuringEntity')}'])[last()]
     ...  ELSE  Get Text  xpath=//*[@data-test-id='${field.replace('assetCustodian', 'procuringEntity')}']
     ${value}=  adapt_asset_data  ${field}  ${value}
     [Return]  ${value}
@@ -293,7 +294,7 @@ ${host}=  eauction.byustudio.in.ua
   [Arguments]  ${username}  ${auction}  ${index}  ${tender_uaid}
   Wait Until Keyword Succeeds  15 x   20 s   Run Keywords
   ...  Reload Page
-  ...  AND  Wait Until Page Contains Element  xpath=//div[@data-test-id="status"][contains(text(), "lot.status.pending")]
+  ...  AND  Wait Until Page Contains Element  xpath=//div[@data-test-id="status"][contains(text(), "Опубліковано")]
   Log  ERROR
 #  dzo.Пошук лоту по ідентифікатору  ${username}  ${tender_uaid}
 #  Wait Until Keyword Succeeds  15 x   20 s   Run Keywords
@@ -346,7 +347,7 @@ ${host}=  eauction.byustudio.in.ua
     ${red}=  Evaluate  "\\033[1;31m"
     Run Keyword If  'title' in '${field}'  Execute Javascript  $("[data-test-id|='title']").css("text-transform", "unset")
     ${value}=  Run Keyword If  '${field}' == 'lotCustodian.identifier.legalName'  Get Text  xpath=//div[@data-test-id="procuringEntity.name"]
-    ...  ELSE IF  '${field}' == 'assetCustodian.identifier.scheme'  Log To Console  ${red}\n\t\t\t Це поле не виводиться на eauction.byustudio.in.ua
+#    ...  ELSE IF  '${field}' == 'assetCustodian.identifier.scheme'  Log To Console  ${red}\n\t\t\t Це поле не виводиться на eauction.byustudio.in.ua
     ...  ELSE IF  'assetHolder' in '${field}'  Log To Console  ${red}\n\t\t\t Це поле не виводиться на eauction.byustudio.in.ua
     ...  ELSE IF  'status' in '${field}'  Get Text  xpath=//div[@data-test-id="status"]
     ...  ELSE IF  '${field}' == 'assetID'  Get Text  xpath=//div[@data-test-id="tenderID"]
@@ -355,7 +356,7 @@ ${host}=  eauction.byustudio.in.ua
     ...  ELSE IF  'decisions' in '${field}'  Отримати інформацію про lot decisions  ${field}
     ...  ELSE IF  'rectificationPeriod' in '${field}'  Get Text  xpath=//div[@data-test-id="rectificationPeriod"]
     ...  ELSE IF  'assets[0]' in '${field}'  Отримати інформацію про related asset
-    ...  ELSE IF  '	auctions' in '${field}'  Отримати інформацію про lot auctions
+    ...  ELSE IF  'auctions' in '${field}'  Отримати інформацію про lot auctions
     ...  ELSE  Get Text  xpath=//*[@data-test-id='${field.replace('lotCustodian', 'procuringEntity')}']
     ${value}=  adapt_asset_data  ${field}  ${value}
     [Return]  ${value}

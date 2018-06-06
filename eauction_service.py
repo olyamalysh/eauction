@@ -88,7 +88,8 @@ def adapted_dictionary(value):
         u'Торги були відмінені.': 'active',
         u'об’єкт реєструється': u'registering',
         u'об’єкт зареєстровано': u'complete',
-        u'lot.status.pending': u'pending'
+        u'Опубліковано': u'pending',
+        u'Перевірка доступності об’єкту': u'verification'
         # u'Очікується підписання договору': 'pending.payment',
         # u'Очікується протокол': 'pending.verification',
         # u'На черзі': 'pending.waiting',
