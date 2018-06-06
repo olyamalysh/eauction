@@ -11,11 +11,17 @@ tz = str(datetime.now(pytz.timezone('Europe/Kiev')))[26:]
 
 def prepare_tender_data_asset(tender_data):
     tender_data['data']['assetCustodian']['identifier']['id'] = u'01010122'
+    tender_data['data']['assetCustodian']['name'] = u'ТОВ Орган Приватизации'
     tender_data['data']['assetCustodian']['identifier']['legalName'] = u'ТОВ Орган Приватизации'
     tender_data['data']['assetCustodian']['contactPoint']['name'] = u'Гоголь Микола Васильович'
     tender_data['data']['assetCustodian']['contactPoint']['telephone'] = u'+38(101)010-10-10'
     tender_data['data']['assetCustodian']['contactPoint']['email'] = u'primatization@aditus.info'
     tender_data['data']['decisions'][0]['decisionDate'] = "{}T00:00:00.000000+03:00".format(tender_data['data']['decisions'][0]['decisionDate'].split("T")[0])
+    return tender_data
+
+
+def adapt_lot_creation_data(tender_data):
+    tender_data['data']['decisions'][0]['decisionDate'] = u"{}T00:00:00.000000+03:00".format(tender_data['data']['decisions'][0]['decisionDate'].split("T")[0])
     return tender_data
 
 
@@ -35,7 +41,10 @@ def convert_date_from_item(date):
 
 
 def convert_date(date):
-    date = datetime.strptime(date, '%d/%m/%Y %H:%M:%S').strftime('%Y-%m-%dT%H:%M:%S.%f')
+    if '.' in date:
+        date = datetime.strptime(date, '%d.%m.%Y %H:%M:%S').strftime('%Y-%m-%dT%H:%M:%S.%f')
+    else:
+        date = datetime.strptime(date, '%d/%m/%Y %H:%M:%S').strftime('%Y-%m-%dT%H:%M:%S.%f')
     return '{}{}'.format(date, tz)
 
 
@@ -119,6 +128,30 @@ def adapt_asset_data(field, value):
     elif 'decisionDate' in field and len(value) > 10:
         value = convert_date(value)
     elif 'documentType' in field:
+        value = value.split(' ')[0]
+    elif 'rectificationPeriod.endDate' in field:
+        value = convert_date(value)
+    else:
+        value = adapted_dictionary(value)
+    return value
+
+
+def adapt_lot_data(field, value):
+    if 'value.amount' in field:
+        value = value.split(' ')[0]
+    elif 'minimalStep.amount' in field:
+        value = value.split(' ')[0]
+    elif 'guarantee.amount' in field:
+        value = value.split(' ')[0]
+    elif 'tenderingDuration' in field:
+        value = 'P{}D'.format(value)
+    elif 'auctionPeriod.startDate' in field:
+        value = convert_date(value)
+    elif 'classification.id' in field:
+        value = value.split(' - ')[0]
+    elif 'unit.name' in field:
+        value = value.split(' ')[1:]
+    elif 'quantity' in field:
         value = value.split(' ')[0]
     else:
         value = adapted_dictionary(value)

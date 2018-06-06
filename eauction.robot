@@ -204,7 +204,7 @@ ${host}=  eauction.byustudio.in.ua
     [Arguments]  ${username}  ${tender_uaid}  ${field}
     ${red}=  Evaluate  "\\033[1;31m"
     Run Keyword If  'title' in '${field}'  Execute Javascript  $("[data-test-id|='title']").css("text-transform", "unset")
-    ${value}=  Run Keyword If  '${field}' == 'assetCustodian.identifier.legalName'  Fail    ***** Офіційне ім’я замовника не виводиться на EAUCTION (відповідає найменуванню замовника) *****
+    ${value}=  Run Keyword If  '${field}' == 'assetCustodian.identifier.legalName'  Get Text  xpath=//div[@data-test-id="procuringEntity.name"]
     ...  ELSE IF  '${field}' == 'assetCustodian.identifier.scheme'  Log To Console  ${red}\n\t\t\t Це поле не виводиться на eauction.byustudio.in.ua
     ...  ELSE IF  'assetHolder' in '${field}'  Log To Console  ${red}\n\t\t\t Це поле не виводиться на eauction.byustudio.in.ua
     ...  ELSE IF  'status' in '${field}'  Get Element Attribute  xpath=//input[@id="asset_status"]@value
@@ -221,7 +221,6 @@ ${host}=  eauction.byustudio.in.ua
 Отримати інформацію з активу об'єкта МП
     [Arguments]  ${username}  ${tender_uaid}  ${object_id}  ${field}
     ${red}=  Evaluate  "\\033[1;31m"
-#    Run Keyword If  'description' in '${field}'  eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
     ${field}=  Set Variable If  '[' in '${field}'  ${field.split('[')[0]}${field.split(']')[1]}  ${field}
     ${value}=  Run Keyword If
     ...  '${field}' == 'classification.scheme'  Get Text  //*[contains(text(),'${object_id}')]/ancestor::div[2]/descendant::div[@data-test-id="item.classification.scheme"]
@@ -346,7 +345,7 @@ ${host}=  eauction.byustudio.in.ua
     [Arguments]  ${username}  ${tender_uaid}  ${field}
     ${red}=  Evaluate  "\\033[1;31m"
     Run Keyword If  'title' in '${field}'  Execute Javascript  $("[data-test-id|='title']").css("text-transform", "unset")
-    ${value}=  Run Keyword If  '${field}' == 'assetCustodian.identifier.legalName'  Fail    ***** Офіційне ім’я замовника не виводиться на EAUCTION (відповідає найменуванню замовника) *****
+    ${value}=  Run Keyword If  '${field}' == 'lotCustodian.identifier.legalName'  Get Text  xpath=//div[@data-test-id="procuringEntity.name"]
     ...  ELSE IF  '${field}' == 'assetCustodian.identifier.scheme'  Log To Console  ${red}\n\t\t\t Це поле не виводиться на eauction.byustudio.in.ua
     ...  ELSE IF  'assetHolder' in '${field}'  Log To Console  ${red}\n\t\t\t Це поле не виводиться на eauction.byustudio.in.ua
     ...  ELSE IF  'status' in '${field}'  Get Text  xpath=//div[@data-test-id="status"]
@@ -354,9 +353,42 @@ ${host}=  eauction.byustudio.in.ua
     ...  ELSE IF  '${field}' == 'description'  Get Text  xpath=//div[@data-test-id="item.description"]
     ...  ELSE IF  '${field}' == 'documents[0].documentType'  Get Text  xpath=//a[contains(@href, "info/ssp_details")]/../following-sibling::div[1]
     ...  ELSE IF  'decisions' in '${field}'  Отримати інформацію про lot decisions  ${field}
+    ...  ELSE IF  'rectificationPeriod' in '${field}'  Get Text  xpath=//div[@data-test-id="rectificationPeriod"]
     ...  ELSE IF  'assets[0]' in '${field}'  Отримати інформацію про related asset
-    ...  ELSE  Get Text  xpath=//*[@data-test-id='${field.replace('assetCustodian', 'procuringEntity')}']
+    ...  ELSE IF  '	auctions' in '${field}'  Отримати інформацію про lot auctions
+    ...  ELSE  Get Text  xpath=//*[@data-test-id='${field.replace('lotCustodian', 'procuringEntity')}']
     ${value}=  adapt_asset_data  ${field}  ${value}
+    [Return]  ${value}
+
+
+Отримати інформацію про lot auctions
+    [Arguments]  ${field}
+    ${lot_index}=  Set Variable  ${field.split('[')[1].split(']')[0]}
+    ${value}=  Run Keyword If  'procurementMethodType' in '${field}'  Get Element Attribute  xpath=//input[@name="auction.${lot_index}.procurementMethodType"]@value
+    ...  ELSE IF  'value.amount' in '${field}'  Get Text  xpath=(//div[contains(text(), "Початкова ціна продажу лота")]/following-sibling::div)[${lot_index + 1}]
+    ...  ELSE IF  'minimalStep.amount' in '${field}'  Get Text  xpath=(//div[contains(text(), "Крок аукціону")]/following-sibling::div)[${lot_index + 1}]
+    ...  ELSE IF  'guarantee.amount' in '${field}'  Get Text  xpath=(//div[contains(text(), "Гарантійний внесок")]/following-sibling::div)[${lot_index + 1}]
+    ...  ELSE IF  'tenderingDuration' in '${field}'  Get Text  xpath=(//div[contains(text(), "Період на подачу пропозицій")]/following-sibling::div)[${lot_index}]
+    ...  ELSE IF  'auctionPeriod.startDate' in '${field}'  Get Text  xpath=(//div[contains(text(), "Період початку першого аукціону циклу")]/following-sibling::div)[${lot_index}]
+
+    ${value}=  adapt_lot_data  ${field}  ${value}
+    [Return]  ${value}
+
+
+
+Отримати інформацію з активу лоту
+    [Arguments]  ${username}  ${tender_uaid}  ${object_id}  ${field}
+    ${red}=  Evaluate  "\\033[1;31m"
+    ${field}=  Set Variable If  '[' in '${field}'  ${field.split('[')[0]}${field.split(']')[1]}  ${field}
+    ${value}=  Run Keyword If
+    ...  '${field}' == 'classification.scheme'  Get Text  //*[contains(text(),'${object_id}')]/ancestor::div[2]/descendant::div[@data-test-id="item.classification.scheme"]
+    ...  ELSE IF  '${field}' == 'additionalClassifications.description'  Get Text  xpath=//*[contains(text(),'${object_id}')]/ancestor::div[2]/descendant::*[text()='PA01-7']/following-sibling::span
+    ...  ELSE IF  'description' in '${field}'  Get Text  //b[contains(text(),"${object_id}")]
+    ...  ELSE IF  'classification.id' in '${field}'  Get Text  //b[contains(text(),"${object_id}")]/../../following-sibling::div[2]/descendant::div[@data-test-id="item.classification"]
+    ...  ELSE IF  'unit.name' in '${field}' or 'quantity' in '${field}'  Get Text  //b[contains(text(),"${object_id}")]/../../following-sibling::div[3]/descendant::div[@data-test-id="item.classification"]
+    ...  ELSE IF  'registrationDetails.status' in '${field}'  Get Text  //div[contains(text(),'${object_id}')]/ancestor::div[contains(@class, "item-inf_txt")]/descendant::*[@data-test-id="item.address.status"]
+    ...  ELSE  Get Text  //div[contains(text(),'${object_id}')]/ancestor::div[contains(@class, "item-inf_txt")]/descendant::*[@data-test-id="item.${field}"]
+    ${value}=  adapt_lot_data  ${field}  ${value}
     [Return]  ${value}
 
 
@@ -364,9 +396,9 @@ ${host}=  eauction.byustudio.in.ua
   [Arguments]  ${field}
   ${index}=  Set Variable  ${field.split('[')[1].split(']')[0]}
   ${index}=  Convert To Integer  ${index}
-  ${value}=  Run Keyword If  'title' in '${field}'  Get Text  xpath=//div[@class="item-inf_t"][contains(text(), "Рішення про приватизацію")]/following-sibling::div/div[${index + 1}]/div[1]
-  ...  ELSE IF  'decisionDate' in '${field}'  Get Text  xpath=//div[@class="item-inf_t"][contains(text(), "Рішення про приватизацію")]/following-sibling::div/div[${index + 1}]/div[3]
-  ...  ELSE IF  'decisionID' in '${field}'  Get Text  xpath=//div[@class="item-inf_t"][contains(text(), "Рішення про приватизацію")]/following-sibling::div/div[${index + 1}]/div[2]
+  ${value}=  Run Keyword If  'title' in '${field}'  Get Text  xpath=(//div[@data-test-id="decision.title"])[${index + 1}]
+  ...  ELSE IF  'decisionDate' in '${field}'  Get Text  xpath=(//div[@data-test-id="decision.decisionDate"])[${index + 1}]
+  ...  ELSE IF  'decisionID' in '${field}'  Get Text  xpath=(//div[@data-test-id="decision.decisionID"])[${index + 1}]
   ${value}=  Set Variable  ${value.split(':')[-1]}
   [Return]  ${value}
 
@@ -377,7 +409,7 @@ ${host}=  eauction.byustudio.in.ua
 
 Завантажити ілюстрацію в лот
   [Arguments]  ${username}  ${tender_uaid}  ${filepath}
-  eauction.Завантажити документ в об'єкт МП з типом  ${username}  ${tender_uaid}  ${filepath}  illustration
+  eauction.Завантажити документ в лот з типом  ${username}  ${tender_uaid}  ${filepath}  illustration
 
 
 Завантажити документ в лот з типом
@@ -393,7 +425,7 @@ ${host}=  eauction.byustudio.in.ua
     Select From List By Value  id=document-${last_input_number}-documenttype  ${doc_type}
     Select From List By Label  id=document-${last_input_number}-relateditem  Загальний
     Scroll To And Click Element  id=btn-submit-form
-    Wait Until Element Is Visible  xpath=//div[@data-test-id="tenderID"]
+    Wait Until Element Is Visible  xpath=//div[@data-test-id="lotID"]
     Wait Until Keyword Succeeds  30 x  10 s  Run Keywords
     ...  Reload Page
     ...  AND  Wait Until Page Does Not Contain   Документ завантажується...  10
@@ -697,16 +729,6 @@ Proposition
     Wait Until Element Is Visible  xpath=//li[@class="dropdown"]/descendant::*[@class="dropdown-toggle"][contains(@href, "tenders")]
     Click Element  xpath=//li[@class="dropdown"]/descendant::*[@class="dropdown-toggle"][contains(@href, "tenders")]
     Click Element  xpath=//*[@class="dropdown-menu"]/descendant::*[contains(@href, "/tenders/index")]
-#    Wait Until Element Is Visible  xpath=//select[@id="attribute-select"]
-#    Select From List By Value  xpath=//select[@id="attribute-select"]  tender_cbd_id
-#    Input Text  xpath=//input[@id="attribute-input"]  ${tender_uaid}
-#    Scroll To  xpath=//a[@id="search"]
-#    Click Element  xpath=//a[@id="search"]
-#    Wait Until Keyword Succeeds  20 x  1 s  JQuery Ajax Should Complete
-#    Wait Until Element Is Visible  xpath=//div[@class="search-result_t"]/span[contains(text(), "${tender_uaid}")]
-#    Scroll To  xpath=//*[@class="mk-btn mk-btn_default"][contains(@href, "/tender/view/")]
-#    Wait Until Element Is Enabled  xpath=//*[@class="mk-btn mk-btn_default"][contains(@href, "/tender/view/")]
-#    Click Element  xpath=//div[@class="search-result_t"]/span[contains(text(), "${tender_uaid}")]/../following-sibling::div[@class="search-result_ad"]/span[contains(text(), "майна замовника")]/ancestor::div[@class="search-result"]/descendant::a[contains(@href, "/tender/view/")]
     Wait Until Element Is Visible  xpath=//button[contains(text(), "Шукати")]
     Click Element  xpath=//span[@data-target="#additional_filter"]
     Wait Until Element Is Visible  id=tenderssearch-tender_cbd_id
