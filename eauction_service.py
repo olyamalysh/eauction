@@ -79,6 +79,7 @@ def adapted_dictionary(value):
         u'Торги були відмінені.': 'active',
         u'об’єкт реєструється': u'registering',
         u'об’єкт зареєстровано': u'complete',
+        u'lot.status.pending': u'pending'
         # u'Очікується підписання договору': 'pending.payment',
         # u'Очікується протокол': 'pending.verification',
         # u'На черзі': 'pending.waiting',
@@ -113,9 +114,9 @@ def adapt_data(field, value):
 def adapt_asset_data(field, value):
     if 'date' in field:
         value = convert_date(value)
-    elif field == 'decisionDate' and len(value) == 10:
+    elif 'decisionDate' in field and len(value) == 10:
         value = convert_date_from_decision(value)
-    elif field == 'decisionDate' and len(value) > 10:
+    elif 'decisionDate' in field and len(value) > 10:
         value = convert_date(value)
     elif 'documentType' in field:
         value = value.split(' ')[0]
