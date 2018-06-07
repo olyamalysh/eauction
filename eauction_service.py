@@ -16,7 +16,6 @@ def prepare_tender_data_asset(tender_data):
     tender_data['data']['assetCustodian']['contactPoint']['name'] = u'Гоголь Микола Васильович'
     tender_data['data']['assetCustodian']['contactPoint']['telephone'] = u'+38(101)010-10-10'
     tender_data['data']['assetCustodian']['contactPoint']['email'] = u'primatization@aditus.info'
-    tender_data['data']['decisions'][0]['decisionDate'] = "{}T00:00:00.000000+03:00".format(tender_data['data']['decisions'][0]['decisionDate'].split("T")[0])
     return tender_data
 
 
@@ -66,7 +65,7 @@ def convert_date_from_decision(date):
 
 
 def convert_date_for_decision(date):
-    date = datetime.strptime(date, '%Y-%m-%dT%H:%M:%S.%f{}'.format(tz)).strftime('%d/%m/%Y')
+    date = datetime.strptime(date, '%Y-%m-%d'.format(tz)).strftime('%d/%m/%Y')
     return '{}'.format(date)
 
 
@@ -123,10 +122,8 @@ def adapt_data(field, value):
 def adapt_asset_data(field, value):
     if 'date' in field:
         value = convert_date(value)
-    elif 'decisionDate' in field and len(value) == 10:
+    elif 'decisionDate' in field:
         value = convert_date_from_decision(value)
-    elif 'decisionDate' in field and len(value) > 10:
-        value = convert_date(value)
     elif 'documentType' in field:
         value = adapted_dictionary(value.split(' ')[0])
     elif 'rectificationPeriod.endDate' in field:
@@ -146,7 +143,11 @@ def adapt_lot_data(field, value):
     elif 'guarantee.amount' in field:
         value = float(value.split(' ')[0])
     elif 'tenderingDuration' in field:
-        value = 'P{}D'.format(value.split(' ')[0])
+        value = value.split(' ')[0]
+        if 'M' in value:
+            value = 'P{}'.format(value)
+        else:
+            value = 'P{}D'.format(value)
     elif 'auctionPeriod.startDate' in field:
         value = convert_date(value)
     elif 'classification.id' in field:
