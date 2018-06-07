@@ -95,12 +95,6 @@ def adapted_dictionary(value):
         u'Перевірка доступності об’єкту': u'verification',
         u'Інформація': u'informationDetails',
         u'Заплановано': u'scheduled'
-        # u'Очікується підписання договору': 'pending.payment',
-        # u'Очікується протокол': 'pending.verification',
-        # u'На черзі': 'pending.waiting',
-        # u'Рiшення скасовано': 'cancelled',
-        # u'Оплачено, очікується підписання договору': 'active',
-        # u'Дискваліфіковано': 'unsuccessful'
     }.get(value, value)
 
 

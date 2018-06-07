@@ -89,10 +89,12 @@ ${host}=  eauction.byustudio.in.ua
     [Arguments]  ${item_data}
     ${item}=   Get Element Attribute   xpath=(//textarea[contains(@class, "item-description") and not (contains(@id, "__empty__"))])[last()]@id
     ${item}=  Set Variable  ${item.split('-')[1]}
+    ${item_number}=  Get Element Attribute  xpath=(//div[contains(@class, "asset-item") and not (contains(@class, "__empty__"))])[last()]@class
+    ${item_number}=  Set Variable  ${item_number.split('-')[-1]}
     Input Text  xpath=//*[@id="asset-${item}-description"]  ${item_data.description}
     Convert Input Data To String  xpath=//*[@id="asset-${item}-quantity"]  ${item_data.quantity}
     ${classification_scheme}=  Convert To Lowercase  ${item_data.classification.scheme}
-    Select From List By Value  id=classification-scheme  ${classification_scheme}
+    Select From List By Value  //div[contains(@class, "asset-item-${item_number}")]/descendant::select[@id="classification-scheme"]  ${classification_scheme}
     Click Element  xpath=//*[@id="classification-${item}-description"]
     Wait Until Element Is Visible  xpath=//*[@class="modal-title"]
     Input Text  xpath=//*[@placeholder="Пошук по коду"]  ${item_data.classification.id}
@@ -119,7 +121,7 @@ ${host}=  eauction.byustudio.in.ua
     Wait Until Element Is Visible  xpath=//form[@id="asset-form"]
     Click Element  xpath=//button[@id="add-item-to-asset"]
     Run Keyword And Ignore Error  eauction.Додати предмет МП  ${item_data}
-    Run Keyword And Ignore Error  eauction.Scroll To And Click Element   xpath=//button[@value="save"]
+    Run Keyword And Ignore Error  eauction.Scroll To And Click Element   id=btn-submit-form
 
 
 Пошук об’єкта МП по ідентифікатору
