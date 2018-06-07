@@ -30,8 +30,10 @@ def prepare_tender_data(role, data):
         data['data']['procuringEntity']['name'] = u'Тестовый "ЗАКАЗЧИК" 2'
         for item in data['data']['items']:
             item['address']['region'] = item['address']['region'].replace(u' область', u'')
-    elif role == 'tender_owner' and 'procuringEntity' not in data['data']:
+    elif role == 'tender_owner' and 'assetCustodian' in data['data']:
         data = prepare_tender_data_asset(data)
+    else:
+        data = adapt_lot_creation_data(data)
     return data
 
 
@@ -89,7 +91,10 @@ def adapted_dictionary(value):
         u'об’єкт реєструється': u'registering',
         u'об’єкт зареєстровано': u'complete',
         u'Опубліковано': u'pending',
-        u'Перевірка доступності об’єкту': u'verification'
+        u'Актив завершено': u'complete',
+        u'Перевірка доступності об’єкту': u'verification',
+        u'Інформація': u'informationDetails',
+        u'Заплановано': u'scheduled'
         # u'Очікується підписання договору': 'pending.payment',
         # u'Очікується протокол': 'pending.verification',
         # u'На черзі': 'pending.waiting',
@@ -129,9 +134,11 @@ def adapt_asset_data(field, value):
     elif 'decisionDate' in field and len(value) > 10:
         value = convert_date(value)
     elif 'documentType' in field:
-        value = value.split(' ')[0]
+        value = adapted_dictionary(value.split(' ')[0])
     elif 'rectificationPeriod.endDate' in field:
         value = convert_date(value)
+    elif 'documentType' in field:
+        value = value
     else:
         value = adapted_dictionary(value)
     return value
@@ -139,21 +146,25 @@ def adapt_asset_data(field, value):
 
 def adapt_lot_data(field, value):
     if 'value.amount' in field:
-        value = value.split(' ')[0]
+        value = float(value.split(' ')[0])
     elif 'minimalStep.amount' in field:
-        value = value.split(' ')[0]
+        value = float(value.split(' ')[0])
     elif 'guarantee.amount' in field:
-        value = value.split(' ')[0]
+        value = float(value.split(' ')[0])
     elif 'tenderingDuration' in field:
-        value = 'P{}D'.format(value)
+        value = 'P{}D'.format(value.split(' ')[0])
     elif 'auctionPeriod.startDate' in field:
         value = convert_date(value)
     elif 'classification.id' in field:
         value = value.split(' - ')[0]
     elif 'unit.name' in field:
-        value = value.split(' ')[1:]
+        value = ' '.join(value.split(' ')[1:])
     elif 'quantity' in field:
-        value = value.split(' ')[0]
+        value = float(value.split(' ')[0])
+    elif 'registrationFee.amount' in field:
+        value = float(value.split(' ')[0])
+    elif 'tenderAttempts' in field:
+        value = int(value)
     else:
         value = adapted_dictionary(value)
     return value
