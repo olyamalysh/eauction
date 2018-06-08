@@ -71,7 +71,7 @@ ${host}=  eauction.byustudio.in.ua
     Input Text  id=decision-0-decisiondate  ${decision_date}
     Click Element  id=assetHolder-checkBox
     Wait Until Element Is Visible  id=organization-assetholder-name
-    Input Text  id=organization-assetholder-name  ${data.assetHolder.identifier.legalName}
+    Input Text  id=organization-assetholder-name  ${data.assetHolder.name}
     Input Text  id=identifier-assetholder-id  ${data.assetHolder.identifier.id}
     ${items_length}=  Get Length  ${items}
     :FOR  ${item}  IN RANGE  ${items_length}
@@ -135,10 +135,10 @@ ${host}=  eauction.byustudio.in.ua
     Wait Until Element Is Visible  xpath=//button[contains(text(), "Шукати")]
     Input Text  id=assetssearch-asset_cbd_id  ${tender_uaid}
     Click Element  xpath=//button[contains(text(), "Шукати")]
-    Wait Until Element Is Visible  xpath=//div[@class="search-result"]/descendant::div[contains(text(), "${tender_uaid}")]
+    Wait Until Keyword Succeeds  10 x  1 s  Wait Until Element Is Visible  xpath=//div[@class="search-result"]/descendant::div[contains(text(), "${tender_uaid}")]
     Wait Until Keyword Succeeds  20 x  3 s  Run Keywords
     ...  Click Element  xpath=//div[@class="search-result"]/descendant::div[contains(text(), "${tender_uaid}")]/../../div[2]/a[contains(@href, "/asset/view")]
-    ...  AND  Wait Until Element Is Not Visible  xpath=//div[@class="search-result"]/descendant::div[contains(text(), "${tender_uaid}")]/../../div[2]/a[contains(@href, "/asset/view")]
+    ...  AND  Wait Until Element Is Not Visible  xpath=//button[contains(text(), "Шукати")]
     Закрити Модалку
     Wait Until Element Is Visible  xpath=//div[@data-test-id="tenderID"]  20
 
@@ -212,7 +212,7 @@ ${host}=  eauction.byustudio.in.ua
     [Arguments]  ${username}  ${tender_uaid}  ${field}
     ${red}=  Evaluate  "\\033[1;31m"
     Run Keyword If  'title' in '${field}'  Execute Javascript  $("[data-test-id|='title']").css("text-transform", "unset")
-    ${value}=  Run Keyword If  '${field}' == 'assetCustodian.identifier.legalName'  Get Text  xpath=//div[@data-test-id="assetCustodian.name"]
+    ${value}=  Run Keyword If  '${field}' == 'assetCustodian.identifier.legalName'  Get Text  xpath=//div[@data-test-id="assetCustodian.identifier.legalName"]
 #    ...  ELSE IF  '${field}' == 'assetCustodian.identifier.scheme'  Log To Console  ${red}\n\t\t\t Це поле не виводиться на eauction.byustudio.in.ua
     ...  ELSE IF  'assetHolder.identifier.id' in '${field}'  Get Text  //*[@data-test-id="assetHolder.identifier.id"]
     ...  ELSE IF  'assetHolder.identifier.scheme' in '${field}'  Get Text  //*[@data-test-id="assetHolder.identifier.scheme"]
@@ -271,17 +271,6 @@ ${host}=  eauction.byustudio.in.ua
 #  Input Text   name=Lot[decisions][0][title]  Title
   Input Text   name=Lot[decisions][0][decisionDate]   ${decision_date}
   Input Text   name=Lot[decisions][0][decisionID]   ${tender_data.data.decisions[0].decisionID}
-
-  Input Text  name=Lot[auctions][0][value][amount]  10
-  Input Text  name=Lot[auctions][0][minimalStep][amount]  10
-  Input Text  name=Lot[auctions][0][guarantee][amount]  10
-  Input Text  name=Lot[auctions][0][registrationFee][amount]  17
-  Click Element  name=Lot[auctions][0][auctionPeriod][startDate]
-
-  Input Text  name=Lot[auctions][1][tenderingDuration]  30
-
-  Input Text  name=Lot[auctions][2][auctionParameters][dutchSteps]  99
-
   Click Element  name=simple_submit
   Wait Until Element Is Visible  xpath=//div[@data-test-id="lotID"]  20
   ${lot_id}=  Get Text  xpath=//div[@data-test-id="lotID"]
@@ -289,43 +278,42 @@ ${host}=  eauction.byustudio.in.ua
 
 
 Заповнити дані для першого аукціону
-#  [Arguments]  ${auction}
-#  ${value_amount}=  add_second_sign_after_point  ${auction.value.amount}
-#  ${minimalStep_amount}=  add_second_sign_after_point  ${auction.minimalStep.amount}
-#  ${guarantee_amount}=  add_second_sign_after_point  ${auction.guarantee.amount}
-#  Input Text  name=data[auctions][0][value][amount]  ${value_amount}
-#  Input Text  name=data[auctions][0][minimalStep][amount]  ${minimalStep_amount}
-#  Input Text  name=data[auctions][0][guarantee][amount]  ${guarantee_amount}
-#  Input Date  data[auctions][0][auctionPeriod][startDate]  ${auction.auctionPeriod.startDate}
+  [Arguments]  ${username}  ${tender_uaid}  ${auction}
+  ${value_amount}=  Convert To String  ${auction.value.amount}
+  ${minimalStep}=  Convert To String  ${auction.minimalStep.amount}
+  ${guarantee}=  Convert To String  ${auction.guarantee.amount}
+  ${registrationFee}=  Convert To String  ${auction.registrationFee.amount}
+  eauction.Пошук лоту по ідентифікатору  ${username}  ${tender_uaid}
+  Click Element  xpath=//a[contains(@href, "lot/update")]
+  Wait Until Element Is Visible  id=auctions-checkBox
+  Click Element  id=auctions-checkBox
+  Wait Until Element Is Visible  id=value-value-0-amount
+  Input Text  name=Lot[auctions][0][value][amount]  ${value_amount}
+  Input Text  name=Lot[auctions][0][minimalStep][amount]  ${minimalStep}
+  Input Text  name=Lot[auctions][0][guarantee][amount]  ${guarantee}
+#  Input Text  name=Lot[auctions][0][registrationFee][amount]  ${registrationFee}
+  Input Date Auction  name=Lot[auctions][0][auctionPeriod][startDate]  ${auction.auctionPeriod.startDate}
+
+#  Input Text  name=Lot[auctions][2][auctionParameters][dutchSteps]  99
+
+
+Заповнити дані для другого аукціону
+    [Arguments]  ${auction}
+    ${tenderingDuration}=  convert_period_date  ${auction.tenderingDuration}
+    Input Text  name=Lot[auctions][1][tenderingDuration]  ${tenderingDuration}
+    Input Text  name=Lot[auctions][2][auctionParameters][dutchSteps]  99
+    Scroll To And Click Element  id=btn-submit-form
+    Wait Until Element Is Visible  xpath=//a[contains(@href, "lot/update")]
+    Click Element  name=verification_submit
+    Wait Until Element Is Visible  xpath=//*[@data-test-id="status"][contains(text(), "Перевірка доступності об’єкту")]
 
 
 
 Додати умови проведення аукціону
   [Arguments]  ${username}  ${auction}  ${index}  ${tender_uaid}
-  Wait Until Keyword Succeeds  15 x   20 s   Run Keywords
-  ...  Reload Page
-  ...  AND  Wait Until Page Contains Element  xpath=//div[@data-test-id="status"][contains(text(), "Опубліковано")]
-  Log  ERROR
-#  dzo.Пошук лоту по ідентифікатору  ${username}  ${tender_uaid}
-#  Wait Until Keyword Succeeds  15 x   20 s   Run Keywords
-#  ...  Reload Page
-#  ...  AND  Wait Until Page Contains Element  xpath=//a[./text()='Редагувати']
-#  Клікнути по елементу   xpath=//a[./text()='Редагувати']
-#  Клікнути по елементу  xpath=(//section[contains(@class, "accordionItem")]/a)[3]
-#
-#  Run Keyword If  ${index} == 0  Заповнити дані для першого аукціону  ${auction}
-#
-#
-#  Run Keyword If  ${index} == 1  Select From List By Value  name=data[auctions][1][tenderingDuration]  30
-#
-#
-#  Run Keyword If  ${index} == 2  Run Keywords
-#  ...  Input Text  name=data[auctions][2][value][amount]  ${value_amount}
-#  ...  AND  Input Text  name=data[auctions][2][minimalStep][amount]  ${minimalStep_amount}
-#  ...  AND  Input Text  name=data[auctions][2][guarantee][amount]  ${guarantee_amount}
-#
-#  Клікнути по елементу  xpath=//button[@value="save"]
-#  Wait Until Element Is Visible  ${locator.tenderId}
+  Run Keyword If  ${index} == 0  Заповнити дані для першого аукціону  ${username}  ${tender_uaid}  ${auction}
+  Run Keyword If  ${index} == 1  Заповнити дані для другого аукціону  ${auction}
+
 
 
 Пошук лоту по ідентифікатору
@@ -338,7 +326,7 @@ ${host}=  eauction.byustudio.in.ua
     Wait Until Element Is Visible  xpath=//button[@data-test-id="search"]
     Input Text  id=lotssearch-lot_cbd_id  ${tender_uaid}
     Click Element  xpath=//button[@data-test-id="search"]
-    Wait Until Element Is Visible  xpath=//div[@class="search-result"]/descendant::div[contains(text(), "${tender_uaid}")]
+    Wait Until Keyword Succeeds  10 x  1 s  Wait Until Element Is Visible  xpath=//div[@class="search-result"]/descendant::div[contains(text(), "${tender_uaid}")]
     Wait Until Keyword Succeeds  20 x  3 s  Run Keywords
     ...  Click Element  xpath=//div[@class="search-result"]/descendant::div[contains(text(), "${tender_uaid}")]/../following-sibling::div/a
     ...  AND  Wait Until Element Is Not Visible  xpath=//div[@class="search-result"]/descendant::div[contains(text(), "${tender_uaid}")]/../following-sibling::div/a
@@ -356,14 +344,18 @@ ${host}=  eauction.byustudio.in.ua
     ${red}=  Evaluate  "\\033[1;31m"
     Run Keyword If  'title' in '${field}'  Execute Javascript  $("[data-test-id|='title']").css("text-transform", "unset")
     ${value}=  Run Keyword If  '${field}' == 'lotCustodian.identifier.legalName'  Get Text  xpath=//div[@data-test-id="procuringEntity.name"]
-    ...  ELSE IF  'assetHolder' in '${field}'  Log To Console  ${red}\n\t\t\t Це поле не виводиться на eauction.byustudio.in.ua
+    ...  ELSE IF  'lotHolder.identifier.id' in '${field}'  Get Text  //*[@data-test-id="assetHolder.identifier.id"]
+    ...  ELSE IF  'lotCustodian.identifier.scheme' in '${field}'  Get Text  //*[@data-test-id='lotCustodian.identifier.scheme']
+    ...  ELSE IF  'lotCustodian.identifier.id' in '${field}'  Get Text  //*[@data-test-id='lotCustodian.identifier.id']
+    ...  ELSE IF  'lotHolder.identifier.scheme' in '${field}'  Get Text  //*[@data-test-id="assetHolder.identifier.scheme"]
+    ...  ELSE IF  'lotHolder.name' in '${field}'  Get Text  //*[@data-test-id="assetHolder.name"]
     ...  ELSE IF  '${field}' == 'status'  Get Text  xpath=//div[@data-test-id="status"]
     ...  ELSE IF  '${field}' == 'assetID'  Get Text  xpath=//div[@data-test-id="tenderID"]
     ...  ELSE IF  '${field}' == 'description'  Get Text  xpath=//div[@data-test-id="item.description"]
     ...  ELSE IF  '${field}' == 'documents[0].documentType'  Get Text  xpath=//a[contains(@href, "info/ssp_details")]/../following-sibling::div[1]
     ...  ELSE IF  'decisions' in '${field}'  Отримати інформацію про lot decisions  ${field}
     ...  ELSE IF  'rectificationPeriod' in '${field}'  Get Text  xpath=//div[@data-test-id="rectificationPeriod"]
-    ...  ELSE IF  'assets[0]' in '${field}'  Отримати інформацію про related asset
+    ...  ELSE IF  'assets' in '${field}'  Get Element Attribute  xpath=//input[@name="asset_id"]@value
     ...  ELSE IF  'auctions' in '${field}'  Отримати інформацію про lot auctions  ${field}
     ...  ELSE  Get Text  xpath=//*[@data-test-id='${field.replace('lotCustodian', 'procuringEntity')}']
     ${value}=  adapt_asset_data  ${field}  ${value}
@@ -429,21 +421,107 @@ ${host}=  eauction.byustudio.in.ua
 Завантажити документ в лот з типом
     [Arguments]  ${username}  ${tender_uaid}  ${file_path}  ${doc_type}
     eauction.Пошук лоту по ідентифікатору  ${username}  ${tender_uaid}
-    Click Element  xpath=//a[contains(@href, "asset/update")]
-    Wait Until Element Is Visible  xpath=//form[@id="asset-form"]
+    Click Element  xpath=//a[contains(@href, "lot/update")]
+    Wait Until Element Is Visible  id=decision-title
     Choose File  xpath=(//*[@action="/tender/fileupload"]/input)[last()]  ${file_path}
     Sleep  2
-    ${last_input_number}=  Get Element Attribute  xpath=(//select[contains(@class, "document-related-item") and not (contains(@id, "__empty__"))])[last()]@id
+    ${last_input_number}=  Get Element Attribute  xpath=(//input[contains(@class, "document-title") and not (contains(@id, "__empty__"))])[last()]@id
     ${last_input_number}=  Set Variable  ${last_input_number.split('-')[1]}
     Input Text  id=document-${last_input_number}-title  ${file_path.split('/')[-1]}
     Select From List By Value  id=document-${last_input_number}-documenttype  ${doc_type}
-    Select From List By Label  id=document-${last_input_number}-relateditem  Загальний
+    Select From List By Value  id=document-${last_input_number}-level  lot
     Scroll To And Click Element  id=btn-submit-form
     Wait Until Element Is Visible  xpath=//div[@data-test-id="lotID"]
     Wait Until Keyword Succeeds  30 x  10 s  Run Keywords
     ...  Reload Page
     ...  AND  Wait Until Page Does Not Contain   Документ завантажується...  10
+
+
+Завантажити документ в умови проведення аукціону
+    [Arguments]  ${username}  ${tender_uaid}  ${file_path}  ${doc_type}  ${index}
+    eauction.Пошук лоту по ідентифікатору  ${username}  ${tender_uaid}
+    Click Element  xpath=//a[contains(@href, "lot/update")]
+    Wait Until Element Is Visible  id=decision-title
+    Choose File  xpath=(//*[@action="/tender/fileupload"]/input)[last()]  ${file_path}
+    Sleep  2
+    ${new_index}=  Convert To Integer  ${index}
+    ${new_index}=  Convert To String  ${new_index + 1}
+    ${last_input_number}=  Get Element Attribute  xpath=(//input[contains(@class, "document-title") and not (contains(@id, "__empty__"))])[last()]@id
+    ${last_input_number}=  Set Variable  ${last_input_number.split('-')[1]}
+    Input Text  id=document-${last_input_number}-title  ${file_path.split('/')[-1]}
+    Select From List By Value  id=document-${last_input_number}-documenttype  ${doc_type}
+    Select From List By Label  id=document-${last_input_number}-relateditem  Аукціон № ${new_index}
+    Scroll To And Click Element  id=btn-submit-form
+    Wait Until Element Is Visible  xpath=//div[@data-test-id="lotID"]
+    Wait Until Keyword Succeeds  30 x  10 s  Run Keywords
+    ...  Reload Page
+    ...  AND  Wait Until Page Does Not Contain   Документ завантажується...  10
+
+
+Внести зміни в лот
+    [Arguments]  ${username}  ${tender_uaid}  ${fieldname}  ${fieldvalue}
+    eauction.Пошук лоту по ідентифікатору  ${username}  ${tender_uaid}
+    Click Element  xpath=//a[contains(@href, "lot/update")]
+    Wait Until Element Is Visible  id=decision-title
+    Run Keyword If  '${fieldname}' == 'title'  Input Text  id=lot-title  ${fieldvalue}
+    ...  ELSE IF  '${fieldname}' == 'description'  Input Text  id=lot-description  ${fieldvalue}
+    ...  ELSE  Input Text  xpath=//*[@id="${field_name}"]  ${field_value}
+    Scroll To And Click Element  //*[@name="simple_submit"]
+    Wait Until Element Is Visible  xpath=//div[@data-test-id="lotID"]
+
+
+Внести зміни в актив лоту
+  [Arguments]  ${username}  ${item_id}  ${tender_uaid}  ${field_name}  ${field_value}
+  eauction.Пошук лоту по ідентифікатору  ${username}  ${tender_uaid}
+  Click Element  xpath=//a[contains(@href, "lot/update")]
+  Wait Until Element Is Visible  id=decision-title
+  ${quantity}=  Convert To String  ${field_value}
+  Run Keyword If   '${field_name}' == 'quantity'  Input Text  xpath=//input[contains(@value, "${item_id}")]/../../following-sibling::div[2]/descendant::input[contains(@name, "quantity")]  ${quantity}
+  Scroll To And Click Element  //*[@name="simple_submit"]
+  Wait Until Element Is Visible  xpath=//div[@data-test-id="lotID"]
+
+
+Внести зміни в умови проведення аукціону
+    [Arguments]  ${username}  ${tender_uaid}  ${fieldname}  ${fieldvalue}  ${index}
+    eauction.Пошук лоту по ідентифікатору  ${username}  ${tender_uaid}
+    Click Element  xpath=//a[contains(@href, "lot/update")]
+    Wait Until Element Is Visible  id=decision-title
+    Run Keyword If  '${fieldname}' == 'value.amount'  Input Amount  name=Lot[auctions][0][value][amount]  ${fieldvalue}
+    ...  ELSE IF  '${fieldname}' == 'minimalStep.amount'  Input Amount  name=Lot[auctions][0][minimalStep][amount]  ${fieldvalue}
+    ...  ELSE IF  '${fieldname}' == 'guarantee.amount'  Input Amount  name=Lot[auctions][0][guarantee][amount]  ${fieldvalue}
+    ...  ELSE IF  '${fieldname}' == 'registrationFee.amount'  Input Amount  name=Lot[auctions][0][registrationFee][amount]  ${fieldvalue}
+    ...  ELSE IF  '${fieldname}' == 'auctionPeriod.startDate'  Input Date Auction  name=Lot[auctions][0][auctionPeriod][startDate]  ${fieldvalue}
+    Scroll To And Click Element  //*[@name="simple_submit"]
+    Wait Until Element Is Visible  xpath=//div[@data-test-id="lotID"]
+
+
+Завантажити документ для видалення лоту
+  [Arguments]  ${username}  ${tender_uaid}  ${file_path}
+  eauction.Завантажити документ в лот з типом  ${username}  ${tender_uaid}  ${filepath}  cancellationDetails
+
+
+Видалити лот
+    [Arguments]  ${username}  ${tender_uaid}
+    eauction.Пошук лоту по ідентифікатору  ${username}  ${tender_uaid}
+    Click Element  id=delete_btn
+    Wait Until Element Is Visible  //button[@data-bb-handler="confirm"]
+    Click Element  //button[@data-bb-handler="confirm"]
+    Wait Until Element Is Visible  xpath=//div[contains(@class, "alert-success")]
+
+
 ##################################################################################
+Input Amount
+    [Arguments]  ${locator}  ${value}
+    ${value}=  Convert To String  ${value}
+    Clear Element Text  ${locator}
+    Input Text  ${locator}  ${value}
+
+
+Input Date Auction
+    [Arguments]  ${locator}  ${value}
+    ${value}=  convert_date_for_auction  ${value}
+    Clear Element Text  ${locator}
+    Input Text  ${locator}  ${value}
 
 
 

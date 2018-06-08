@@ -19,9 +19,9 @@ def prepare_tender_data_asset(tender_data):
     return tender_data
 
 
-def adapt_lot_creation_data(tender_data):
-    tender_data['data']['decisions'][0]['decisionDate'] = u"{}T00:00:00.000000+03:00".format(tender_data['data']['decisions'][0]['decisionDate'].split("T")[0])
-    return tender_data
+# def adapt_lot_creation_data(tender_data):
+#     tender_data['data']['decisions'][0]['decisionDate'] = u"{}T00:00:00.000000+03:00".format(tender_data['data']['decisions'][0]['decisionDate'].split("T")[0])
+#     return tender_data
 
 
 def prepare_tender_data(role, data):
@@ -31,8 +31,8 @@ def prepare_tender_data(role, data):
             item['address']['region'] = item['address']['region'].replace(u' область', u'')
     elif role == 'tender_owner' and 'assetCustodian' in data['data']:
         data = prepare_tender_data_asset(data)
-    else:
-        data = adapt_lot_creation_data(data)
+    # else:
+    #     data = adapt_lot_creation_data(data)
     return data
 
 
@@ -55,7 +55,7 @@ def convert_date_for_item(date):
 
 
 def convert_date_for_auction(date):
-    date = datetime.strptime(date, '%Y-%m-%dT%H:%M:%S.%f{}'.format(tz)).strftime('%d/%m/%Y %H:%M')
+    date = datetime.strptime(date, '%Y-%m-%dT%H:%M:%S.%f{}'.format(tz)).strftime('%d/%m/%Y %H:%M:%S')
     return '{}'.format(date)
 
 
@@ -91,7 +91,10 @@ def adapted_dictionary(value):
         u'об’єкт зареєстровано': u'complete',
         u'Опубліковано': u'pending',
         u'Актив завершено': u'complete',
+        u'Публікація інформаційного повідомлення': u'composing',
         u'Перевірка доступності об’єкту': u'verification',
+        u'lot.status.pending.deleted': u'pending.deleted',
+        u'Лот видалено': u'deleted',
         u'Інформація': u'informationDetails',
         u'Заплановано': u'scheduled'
     }.get(value, value)
@@ -123,7 +126,7 @@ def adapt_asset_data(field, value):
     if 'date' in field:
         value = convert_date(value)
     elif 'decisionDate' in field:
-        value = convert_date_from_decision(value)
+        value = convert_date_from_decision(value.split(' ')[0])
     elif 'documentType' in field:
         value = adapted_dictionary(value.split(' ')[0])
     elif 'rectificationPeriod.endDate' in field:
@@ -136,12 +139,12 @@ def adapt_asset_data(field, value):
 
 
 def adapt_lot_data(field, value):
-    if 'value.amount' in field:
+    if 'amount' in field:
         value = float(value.split(' ')[0])
-    elif 'minimalStep.amount' in field:
-        value = float(value.split(' ')[0])
-    elif 'guarantee.amount' in field:
-        value = float(value.split(' ')[0])
+    # elif 'minimalStep.amount' in field:
+    #     value = float(value.split(' ')[0])
+    # elif 'guarantee.amount' in field:
+    #     value = float(value.split(' ')[0])
     elif 'tenderingDuration' in field:
         value = value.split(' ')[0]
         if 'M' in value:
@@ -163,6 +166,14 @@ def adapt_lot_data(field, value):
     else:
         value = adapted_dictionary(value)
     return value
+
+
+def convert_period_date(date):
+    if date == 'P1M':
+        date = '30'
+    else:
+        date = '30'
+    return date
 
 
 def convert_invalidation_date(data):
