@@ -138,7 +138,7 @@ ${host}=  eauction.byustudio.in.ua
     Wait Until Keyword Succeeds  10 x  1 s  Wait Until Element Is Visible  xpath=//div[@class="search-result"]/descendant::div[contains(text(), "${tender_uaid}")]
     Wait Until Keyword Succeeds  20 x  3 s  Run Keywords
     ...  Click Element  xpath=//div[@class="search-result"]/descendant::div[contains(text(), "${tender_uaid}")]/../../div[2]/a[contains(@href, "/asset/view")]
-    ...  AND  Wait Until Element Is Not Visible  xpath=//button[contains(text(), "Шукати")]
+    ...  AND  Wait Until Element Is Not Visible  xpath=//button[contains(text(), "Шукати")]  10
     Закрити Модалку
     Wait Until Element Is Visible  xpath=//div[@data-test-id="tenderID"]  20
 
@@ -329,7 +329,7 @@ ${host}=  eauction.byustudio.in.ua
     Wait Until Keyword Succeeds  10 x  1 s  Wait Until Element Is Visible  xpath=//div[@class="search-result"]/descendant::div[contains(text(), "${tender_uaid}")]
     Wait Until Keyword Succeeds  20 x  3 s  Run Keywords
     ...  Click Element  xpath=//div[@class="search-result"]/descendant::div[contains(text(), "${tender_uaid}")]/../following-sibling::div/a
-    ...  AND  Wait Until Element Is Not Visible  xpath=//div[@class="search-result"]/descendant::div[contains(text(), "${tender_uaid}")]/../following-sibling::div/a
+    ...  AND  Wait Until Element Is Not Visible  xpath=//button[contains(text(), "Шукати")]  10
     Закрити Модалку
     Wait Until Element Is Visible  xpath=//div[@data-test-id="lotID"]  20
 
@@ -428,8 +428,8 @@ ${host}=  eauction.byustudio.in.ua
     ${last_input_number}=  Get Element Attribute  xpath=(//input[contains(@class, "document-title") and not (contains(@id, "__empty__"))])[last()]@id
     ${last_input_number}=  Set Variable  ${last_input_number.split('-')[1]}
     Input Text  id=document-${last_input_number}-title  ${file_path.split('/')[-1]}
-    Select From List By Value  id=document-${last_input_number}-documenttype  ${doc_type}
     Select From List By Value  id=document-${last_input_number}-level  lot
+    Select From List By Value  id=document-${last_input_number}-documenttype  ${doc_type}
     Scroll To And Click Element  id=btn-submit-form
     Wait Until Element Is Visible  xpath=//div[@data-test-id="lotID"]
     Wait Until Keyword Succeeds  30 x  10 s  Run Keywords
@@ -449,8 +449,8 @@ ${host}=  eauction.byustudio.in.ua
     ${last_input_number}=  Get Element Attribute  xpath=(//input[contains(@class, "document-title") and not (contains(@id, "__empty__"))])[last()]@id
     ${last_input_number}=  Set Variable  ${last_input_number.split('-')[1]}
     Input Text  id=document-${last_input_number}-title  ${file_path.split('/')[-1]}
+    Select From List By Label  id=document-${last_input_number}-level  Аукціон № ${new_index}
     Select From List By Value  id=document-${last_input_number}-documenttype  ${doc_type}
-    Select From List By Label  id=document-${last_input_number}-relateditem  Аукціон № ${new_index}
     Scroll To And Click Element  id=btn-submit-form
     Wait Until Element Is Visible  xpath=//div[@data-test-id="lotID"]
     Wait Until Keyword Succeeds  30 x  10 s  Run Keywords
