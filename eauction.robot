@@ -449,9 +449,15 @@ ${host}=  eauction.byustudio.in.ua
     ${last_input_number}=  Get Element Attribute  xpath=(//input[contains(@class, "document-title") and not (contains(@id, "__empty__"))])[last()]@id
     ${last_input_number}=  Set Variable  ${last_input_number.split('-')[1]}
     Input Text  id=document-${last_input_number}-title  ${file_path.split('/')[-1]}
+    Capture Page Screenshot
     Select From List By Label  id=document-${last_input_number}-level  Аукціон № ${new_index}
+    Capture Page Screenshot
     Select From List By Value  id=document-${last_input_number}-documenttype  ${doc_type}
+    Capture Page Screenshot
+    Select From List By Value  id=document-${last_input_number}-documenttype  ${doc_type}
+    Capture Page Screenshot
     Scroll To And Click Element  id=btn-submit-form
+    Capture Page Screenshot
     Wait Until Element Is Visible  xpath=//div[@data-test-id="lotID"]
     Wait Until Keyword Succeeds  30 x  10 s  Run Keywords
     ...  Reload Page
