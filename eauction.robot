@@ -24,7 +24,6 @@ ${host}=  eauction.byustudio.in.ua
     Run Keyword If  '${username}' != 'eauction_Viewer'  Run Keywords
     ...  Авторизація  ${username}
     ...  AND  Run Keyword And Ignore Error  Закрити Модалку
-#    Авторизація  ${username}
     Run Keyword And Ignore Error  Закрити Модалку
 
 
@@ -53,7 +52,7 @@ ${host}=  eauction.byustudio.in.ua
 ########################################### ASSETS ############################################################
 ###############################################################################################################
 
-Створити об'єкт МП   # !!!
+Створити об'єкт МП
     [Arguments]  ${username}  ${tender_data}
     ${data}=  Get Data  ${tender_data}
     ${decisions}=   Get From Dictionary   ${tender_data.data}   decisions
@@ -85,7 +84,7 @@ ${host}=  eauction.byustudio.in.ua
     [Return]  ${auction_id}
 
 
-Додати предмет МП  # !!!
+Додати предмет МП
     [Arguments]  ${item_data}
     ${item_number}=  Get Element Attribute  xpath=(//div[contains(@class, "asset-item") and not (contains(@class, "__empty__"))])[last()]@class
     ${item_number}=  Set Variable  ${item_number.split('-')[-1]}
@@ -169,7 +168,7 @@ ${host}=  eauction.byustudio.in.ua
     Wait Until Element Is Visible  xpath=//div[@data-test-id="tenderID"]
 
 
-Завантажити документ для видалення об'єкта МП  # !!!
+Завантажити документ для видалення об'єкта МП
     [Arguments]  ${username}  ${tender_uaid}  ${file_path}
     eauction.Завантажити документ в об'єкт МП з типом  ${username}  ${tender_uaid}  ${file_path}  cancellationDetails
 
@@ -198,7 +197,7 @@ ${host}=  eauction.byustudio.in.ua
     ...  AND  Wait Until Page Does Not Contain   Документ завантажується...  10
 
 
-Видалити об'єкт МП  # !!!
+Видалити об'єкт МП
     [Arguments]  ${username}  ${tender_uaid}
     eauction.Пошук об’єкта МП по ідентифікатору  ${username}  ${tender_uaid}
     Click Element  id=delete_btn
@@ -289,7 +288,6 @@ ${host}=  eauction.byustudio.in.ua
   Input Text  name=Lot[auctions][0][value][amount]  ${value_amount}
   Input Text  name=Lot[auctions][0][minimalStep][amount]  ${minimalStep}
   Input Text  name=Lot[auctions][0][guarantee][amount]  ${guarantee}
-#  Input Text  name=Lot[auctions][0][registrationFee][amount]  ${registrationFee}
   Input Date Auction  name=Lot[auctions][0][auctionPeriod][startDate]  ${auction.auctionPeriod.startDate}
 
 
@@ -543,16 +541,6 @@ Scroll To And Click Element
     ${y}=  Get Vertical Position  ${locator}
     Execute JavaScript    window.scrollTo(0,${y-100})
     Click Element  ${locator}
-
-
-#Отримати Статус
-#    [Arguments]  ${field}
-#    Reload Page
-#    ${status}=  Run Keyword If
-#    ...  'cancellations' in '${field}'  Get Element Attribute  //*[contains(text(), "Причина скасування")]@data-test-id-cancellation-status
-#    ...  ELSE  Get Text  xpath=//*[@data-test-id="status"]
-#    ${status}=  adapt_data  ${field}  ${status}
-#    [Return]  ${status}
 
 
 Закрити Модалку

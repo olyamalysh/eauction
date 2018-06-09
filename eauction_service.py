@@ -3,7 +3,6 @@
 from datetime import datetime
 import pytz
 import urllib
-import os
 
 
 tz = str(datetime.now(pytz.timezone('Europe/Kiev')))[26:]
@@ -150,15 +149,7 @@ def convert_period_date(date):
     else:
         date = '30'
     return date
-#
-#
-# def convert_invalidation_date(data):
-#     return convert_date(' '.join(data.split(' ')[2:]).strip())
 
 
 def download_file(url, filename, folder):
     urllib.urlretrieve(url, ('{}/{}'.format(folder, filename)))
-#
-#
-# def my_file_path():
-#     return os.path.join(os.getcwd(), 'src', 'robot_tests.broker.eauction', 'Doc.pdf')
