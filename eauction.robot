@@ -213,7 +213,6 @@ ${host}=  eauction.byustudio.in.ua
     ${red}=  Evaluate  "\\033[1;31m"
     Run Keyword If  'title' in '${field}'  Execute Javascript  $("[data-test-id|='title']").css("text-transform", "unset")
     ${value}=  Run Keyword If  '${field}' == 'assetCustodian.identifier.legalName'  Get Text  xpath=//div[@data-test-id="assetCustodian.identifier.legalName"]
-#    ...  ELSE IF  '${field}' == 'assetCustodian.identifier.scheme'  Log To Console  ${red}\n\t\t\t Це поле не виводиться на eauction.byustudio.in.ua
     ...  ELSE IF  'assetHolder.identifier.id' in '${field}'  Get Text  //*[@data-test-id="assetHolder.identifier.id"]
     ...  ELSE IF  'assetHolder.identifier.scheme' in '${field}'  Get Text  //*[@data-test-id="assetHolder.identifier.scheme"]
     ...  ELSE IF  'assetHolder.name' in '${field}'  Get Text  //*[@data-test-id="assetHolder.name"]
@@ -268,7 +267,6 @@ ${host}=  eauction.byustudio.in.ua
   eauction.Пошук об’єкта МП по ідентифікатору  ${username}  ${asset_uaid}
   Click Element  xpath=//a[contains(@href, "lot/create?asset")]
   ${decision_date}=  convert_date_for_decision  ${tender_data.data.decisions[0].decisionDate}
-#  Input Text   name=Lot[decisions][0][title]  Title
   Input Text   name=Lot[decisions][0][decisionDate]   ${decision_date}
   Input Text   name=Lot[decisions][0][decisionID]   ${tender_data.data.decisions[0].decisionID}
   Click Element  name=simple_submit
@@ -293,8 +291,6 @@ ${host}=  eauction.byustudio.in.ua
   Input Text  name=Lot[auctions][0][guarantee][amount]  ${guarantee}
 #  Input Text  name=Lot[auctions][0][registrationFee][amount]  ${registrationFee}
   Input Date Auction  name=Lot[auctions][0][auctionPeriod][startDate]  ${auction.auctionPeriod.startDate}
-
-#  Input Text  name=Lot[auctions][2][auctionParameters][dutchSteps]  99
 
 
 Заповнити дані для другого аукціону
@@ -404,13 +400,7 @@ ${host}=  eauction.byustudio.in.ua
   ${value}=  Run Keyword If  'title' in '${field}'  Get Text  xpath=(//div[@data-test-id="decision.title"])[${index + 1}]
   ...  ELSE IF  'decisionDate' in '${field}'  Get Text  xpath=(//div[@data-test-id="decision.decisionDate"])[${index + 1}]
   ...  ELSE IF  'decisionID' in '${field}'  Get Text  xpath=(//div[@data-test-id="decision.decisionID"])[${index + 1}]
-#  ${value}=  Set Variable  ${value.split(':')[-1]}
   [Return]  ${value}
-
-Отримати інформацію про related asset
-#    ${item}=  Get Text  xpath=//div[@class="item-inf_t"][contains(text(), "Активи")]/following-sibling::div/div/div/b
-#    [Return]  ${item.split(':')[0]}
-    [Return]  8230ce45d1384b448ab0a180114e263b
 
 
 Завантажити ілюстрацію в лот
@@ -448,13 +438,11 @@ ${host}=  eauction.byustudio.in.ua
     ${new_index}=  Convert To String  ${new_index + 1}
     ${last_input_number}=  Get Element Attribute  xpath=(//input[contains(@class, "document-title") and not (contains(@id, "__empty__"))])[last()]@id
     ${last_input_number}=  Set Variable  ${last_input_number.split('-')[1]}
-    Input Text  id=document-${last_input_number}-title  ${file_path.split('/')[-1]}
+    Input Text  xpath=(//input[@id="document-${last_input_number}-title"])[last()]  ${file_path.split('/')[-1]}
     Capture Page Screenshot
-    Select From List By Label  id=document-${last_input_number}-level  Аукціон № ${new_index}
+    Select From List By Label  xpath=(//select[@id="document-${last_input_number}-level"])[last()]  Аукціон № ${new_index}
     Capture Page Screenshot
-    Select From List By Value  id=document-${last_input_number}-documenttype  ${doc_type}
-    Capture Page Screenshot
-    Select From List By Value  id=document-${last_input_number}-documenttype  ${doc_type}
+    Select From List By Value  xpath=(//select[@id="document-${last_input_number}-documenttype"])[last()]  ${doc_type}
     Capture Page Screenshot
     Scroll To And Click Element  id=btn-submit-form
     Capture Page Screenshot
@@ -557,14 +545,14 @@ Scroll To And Click Element
     Click Element  ${locator}
 
 
-Отримати Статус
-    [Arguments]  ${field}
-    Reload Page
-    ${status}=  Run Keyword If
-    ...  'cancellations' in '${field}'  Get Element Attribute  //*[contains(text(), "Причина скасування")]@data-test-id-cancellation-status
-    ...  ELSE  Get Text  xpath=//*[@data-test-id="status"]
-    ${status}=  adapt_data  ${field}  ${status}
-    [Return]  ${status}
+#Отримати Статус
+#    [Arguments]  ${field}
+#    Reload Page
+#    ${status}=  Run Keyword If
+#    ...  'cancellations' in '${field}'  Get Element Attribute  //*[contains(text(), "Причина скасування")]@data-test-id-cancellation-status
+#    ...  ELSE  Get Text  xpath=//*[@data-test-id="status"]
+#    ${status}=  adapt_data  ${field}  ${status}
+#    [Return]  ${status}
 
 
 Закрити Модалку

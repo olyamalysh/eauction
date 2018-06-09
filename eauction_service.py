@@ -19,20 +19,9 @@ def prepare_tender_data_asset(tender_data):
     return tender_data
 
 
-# def adapt_lot_creation_data(tender_data):
-#     tender_data['data']['decisions'][0]['decisionDate'] = u"{}T00:00:00.000000+03:00".format(tender_data['data']['decisions'][0]['decisionDate'].split("T")[0])
-#     return tender_data
-
-
 def prepare_tender_data(role, data):
-    if role == 'tender_owner' and 'procuringEntity' in data['data']:
-        data['data']['procuringEntity']['name'] = u'Тестовый "ЗАКАЗЧИК" 2'
-        for item in data['data']['items']:
-            item['address']['region'] = item['address']['region'].replace(u' область', u'')
-    elif role == 'tender_owner' and 'assetCustodian' in data['data']:
+    if role == 'tender_owner' and 'assetCustodian' in data['data']:
         data = prepare_tender_data_asset(data)
-    # else:
-    #     data = adapt_lot_creation_data(data)
     return data
 
 
@@ -71,22 +60,13 @@ def convert_date_for_decision(date):
 
 def adapted_dictionary(value):
     return{
-        # u"з урахуванням ПДВ": True,
-        # u"без урахування ПДВ": False,
-        # u"True": "1",
-        # u"False": "0",
-        # u"Оголошення аукціону з Оренди": "dgfOtherAssets",
         u'Класифікація згідно CAV': 'CAV',
         u'Класифікація згідно CAV-PS': 'CAV-PS',
         u'Класифікація згідно CPV': 'CPV',
-        # u'Очiкування пропозицiй': 'active.tendering',
-        # u'Перiод уточнень': 'active.enquires',
         u'Аукцiон': 'active.auction',
-        # u'Квалiфiкацiя переможця': 'active.qualification',
         u'Торги не відбулися': 'unsuccessful',
         u'Продаж завершений': 'complete',
         u'Торги скасовано': 'cancelled',
-        # u'Торги були відмінені.': 'active',
         u'об’єкт реєструється': u'registering',
         u'об’єкт зареєстровано': u'complete',
         u'Опубліковано': u'pending',
@@ -141,10 +121,6 @@ def adapt_asset_data(field, value):
 def adapt_lot_data(field, value):
     if 'amount' in field:
         value = float(value.split(' ')[0])
-    # elif 'minimalStep.amount' in field:
-    #     value = float(value.split(' ')[0])
-    # elif 'guarantee.amount' in field:
-    #     value = float(value.split(' ')[0])
     elif 'tenderingDuration' in field:
         value = value.split(' ')[0]
         if 'M' in value:
@@ -174,15 +150,15 @@ def convert_period_date(date):
     else:
         date = '30'
     return date
-
-
-def convert_invalidation_date(data):
-    return convert_date(' '.join(data.split(' ')[2:]).strip())
+#
+#
+# def convert_invalidation_date(data):
+#     return convert_date(' '.join(data.split(' ')[2:]).strip())
 
 
 def download_file(url, filename, folder):
     urllib.urlretrieve(url, ('{}/{}'.format(folder, filename)))
-
-
-def my_file_path():
-    return os.path.join(os.getcwd(), 'src', 'robot_tests.broker.eauction', 'Doc.pdf')
+#
+#
+# def my_file_path():
+#     return os.path.join(os.getcwd(), 'src', 'robot_tests.broker.eauction', 'Doc.pdf')
