@@ -21,7 +21,7 @@ ${host}=  eauction.byustudio.in.ua
     ...  AND  Go To  ${USERS.users['${username}'].homepage}
     ...  ELSE  Open Browser  ${USERS.users['${username}'].homepage}  ${USERS.users['${username}'].browser}  alias=my_alias
     Set Window Size  ${USERS.users['${username}'].size[0]}  ${USERS.users['${username}'].size[1]}
-    Run Keyword If  '${username}' != 'eauction_Viewer'  Run Keywords
+    Run Keyword If  'Viewer' not in '${username}'  Run Keywords
     ...  Авторизація  ${username}
     ...  AND  Run Keyword And Ignore Error  Закрити Модалку
     Run Keyword And Ignore Error  Закрити Модалку
@@ -437,13 +437,9 @@ ${host}=  eauction.byustudio.in.ua
     ${last_input_number}=  Get Element Attribute  xpath=(//input[contains(@class, "document-title") and not (contains(@id, "__empty__"))])[last()]@id
     ${last_input_number}=  Set Variable  ${last_input_number.split('-')[1]}
     Input Text  xpath=(//input[@id="document-${last_input_number}-title"])[last()]  ${file_path.split('/')[-1]}
-    Capture Page Screenshot
     Select From List By Label  xpath=(//select[@id="document-${last_input_number}-level"])[last()]  Аукціон № ${new_index}
-    Capture Page Screenshot
     Select From List By Value  xpath=(//select[@id="document-${last_input_number}-documenttype"])[last()]  ${doc_type}
-    Capture Page Screenshot
     Scroll To And Click Element  id=btn-submit-form
-    Capture Page Screenshot
     Wait Until Element Is Visible  xpath=//div[@data-test-id="lotID"]
     Wait Until Keyword Succeeds  30 x  10 s  Run Keywords
     ...  Reload Page
