@@ -14,7 +14,6 @@ ${host}=  eauction.byustudio.in.ua
 Підготувати клієнт для користувача
     [Arguments]  ${username}
     ${chrome_options}=    Evaluate    sys.modules['selenium.webdriver'].ChromeOptions()    sys
-#    Open Browser  ${USERS.users['${username}'].homepage}  ${USERS.users['${username}'].browser}  alias=my_alias
     Run Keyword If  '${USERS.users['${username}'].browser}' in 'Chrome chrome'  Run Keywords
     ...  Call Method  ${chrome_options}  add_argument  --headless
     ...  AND  Create Webdriver  Chrome  alias=my_alias  chrome_options=${chrome_options}
