@@ -3,6 +3,7 @@
 from datetime import datetime
 import pytz
 import urllib
+import re
 
 
 tz = str(datetime.now(pytz.timezone('Europe/Kiev')))[26:]
@@ -14,7 +15,10 @@ def prepare_tender_data_asset(tender_data):
     tender_data['data']['assetCustodian']['identifier']['legalName'] = u'ТОВ Орган Приватизации'
     tender_data['data']['assetCustodian']['contactPoint']['name'] = u'Гоголь Микола Васильович'
     tender_data['data']['assetCustodian']['contactPoint']['telephone'] = u'+38(101)010-10-10'
-    tender_data['data']['assetCustodian']['contactPoint']['email'] = u'primatization@aditus.info'
+    tender_data['data']['assetCustodian']['contactPoint']['email'] = u'testprozorroyowner@gmail.com'
+    for item in range(len(tender_data['data']['items'])):
+        if tender_data['data']['items'][item]['address']['region'] == u'місто Київ':
+            tender_data['data']['items'][item]['address']['region'] = u'Київ'
     return tender_data
 
 
@@ -55,6 +59,15 @@ def convert_date_from_decision(date):
 def convert_date_for_decision(date):
     date = datetime.strptime(date, '%Y-%m-%d'.format(tz)).strftime('%d/%m/%Y')
     return '{}'.format(date)
+
+
+def convert_duration(duration):
+    if duration == u'P1M':
+        duration = u'P30D'
+    days = re.search('\d+D|$', duration).group()
+    if len(days) > 0:
+        days = days[:-1]
+    return days
 
 
 def adapted_dictionary(value):
@@ -141,14 +154,6 @@ def adapt_lot_data(field, value):
     else:
         value = adapted_dictionary(value)
     return value
-
-
-def convert_period_date(date):
-    if date == 'P1M':
-        date = '30'
-    else:
-        date = '30'
-    return date
 
 
 def download_file(url, filename, folder):
