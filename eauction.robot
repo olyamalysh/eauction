@@ -343,6 +343,7 @@ Library  eauction_service.py
     ...  ELSE IF  'rectificationPeriod' in '${field}'  Get Text  xpath=//div[@data-test-id="rectificationPeriod"]
     ...  ELSE IF  'assets' in '${field}'  Get Element Attribute  xpath=//input[@name="asset_id"]@value
     ...  ELSE IF  'auctions' in '${field}'  Отримати інформацію про lot auctions  ${field}
+    ...  ELSE IF  'auctionID' in '${field}'  Get Text  xpath=//div[contains(text(), "Ідентифікатор аукціону")]/following-sibling::div/a
     ...  ELSE  Get Text  xpath=//*[@data-test-id='${field.replace('lotCustodian', 'procuringEntity')}']
     ${value}=  adapt_asset_data  ${field}  ${value}
     [Return]  ${value}
@@ -525,8 +526,7 @@ Library  eauction_service.py
 Отримати інформацію із тендера
     [Arguments]  ${username}  ${tender_uaid}  ${field}
     Run Keyword If  'title' in '${field}'  Execute Javascript  $("[data-test-id|='title']").css("text-transform", "unset")
-    ${value}=  Run Keyword If
-    ...  'auctionID' in '${field}'  Get Text  xpath=//div[@data-test-id="tenderID"]
+    ${value}=  Run Keyword If  'auctionID' in '${field}'  Get Text  xpath=//div[@data-test-id="tenderID"]
     ...  ELSE IF  'guarantee' in '${field}'  Get Text  xpath=//div[@data-test-id="guarantee"]
     ...  ELSE IF  '${field}' == 'cancellations[0]reason'  Get Text  xpath=//*[@data-test-id="${field.replace('[0]','')}"]
     ...  ELSE IF  '${field}' == 'cancellations[0]status'  Get Element Attribute  xpath=//*[contains(text(), "Причина скасування")]@data-test-id-cancellation-status
