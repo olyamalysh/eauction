@@ -28,12 +28,6 @@ Library  eauction_service.py
     [Return]  ${tender_data}
 
 
-Оновити сторінку з тендером
-    [Arguments]  ${tender_uaid}  ${username}
-    Switch Browser  my_alias
-    Reload Page
-
-
 Авторизація
     [Arguments]  ${username}
     Click Element  xpath=//*[contains(@href, "/login")]
