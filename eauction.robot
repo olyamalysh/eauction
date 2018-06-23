@@ -272,6 +272,8 @@ Library  eauction_service.py
   Click Element  id=auctions-checkBox
   Wait Until Element Is Visible  id=value-value-0-amount
   Input Text  name=Lot[auctions][0][value][amount]  ${value_amount}
+  ${tax}=  Set Variable If  ${auction.value.valueAddedTaxIncluded}  1  0
+  Select From List By Value   name=Lot[auctions][0][value][valueAddedTaxIncluded]  ${tax}
   Input Text  name=Lot[auctions][0][minimalStep][amount]  ${minimalStep}
   Input Text  name=Lot[auctions][0][guarantee][amount]  ${guarantee}
   Input Date Auction  name=Lot[auctions][0][auctionPeriod][startDate]  ${auction.auctionPeriod.startDate}
