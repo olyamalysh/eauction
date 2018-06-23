@@ -343,7 +343,6 @@ Library  eauction_service.py
     ...  ELSE IF  'rectificationPeriod' in '${field}'  Get Text  xpath=//div[@data-test-id="rectificationPeriod"]
     ...  ELSE IF  'assets' in '${field}'  Get Element Attribute  xpath=//input[@name="asset_id"]@value
     ...  ELSE IF  'auctions' in '${field}'  Отримати інформацію про lot auctions  ${field}
-    ...  ELSE IF  'auctionID' in '${field}'  Get Text  xpath=//div[contains(text(), "Ідентифікатор аукціону")]/following-sibling::div/a
     ...  ELSE  Get Text  xpath=//*[@data-test-id='${field.replace('lotCustodian', 'procuringEntity')}']
     ${value}=  adapt_asset_data  ${field}  ${value}
     [Return]  ${value}
@@ -362,7 +361,7 @@ Library  eauction_service.py
     ...  ELSE IF  'status' in '${field}'  Get Text  xpath=(//div[@data-test-id="auction.status"])[${lot_index + 1}]
     ...  ELSE IF  'tenderAttempts' in '${field}'  Get Text  xpath=(//span[@data-test-id="auction.tenderAttempts"])[${lot_index + 1}]
     ...  ELSE IF  'registrationFee.amount' in '${field}'  Get Text  xpath=(//div[@data-test-id="auction.registrationFee.amount"])[${lot_index + 1}]
-
+    ...  ELSE IF  'auctionID' in '${field}'  Get Text  xpath=//div[contains(text(), "Ідентифікатор аукціону")]/following-sibling::div/a
     ${value}=  adapt_lot_data  ${field}  ${value}
     [Return]  ${value}
 
