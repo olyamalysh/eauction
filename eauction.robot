@@ -527,8 +527,8 @@ Library  eauction_service.py
     Run Keyword If  'title' in '${field}'  Execute Javascript  $("[data-test-id|='title']").css("text-transform", "unset")
     ${value}=  Run Keyword If  'auctionID' in '${field}'  Get Text  xpath=//div[@data-test-id="tenderID"]
     ...  ELSE IF  'guarantee' in '${field}'  Get Text  xpath=//div[@data-test-id="guarantee"]
-    ...  ELSE IF  '${field}' == 'cancellations[0]reason'  Get Text  xpath=//*[@data-test-id="${field.replace('[0]','')}"]
-    ...  ELSE IF  '${field}' == 'cancellations[0]status'  Get Element Attribute  xpath=//*[contains(text(), "Причина скасування")]@data-test-id-cancellation-status
+    ...  ELSE IF  '${field}' == 'cancellations[0].reason'  Get Text  xpath=//*[@data-test-id="${field.replace('[0]','')}"]
+    ...  ELSE IF  '${field}' == 'cancellations[0].status'  Get Element Attribute  xpath=//*[contains(text(), "Причина скасування")]@data-test-id-cancellation-status
     ...  ELSE  Get Text  xpath=//*[@data-test-id='${field.replace('auction', 'tender')}']
     ${value}=  adapt_data  ${field}  ${value}
     [Return]  ${value}
