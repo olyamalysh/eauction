@@ -492,6 +492,192 @@ Library  eauction_service.py
     Wait Until Element Is Visible  xpath=//div[contains(@class, "alert-success")]
 
 
+#################################### АУКЦІОНИ ######################################
+
+Пошук тендера по ідентифікатору
+    [Arguments]  ${username}  ${tender_uaid}
+    Switch Browser  my_alias
+    Go To  ${USERS.users['${username}'].homepage}
+    Sleep  3
+    Закрити Модалку
+    Scroll To And Click Element  xpath=//li[@class="dropdown"]/descendant::*[@class="dropdown-toggle"][contains(@href, "tenders")]
+    Click Element  xpath=//*[@class="dropdown-menu"]/descendant::*[contains(@href, "/tenders/index")]
+    Wait Until Element Is Visible  xpath=//button[contains(text(), "Шукати")]
+    Click Element  xpath=//span[@data-target="#additional_filter"]
+    Wait Until Element Is Visible  id=tenderssearch-tender_cbd_id
+    Input Text  id=tenderssearch-tender_cbd_id  ${tender_uaid}
+    Click Element  xpath=//button[@data-test-id="search"]
+    Wait Until Keyword Succeeds  10 x  1 s  Wait Until Element Is Visible  xpath=//div[@class="search-result"]/descendant::div[contains(text(), "${tender_uaid}")]
+    Wait Until Keyword Succeeds  20 x  3 s  Run Keywords
+    ...  Click Element  xpath=//div[@class="search-result"]/descendant::div[contains(text(), "${tender_uaid}")]/../following-sibling::div/a
+    ...  AND  Wait Until Element Is Not Visible  xpath=//button[contains(text(), "Шукати")]  10
+    Закрити Модалку
+    Wait Until Element Is Visible  xpath=//div[@data-test-id="tenderID"]  20
+
+
+Оновити сторінку з тендером
+    [Arguments]  ${username}  ${tender_uaid}
+    eauction.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
+
+
+Активувати процедуру
+    [Arguments]  ${username}  ${tender_uaid}
+    eauction.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
+    # Активація процедури на майданчику здійснюється автоматично
+
+
+Отримати інформацію із тендера
+    [Arguments]  ${username}  ${tender_uaid}  ${field}
+    Run Keyword If  'title' in '${field}'  Execute Javascript  $("[data-test-id|='title']").css("text-transform", "unset")
+    ${value}=  Run Keyword If
+    ...  'auctionID' in '${field}'  Get Text  xpath=//div[@data-test-id="tenderID"]
+    ...  ELSE IF  'guarantee' in '${field}'  Get Text  xpath=//div[@data-test-id="guarantee"]
+    ...  ELSE IF  '${field}' == 'cancellations[0]reason'  Get Text  xpath=//*[@data-test-id="${field.replace('[0]','')}"]
+    ...  ELSE IF  '${field}' == 'cancellations[0]status'  Get Element Attribute  xpath=//*[contains(text(), "Причина скасування")]@data-test-id-cancellation-status
+    ...  ELSE  Get Text  xpath=//*[@data-test-id='${field.replace('auction', 'tender')}']
+    ${value}=  adapt_data  ${field}  ${value}
+    [Return]  ${value}
+
+
+Отримати інформацію із предмету
+  [Arguments]  ${username}  ${tender_uaid}  ${item_id}  ${field_name}
+  ${value}=  Get Text  xpath=//div[contains(text(),'${object_id}')]/ancestor::div[contains(@class, "item-inf_txt")]/descendant::*[@data-test-id="item.${field}"]
+  ${value}=  adapt_data  ${field}  ${value}
+  [Return]  ${value}
+
+
+Отримати інформацію із документа
+  [Arguments]  ${username}  ${tender_uaid}  ${doc_id}  ${field}
+  Run Keyword If   '${field}' == 'description'   Fail    ***** Опис документу скасування закупівлі не виводиться на майданчику *****
+  ${value}=   Get Text   xpath=//*[contains(text(),'${doc_id}')]
+  [Return]  ${value}
+
+
+Скасувати закупівлю
+    [Arguments]  ${username}  ${tender_uaid}  ${cancellation_reason}  ${file_path}  ${cancellation_description}
+    eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
+    Click Element  xpath=//*[@data-test-id="sidebar.cancell"]
+    Select From List By Value  //*[@id="cancellation-relatedlot"]  tender
+    Select From List By Label  //*[@id="cancellation-reason"]  ${cancellation_reason}
+    Choose File  xpath=//*[@action="/tender/fileupload"]/input  ${file_path}
+    Wait Until Element Is Visible  xpath=(//input[@class="file_name"])[last()]
+    Input Text  xpath=(//input[@class="file_name"])[last()]  ${file_path.split('/')[-1]}
+    Click Element  xpath=//button[@id="submit-cancel-auction"]
+    Wait Until Element Is Visible  xpath=//*[@data-test-id="sidebar.cancell"]
+    Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
+    ...  Reload Page
+    ...  AND  Page Should Contain Element  xpath=//*[@data-test-id-cancellation-status="active"]
+
+
+Подати цінову пропозицію
+    [Arguments]   ${username}  ${tender_uaid}  ${bid}
+    eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
+    Wait Until Element Is Visible  xpath=//input[@id="value-amount"]
+    Convert Input Data To String  xpath=//input[@id="value-amount"]  ${bid.data.value.amount}
+    Run Keyword And Ignore Error  Select Checkbox  xpath=//input[@id="rules_accept"]
+    Wait Until Keyword Succeeds  10 x  5 s  Run Keywords
+    ...  Run Keyword And Ignore Error  Click Element  //button[@id="submit_bid"]
+    ...  AND  Wait Until Page Contains  очікує модерації
+    Перевірити і підтвердити пропозицію  ${username}  ${bid.data.qualified}
+    eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
+    Page Should Contain Element  //*[contains(@class, "label-success")][contains(text(), "опубліковано")]
+
+
+Перевірити і підтвердити пропозицію
+    [Arguments]  ${username}  ${status}
+    ${url}=  Get Location
+    Run Keyword If  ${status}
+    ...  Go To  http://eauction.byustudio.in.ua/bids/send/${url.split('/')[-1]}?token=465
+    ...  ELSE  Go To  http://eauction.byustudio.in.ua/bids/decline/${url.split('/')[-1]}?token=465
+    Go To  ${USERS.users['${username}'].homepage}
+
+
+Скасувати цінову пропозицію
+    [Arguments]  ${username}  ${tender_uaid}
+    eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
+    Scroll To And Click Element  //button[@name="delete_bids"]
+    Wait Until Element Is Visible  //*[@class="bootbox-body"][contains(text(), "Видалити ставки")]
+    Click Element  //button[contains(text(), "Застосувати")]
+    Wait Until Element Is Not Visible  //*[@class="bootbox-body"][contains(text(), "Видалити ставки")]
+
+
+Отримати інформацію із пропозиції
+    [Arguments]  ${username}  ${tender_uaid}  ${field}
+    eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
+    Scroll To  xpath=//input[@id="value-amount"]
+    ${value}=  Get Value  xpath=//input[@id="value-amount"]
+    ${value}=  adapt_data  ${field}  ${value}
+    [Return]  ${value}
+
+Завантажити документ в ставку
+    [Arguments]  ${username}  ${file_path}  ${tender_uaid}
+    eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
+    Scroll To  //*[@action="/tender/fileupload"]/input
+    Choose File  xpath=//*[@action="/tender/fileupload"]/input  ${file_path}
+    Input Text  xpath=(//input[@class="file_name"])[last()]  ${file_path.split('/')[-1]}
+    Select From List By Value  xpath=(//select[@class="select_document_type"])[last()]  qualificationDocuments
+
+Змінити документ в ставці
+    [Arguments]  ${username}  ${tender_uaid}  ${file_path}  ${docid}
+    eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
+    Scroll To  //*[@action="/tender/fileupload"]/input
+    Choose File  xpath=(//input[@name="FileUpload[file]"])[last()]  ${file_path}
+
+
+Задати запитання на тендер
+    [Arguments]  ${username}  ${tender_uaid}  ${question}
+    eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
+    Wait Until Element Is Visible  xpath=//*[@data-test-id="sidebar.questions"]
+    Click Element  xpath=//*[@data-test-id="sidebar.questions"]
+    Input Text  xpath=//input[@id="question-title"]  ${question.data.title}
+    Input Text  xpath=//textarea[@id="question-description"]  ${question.data.description}
+    Select From List By Value  //select[@id="question-questionof"]  tender
+    Click Element  //button[@name="question_submit"]
+    Wait Until Page Contains  ${question.data.title}
+
+
+Задати запитання на предмет
+    [Arguments]  ${username}  ${tender_uaid}  ${item_id}  ${question}
+    eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
+    Wait Until Element Is Visible  xpath=//*[@data-test-id="sidebar.questions"]
+    Click Element  xpath=//*[@data-test-id="sidebar.questions"]
+    Input Text  xpath=//input[@id="question-title"]  ${question.data.title}
+    Input Text  xpath=//textarea[@id="question-description"]  ${question.data.description}
+    ${item_name}=  Get Text  xpath=//*[@id="question-questionof"]/descendant::*[contains(text(), "${item_id}")]
+    Select From List By Label  xpath=//select[@id="question-questionof"]  ${item_name}
+    Click Element  //button[@name="question_submit"]
+    Wait Until Page Contains  ${question.data.title}
+
+Відповісти на запитання
+    [Arguments]  ${tender_owner}  ${tender_uaid}  ${answer}  ${question_id}
+    Run Keyword And Ignore Error  Click Element  xpath=//*[@data-test-id="sidebar.questions"]
+    eauction.Закрити Модалку
+    Click Element  xpath=//*[@id="slidePanelToggle"]
+    Input Text  //*[@data-test-id="question.title"][contains(text(), "${question_id}")]/following-sibling::form[contains(@action, "tender/questions")]/descendant::textarea  ${answer.data.answer}
+    Click Element  //*[@data-test-id="question.title"][contains(text(), "${question_id}")]/../descendant::button[@name="answer_question_submit"]
+
+Отримати інформацію із запитання
+    [Arguments]  ${username}  ${tender_uaid}  ${object_id}  ${field}
+    eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
+    eauction.Закрити Модалку
+    Click Element  xpath=//*[@data-test-id="sidebar.questions"]
+    Wait Until Element Is Not Visible  xpath=//*[@data-test-id="sidebar.questions"]
+    eauction.Закрити Модалку
+    ${value}=  Get Text  //*[contains(text(), '${object_id}')]/../descendant::*[@data-test-id='question.${field}']
+    [Return]  ${value}
+
+
+Отримати посилання на аукціон для учасника
+    [Arguments]  ${username}  ${tender_uaid}  ${lot_id}
+    Switch Browser  my_alias
+    eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
+    Wait Until Element Is Visible  //a[@class="auction_seller_url"]
+    ${current_url}=  Get Location
+    Execute Javascript  window['url'] = null; $.get( "http://${host}/seller/tender/updatebid", { id: "${current_url.split("/")[-1]}"}, function(data){ window['url'] = data.data.participationUrl },'json');
+    Wait Until Keyword Succeeds  20 x  1 s  JQuery Ajax Should Complete
+    ${link}=  Execute Javascript  return window['url'];
+    [Return]  ${link}
+
 ##################################################################################
 Input Amount
     [Arguments]  ${locator}  ${value}
@@ -540,3 +726,7 @@ Convert Input Data To String
     [Arguments]  ${locator}  ${value}
     ${value}=  Convert To String  ${value}
     Input Text  ${locator}  ${value}
+
+JQuery Ajax Should Complete
+    ${active}=  Execute Javascript  return jQuery.active
+    Should Be Equal  "${active}"  "0"
