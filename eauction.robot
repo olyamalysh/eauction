@@ -572,7 +572,9 @@ ${host}  http://eauction-dev.byustudio.in.ua
     eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
     Wait Until Element Is Visible  xpath=//input[@id="value-amount"]
     Convert Input Data To String  xpath=//input[@id="value-amount"]  ${bid.data.value.amount}
-    Select Checkbox  xpath=//input[@id="rules_accept"]
+    Wait Until Keyword Succeeds   5 x   1 s  Run Keywords
+    ...  Click Element  xpath=//input[@id="rules_accept"]
+    ...  AND  Checkbox Should Be Selected  xpath=//input[@id="rules_accept"]
     Click Element  xpath=//button[@id="submit_bid"]
     Wait Until Page Contains  очікує модерації
     Перевірити і підтвердити пропозицію  ${username}  ${bid.data.qualified}
@@ -623,7 +625,9 @@ ${host}  http://eauction-dev.byustudio.in.ua
     Wait Until Element Is Visible  xpath=(//input[@class="file_name"])[last()]
     Input Text  xpath=(//input[@class="file_name"])[last()]  ${file_path.split('/')[-1]}
     Input Text  xpath=//input[@id="value-amount"]  ${value}
-    Select Checkbox  xpath=//input[@id="rules_accept"]
+    Wait Until Keyword Succeeds   5 x   1 s  Run Keywords
+    ...  Click Element  xpath=//input[@id="rules_accept"]
+    ...  AND  Checkbox Should Be Selected  xpath=//input[@id="rules_accept"]
     Click Element  xpath=//button[@id="submit_bid"]
     Wait Until Page Contains  очікує модерації
     Перевірити і підтвердити пропозицію  ${username}  ${TRUE}
