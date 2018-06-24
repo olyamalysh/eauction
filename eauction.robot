@@ -620,6 +620,7 @@ ${host}  http://eauction-dev.byustudio.in.ua
     eauction.Скасувати цінову пропозицію  ${username}  ${tender_uaid}
     Scroll To  xpath=//*[@action="/tender/fileupload"]/input
     Choose File  xpath=//*[@action="/tender/fileupload"]/input  ${file_path}
+    Wait Until Element Is Visible  xpath=(//input[@class="file_name"])[last()]
     Input Text  xpath=(//input[@class="file_name"])[last()]  ${file_path.split('/')[-1]}
     Input Text  xpath=//input[@id="value-amount"]  ${value}
     Select Checkbox  xpath=//input[@id="rules_accept"]
