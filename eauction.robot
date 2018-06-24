@@ -6,6 +6,9 @@ Library  String
 Library  DateTime
 Library  eauction_service.py
 
+*** Variables ***
+${host}  http://eauction-dev.byustudio.in.ua
+
 *** Keywords ***
 
 Підготувати клієнт для користувача
@@ -535,8 +538,8 @@ Library  eauction_service.py
 
 
 Отримати інформацію із предмету
-  [Arguments]  ${username}  ${tender_uaid}  ${item_id}  ${field_name}
-  ${value}=  Get Text  xpath=//div[contains(text(),'${object_id}')]/ancestor::div[contains(@class, "item-inf_txt")]/descendant::*[@data-test-id="item.${field}"]
+  [Arguments]  ${username}  ${tender_uaid}  ${item_id}  ${field}
+  ${value}=  Get Text  xpath=//div[contains(text(),'${item_id}')]/ancestor::div[contains(@class, "item-inf_txt")]/descendant::*[@data-test-id="item.${field}"]
   ${value}=  adapt_data  ${field}  ${value}
   [Return]  ${value}
 
@@ -569,23 +572,27 @@ Library  eauction_service.py
     eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
     Wait Until Element Is Visible  xpath=//input[@id="value-amount"]
     Convert Input Data To String  xpath=//input[@id="value-amount"]  ${bid.data.value.amount}
-    Run Keyword And Ignore Error  Select Checkbox  xpath=//input[@id="rules_accept"]
-    Wait Until Keyword Succeeds  10 x  5 s  Run Keywords
-    ...  Run Keyword And Ignore Error  Click Element  //button[@id="submit_bid"]
-    ...  AND  Wait Until Page Contains  очікує модерації
+    Select Checkbox  xpath=//input[@id="rules_accept"]
+    Click Element  xpath=//button[@id="submit_bid"]
+    Wait Until Page Contains  очікує модерації
     Перевірити і підтвердити пропозицію  ${username}  ${bid.data.qualified}
-    eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
-    Page Should Contain Element  //*[contains(@class, "label-success")][contains(text(), "опубліковано")]
 
 
 Перевірити і підтвердити пропозицію
     [Arguments]  ${username}  ${status}
     ${url}=  Get Location
     Run Keyword If  ${status}
-    ...  Go To  http://eauction-dev.byustudio.in.ua/bids/send/${url.split('/')[-1]}?token=465
-    ...  ELSE  Go To  http://eauction-dev.byustudio.in.ua/bids/decline/${url.split('/')[-1]}?token=465   #!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    ...  Go To  ${host}/bids/send/${url.split('/')[-1]}?token=465
+    ...  ELSE  Go To  ${host}/bids/decline/${url.split('/')[-1]}?token=465   #!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     Go To  ${USERS.users['${username}'].homepage}
 
+Змінити цінову пропозицію
+    [Arguments]  ${username}  ${tender_uaid}  ${field}  ${value}
+    eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
+    Wait Until Element Is Visible  xpath=//input[@id="value-amount"]
+    Convert Input Data To String  xpath=//input[@id="value-amount"]  ${value}
+    Click Element  xpath=//button[@id="submit_bid"]
+    Page Should Contain Element  xpath=//*[contains(@class, "label-success")][contains(text(), "опубліковано")]
 
 Скасувати цінову пропозицію
     [Arguments]  ${username}  ${tender_uaid}
@@ -607,10 +614,16 @@ Library  eauction_service.py
 Завантажити документ в ставку
     [Arguments]  ${username}  ${file_path}  ${tender_uaid}
     eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
-    Scroll To  //*[@action="/tender/fileupload"]/input
+    ${value}=  Get Element Attribute  xpath=//input[@id="value-amount"]@value
+    eauction.Скасувати цінову пропозицію  ${username}  ${tender_uaid}
+    Scroll To  xpath=//*[@action="/tender/fileupload"]/input
     Choose File  xpath=//*[@action="/tender/fileupload"]/input  ${file_path}
     Input Text  xpath=(//input[@class="file_name"])[last()]  ${file_path.split('/')[-1]}
-    Select From List By Value  xpath=(//select[@class="select_document_type"])[last()]  qualificationDocuments
+    Input Text  xpath=//input[@id="value-amount"]  ${value}
+    Select Checkbox  xpath=//input[@id="rules_accept"]
+    Click Element  xpath=//button[@id="submit_bid"]
+    Wait Until Page Contains  очікує модерації
+    Перевірити і підтвердити пропозицію  ${username}  ${TRUE}
 
 Змінити документ в ставці
     [Arguments]  ${username}  ${tender_uaid}  ${file_path}  ${docid}
@@ -663,12 +676,12 @@ Library  eauction_service.py
 
 
 Отримати посилання на аукціон для учасника
-    [Arguments]  ${username}  ${tender_uaid}  ${lot_id}
+    [Arguments]  ${username}  ${tender_uaid}
     Switch Browser  my_alias
     eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
     Wait Until Element Is Visible  //a[@class="auction_seller_url"]
     ${current_url}=  Get Location
-    Execute Javascript  window['url'] = null; $.get( "http://${host}/seller/tender/updatebid", { id: "${current_url.split("/")[-1]}"}, function(data){ window['url'] = data.data.participationUrl },'json');
+    Execute Javascript  window['url'] = null; $.get( "${host}/seller/tender/updatebid", { id: "${current_url.split("/")[-1]}"}, function(data){ window['url'] = data.data.participationUrl },'json');
     Wait Until Keyword Succeeds  20 x  1 s  JQuery Ajax Should Complete
     ${link}=  Execute Javascript  return window['url'];
     [Return]  ${link}

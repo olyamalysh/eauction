@@ -89,7 +89,7 @@ def adapted_dictionary(value):
         u'lot.status.pending.deleted': u'pending.deleted',
         u'Лот видалено': u'deleted',
         u'Інформація': u'informationDetails',
-        u'open_sellout.english_2': u'sellout.english',
+        u' open_sellout.english_2': u'sellout.english',
         u'Заплановано': u'scheduled'
     }.get(value, value)
 
@@ -102,6 +102,8 @@ def adapt_data(field, value):
     elif field == 'minimalStep.amount':
         value = float(value.split(' ')[0])
     elif field == 'guarantee.amount':
+        value = float(value.split(' ')[0])
+    elif field == 'registrationFee.amount':
         value = float(value.split(' ')[0])
     elif field == 'quantity':
         value = float(value.replace(',', '.'))
