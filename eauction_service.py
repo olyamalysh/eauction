@@ -89,7 +89,7 @@ def adapted_dictionary(value):
         u'lot.status.pending.deleted': u'pending.deleted',
         u'Лот видалено': u'deleted',
         u'Інформація': u'informationDetails',
-        u' open_sellout.english_2': u'sellout.english',
+        u'open_sellout.english_2': u'sellout.english',
         u'Заплановано': u'scheduled'
     }.get(value, value)
 

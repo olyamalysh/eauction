@@ -576,6 +576,8 @@ ${host}  http://eauction-dev.byustudio.in.ua
     Click Element  xpath=//button[@id="submit_bid"]
     Wait Until Page Contains  очікує модерації
     Перевірити і підтвердити пропозицію  ${username}  ${bid.data.qualified}
+    eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
+    Page Should Contain Element  //*[contains(@class, "label-success")][contains(text(), "опубліковано")]
 
 
 Перевірити і підтвердити пропозицію
