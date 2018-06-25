@@ -695,6 +695,12 @@ ${host}  http://eauction-dev.byustudio.in.ua     #!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     ${link}=  Execute Javascript  return window['url'];
     [Return]  ${link}
 
+Отримати посилання на аукціон для глядача
+    [Arguments]  ${viewer}  ${tender_uaid}
+    eauction.Пошук Тендера По Ідентифікатору  ${viewer}  ${tender_uaid}
+    ${link}=  Get Element Attribute  xpath=//*[contains(text(), "Посилання")]/../descendant::*[@class="h4"]/a@href
+    [Return]  ${link}
+
 ##################################################################################
 Input Amount
     [Arguments]  ${locator}  ${value}
