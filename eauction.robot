@@ -528,6 +528,7 @@ ${host}  http://eauction-dev.byustudio.in.ua
 Отримати інформацію із тендера
     [Arguments]  ${username}  ${tender_uaid}  ${field}
     Run Keyword If  'title' in '${field}'  Execute Javascript  $("[data-test-id|='title']").css("text-transform", "unset")
+    Run Keyword If  '${field}' == 'status'  Reload Page
     ${value}=  Run Keyword If  'auctionID' in '${field}'  Get Text  xpath=//div[@data-test-id="tenderID"]
     ...  ELSE IF  'guarantee' in '${field}'  Get Text  xpath=//div[@data-test-id="guarantee"]
     ...  ELSE IF  '${field}' == 'cancellations[0].reason'  Get Text  xpath=//*[@data-test-id="${field.replace('[0]','')}"]
