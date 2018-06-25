@@ -7,7 +7,7 @@ Library  DateTime
 Library  eauction_service.py
 
 *** Variables ***
-${host}  http://eauction-dev.byustudio.in.ua     #!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+${host}  http://eauction-dev.byustudio.in.ua
 
 *** Keywords ***
 
@@ -676,7 +676,7 @@ ${host}  http://eauction-dev.byustudio.in.ua     #!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 Отримати інформацію із запитання
     [Arguments]  ${username}  ${tender_uaid}  ${object_id}  ${field}
     eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
-    eauction.Закрити Модалку
+#    eauction.Закрити Модалку
     Click Element  xpath=//*[@data-test-id="sidebar.questions"]
     Wait Until Element Is Not Visible  xpath=//*[@data-test-id="sidebar.questions"]
     eauction.Закрити Модалку
@@ -714,7 +714,6 @@ Input Date Auction
     ${value}=  convert_date_for_auction  ${value}
     Clear Element Text  ${locator}
     Input Text  ${locator}  ${value}
-
 
 
 Отримати документ
