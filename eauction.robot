@@ -575,8 +575,9 @@ ${host}  http://eauction-dev.byustudio.in.ua
     Wait Until Keyword Succeeds   5 x   1 s  Run Keywords
     ...  Click Element  xpath=//input[@id="rules_accept"]
     ...  AND  Checkbox Should Be Selected  xpath=//input[@id="rules_accept"]
-    Click Element  xpath=//button[@id="submit_bid"]
-    Wait Until Page Contains  очікує модерації
+    Wait Until Keyword Succeeds   5 x   1 s  Run Keywords
+    ...  Click Element  xpath=//button[@id="submit_bid"]
+    ...  AND  Wait Until Page Contains  очікує модерації
     Перевірити і підтвердити пропозицію  ${username}  ${bid.data.qualified}
     eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
     Page Should Contain Element  //*[contains(@class, "label-success")][contains(text(), "опубліковано")]
