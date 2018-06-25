@@ -76,6 +76,7 @@ def adapted_dictionary(value):
         u'Класифікація згідно CAV-PS': 'CAV-PS',
         u'Класифікація згідно CPV': 'CPV',
         u'Аукцiон': 'active.auction',
+        u'Аукціон': 'active.auction',
         u'Очiкування пропозицiй': 'active.tendering',
         u'Торги не відбулися': 'unsuccessful',
         u'Продаж завершений': 'complete',
