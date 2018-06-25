@@ -7,7 +7,7 @@ Library  DateTime
 Library  eauction_service.py
 
 *** Variables ***
-${host}  http://eauction-dev.byustudio.in.ua
+${host}  http://eauction-dev.byustudio.in.ua     #!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 *** Keywords ***
 
@@ -588,7 +588,7 @@ ${host}  http://eauction-dev.byustudio.in.ua
     ${url}=  Get Location
     Run Keyword If  ${status}
     ...  Go To  ${host}/bids/send/${url.split('/')[-1]}?token=465
-    ...  ELSE  Go To  ${host}/bids/decline/${url.split('/')[-1]}?token=465   #!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    ...  ELSE  Go To  ${host}/bids/decline/${url.split('/')[-1]}?token=465
     Go To  ${USERS.users['${username}'].homepage}
 
 Змінити цінову пропозицію
@@ -629,8 +629,9 @@ ${host}  http://eauction-dev.byustudio.in.ua
     Wait Until Keyword Succeeds   5 x   1 s  Run Keywords
     ...  Click Element  xpath=//input[@id="rules_accept"]
     ...  AND  Checkbox Should Be Selected  xpath=//input[@id="rules_accept"]
-    Click Element  xpath=//button[@id="submit_bid"]
-    Wait Until Page Contains  очікує модерації
+    Wait Until Keyword Succeeds   5 x   1 s  Run Keywords
+    ...  Click Element  xpath=//button[@id="submit_bid"]
+    ...  AND  Wait Until Page Contains  очікує модерації
     Перевірити і підтвердити пропозицію  ${username}  ${TRUE}
 
 Змінити документ в ставці
