@@ -312,7 +312,7 @@ ${host}  http://eauction-dev.byustudio.in.ua
     Go To  ${USERS.users['${username}'].homepage}
     Sleep  3
     Закрити Модалку
-    Click Element  xpath=//a[contains(@href, "lots/index")][contains(text(), "Повідомлення")]
+    Click Element  xpath=//a[contains(@href, "lots/index")][contains(text(), "Інформаційні повідомлення")]
     Wait Until Element Is Visible  xpath=//button[@data-test-id="search"]
     Input Text  id=lotssearch-lot_cbd_id  ${tender_uaid}
     Click Element  xpath=//button[@data-test-id="search"]
