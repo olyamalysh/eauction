@@ -635,12 +635,6 @@ ${host}  http://eauction-dev.byustudio.in.ua
     ...  AND  Wait Until Page Contains  очікує модерації
     Перевірити і підтвердити пропозицію  ${username}  ${TRUE}
 
-Змінити документ в ставці
-    [Arguments]  ${username}  ${tender_uaid}  ${file_path}  ${docid}
-    eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
-    Scroll To  //*[@action="/tender/fileupload"]/input
-    Choose File  xpath=(//input[@name="FileUpload[file]"])[last()]  ${file_path}
-
 
 Задати запитання на тендер
     [Arguments]  ${username}  ${tender_uaid}  ${question}
