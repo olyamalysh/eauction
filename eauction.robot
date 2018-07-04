@@ -355,6 +355,9 @@ ${host}  http://eauction-dev.byustudio.in.ua
     [Arguments]  ${field}
     ${lot_index}=  Set Variable  ${field.split('[')[1].split(']')[0]}
     ${lot_index}=  Convert To Integer  ${lot_index}
+    Run Keyword If  'auctionID' in '${field}'  Wait Until Keyword Succeeds  30 x  10 s  Run Keywords
+    ...  Reload Page
+    ...  AND  Page Should Contain Element  xpath=//div[@data-test-id="status"][contains(text(), "Аукціон")]
     ${value}=  Run Keyword If  'procurementMethodType' in '${field}'  Get Element Attribute  xpath=//input[@name="auction.${lot_index}.procurementMethodType"]@value
     ...  ELSE IF  'value.amount' in '${field}'  Get Text  xpath=(//div[contains(text(), "Початкова ціна продажу лота")]/following-sibling::div)[${lot_index + 1}]
     ...  ELSE IF  'minimalStep.amount' in '${field}'  Get Text  xpath=(//div[contains(text(), "Крок аукціону")]/following-sibling::div)[${lot_index + 1}]
@@ -507,9 +510,9 @@ ${host}  http://eauction-dev.byustudio.in.ua
     Input Text  id=tenderssearch-tender_cbd_id  ${tender_uaid}
     Click Element  xpath=//button[@data-test-id="search"]
     Wait Until Keyword Succeeds  10 x  1 s  Wait Until Element Is Visible  xpath=//div[@class="search-result"]/descendant::div[contains(text(), "${tender_uaid}")]
-    Wait Until Keyword Succeeds  20 x  3 s  Run Keywords
+    Wait Until Keyword Succeeds  20 x  1 s  Run Keywords
     ...  Click Element  xpath=//div[@class="search-result"]/descendant::div[contains(text(), "${tender_uaid}")]/../following-sibling::div/a
-    ...  AND  Wait Until Element Is Not Visible  xpath=//button[contains(text(), "Шукати")]  10
+    ...  AND  Wait Until Element Is Not Visible  xpath=//button[contains(text(), "Шукати")]  5
     Закрити Модалку
     Wait Until Element Is Visible  xpath=//div[@data-test-id="tenderID"]  20
 
@@ -606,7 +609,7 @@ ${host}  http://eauction-dev.byustudio.in.ua
     Scroll To And Click Element  //button[@name="delete_bids"]
     Wait Until Element Is Visible  //*[@class="bootbox-body"][contains(text(), "Видалити ставки")]
     Click Element  //button[contains(text(), "Застосувати")]
-    Wait Until Element Is Not Visible  //*[@class="bootbox-body"][contains(text(), "Видалити ставки")]
+    Wait Until Element Is Visible  xpath=//div[contains(@class,'alert-success')]
 
 
 Отримати інформацію із пропозиції
