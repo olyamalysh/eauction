@@ -536,6 +536,7 @@ ${host}  http://eauction-dev.byustudio.in.ua
     ...  ELSE IF  'guarantee' in '${field}'  Get Text  xpath=//div[@data-test-id="guarantee"]
     ...  ELSE IF  '${field}' == 'cancellations[0].reason'  Get Text  xpath=//*[@data-test-id="${field.replace('[0]','')}"]
     ...  ELSE IF  '${field}' == 'cancellations[0].status'  Get Element Attribute  xpath=//*[contains(text(), "Причина скасування")]@data-test-id-cancellation-status
+    ...  ELSE IF  'awards' in '${field}'  Отримати інформацію із аварду  ${field}
     ...  ELSE  Get Text  xpath=//*[@data-test-id='${field.replace('auction', 'tender')}']
     ${value}=  adapt_data  ${field}  ${value}
     [Return]  ${value}
@@ -693,16 +694,27 @@ ${host}  http://eauction-dev.byustudio.in.ua
     [Return]  ${link}
 
 Отримати посилання на аукціон для глядача
-    [Arguments]  ${viewer}  ${tender_uaid}
+    [Arguments]  ${viewer}  ${tender_uaid}  ${lot_id}=${Empty}
     eauction.Пошук Тендера По Ідентифікатору  ${viewer}  ${tender_uaid}
     ${link}=  Get Element Attribute  xpath=//*[contains(text(), "Посилання")]/../descendant::*[@class="h4"]/a@href
     [Return]  ${link}
 
 
 #################################### AWARDING + CONTRACTING ######################################
+
+Отримати інформацію із аварду
+    [Arguments]  ${field}
+    ${index}=  Set Variable  ${field.split('[')[1].split(']')[0]}
+    ${index}=  Convert To Integer  ${index}
+    Перейти на сторінку кваліфікації
+    ${value}=  Run Keyword If  'status' in '${field}'  Get Text  xpath=(//div[@data-mtitle="Статус:"]/input)[${index + 1}]@award_status
+    [Return]  ${value}
+
+
 Отримати кількість авардів в тендері
     [Arguments]  ${username}  ${tender_uaid}
-    Run Keyword And Ignore Error  eauction.Перейти На Страницу Квалификации  ${username}  ${tender_uaid}
+    eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
+    Перейти на сторінку кваліфікації
     ${awards}=  Get Matching Xpath Count  xpath=//div[contains(@class, "qtable")]/descendant::div[@data-mtitle="№"]
     ${n_awards}=  Convert To Integer  ${awards}
     [Return]  ${n_awards}
@@ -710,9 +722,8 @@ ${host}  http://eauction-dev.byustudio.in.ua
 
 Завантажити протокол погодження в авард
     [Arguments]  ${username}  ${tender_uaid}  ${file_path}  ${award_index}
-    Wait Until Keyword Succeeds  10 x  20 s  Run Keywords
-    ...  eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
-    ...  AND  Click Element  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
+    eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
+    Перейти на сторінку кваліфікації
     Wait Until Element Is Visible  //button[contains(text(), "Завантаження протоколу")]
     Click Element  xpath=//button[contains(text(), "Завантаження протоколу")]
     Wait Until Element Is Visible  //div[contains(text(), "Завантаження протоколу")]
@@ -727,15 +738,15 @@ ${host}  http://eauction-dev.byustudio.in.ua
 
 Активувати кваліфікацію учасника
     [Arguments]  ${username}  ${tender_uaid}
-    eauction.Пошук Тендера По Ідентифікатору  ${ARGUMENTS[0]}  ${ARGUMENTS[1]}
-    Click Element  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
+    eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
+    Перейти на сторінку кваліфікації
     Wait Until Page Contains  Очікується підписання договору
+
 
 Завантажити протокол аукціону в авард
     [Arguments]  ${username}  ${tender_uaid}  ${file_path}  ${award_index}
-    Wait Until Keyword Succeeds  10 x  20 s  Run Keywords
-    ...  eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
-    ...  AND  Click Element  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
+    eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
+    Перейти на сторінку кваліфікації
     Run Keyword And Ignore Error  Click Element  xpath=//button[@data-dismiss="modal"]
     Wait Until Element Is Visible  //button[contains(text(), "Завантаження протоколу")]
     Click Element  xpath=//button[contains(text(), "Завантаження протоколу")]
@@ -761,16 +772,9 @@ ${host}  http://eauction-dev.byustudio.in.ua
 
 
 Завантажити протокол дискваліфікації в авард
-  [Arguments]  ${username}  ${tender_uaid}  ${file_path}  ${award_index}
-  ###
-
-
-Дискваліфікувати постачальника
-    [Arguments]  ${username}  ${tender_uaid}  ${number}  ${description}
-    Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
-    ...  eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
-    ...  AND  Click Element  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
-    ${file}=  my_file_path
+    [Arguments]  ${username}  ${tender_uaid}  ${file_path}  ${award_index}
+    eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
+    Перейти на сторінку кваліфікації
     Wait Until Element Is Visible  //button[@data-toggle="modal"][contains(text(), "Дисквалiфiкувати")]
     Click Element  //button[@data-toggle="modal"][contains(text(), "Дисквалiфiкувати")]
     Wait Until Element Is Visible  //div[contains(@class, "h2")][contains(text(), "Дискваліфікація")]
@@ -778,14 +782,18 @@ ${host}  http://eauction-dev.byustudio.in.ua
     Click Element  xpath=(//*[@name="Award[cause][]"])[1]/..
     Choose File  //div[@id="disqualification-form-upload-file"]/descendant::input[@name="FileUpload[file][]"]  ${file}
     Input Text  //textarea[@id="award-description"]  ${description}
-    Click Element  //button[@id="disqualification"]
-    Wait Until Element Is Visible  //div[contains(@class,'alert-success')]
+
+
+Дискваліфікувати постачальника
+    [Arguments]  ${username}  ${tender_uaid}  ${number}  ${description}
+    Click Element  xpath=//button[@id="disqualification"]
+    Wait Until Element Is Visible  xpath=//div[contains(@class,'alert-success')]
+
 
 Скасування рішення кваліфікаційної комісії
     [Arguments]  ${username}  ${tender_uaid}  ${number}
-    Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
-    ...  eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
-    ...  AND  Click Element  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
+    eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
+    Перейти на сторінку кваліфікації
     Wait Until Element Is Visible  //button[contains(text(), "Забрати гарантійний внесок")]
     Click Element  //button[contains(text(), "Забрати гарантійний внесок")]
     Wait Until Element Is Visible  //div[contains(text(), "Подальшу участь буде скасовано")]
@@ -808,14 +816,15 @@ ${host}  http://eauction-dev.byustudio.in.ua
 
 Встановити дату підписання угоди
     [Arguments]  ${username}  ${tender_uaid}  ${index}  ${date}
-    ###
+    eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
+    Перейти на сторінку кваліфікації
+    Capture Page Screenshot
 
 
 Завантажити угоду до тендера
     [Arguments]  ${username}  ${tender_uaid}  ${number}  ${file_path}
-    Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
-    ...  eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
-    ...  AND  Click Element  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
+    eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
+    Перейти на сторінку кваліфікації
     Wait Until Element Is Visible  xpath=//button[contains(text(), "Контракт")]
     Click Element  xpath=//button[contains(text(), "Контракт")]
     Wait Until Element Is Visible  //div[contains(@class, "h2")][contains(text(), "Контракт")]
@@ -830,15 +839,19 @@ ${host}  http://eauction-dev.byustudio.in.ua
 
 Підтвердити підписання контракту
     [Arguments]  ${username}  ${tender_uaid}  ${number}
-    Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
-    ...  eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
-    ...  AND  Click Element  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
+    eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
+    Перейти на сторінку кваліфікації
     Click Element  //button[@id="contract-activate"]
     Confirm Action
     Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
     ...  Reload Page
     ...  AND  Page Should Contain Element  //div[@data-test-id="status"][contains(text(), "Продаж завершений")]
 
+Перейти на сторінку кваліфікації
+    ${status}=  Run Keyword And Return Status  Wait Until Element Is Visible  xpath=//a[contains(@href, "/tender/award/")]  5
+    Run Keyword If  ${status}  Click Element  xpath=//a[contains(@href, "/tender/award/")]
+    ...  ELSE  Click Element  xpath=//a[contains(@href, "/tender/protokol/")]
+    Wait Until Element Is Visible  xpath=//h1[contains(text(), "Квалiфiкацiя учасникiв")]
 
 ##################################################################################
 Input Amount

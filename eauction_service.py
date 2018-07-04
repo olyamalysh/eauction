@@ -81,6 +81,8 @@ def adapted_dictionary(value):
         u'Торги не відбулися': 'unsuccessful',
         u'Продаж завершений': 'complete',
         u'Торги скасовано': 'cancelled',
+        u'На черзі': 'pending.waiting',
+        u'На розглядi': 'pending',
         u'об’єкт реєструється': u'registering',
         u'об’єкт зареєстровано': u'complete',
         u'Об’єкт зареєстровано': u'complete',
