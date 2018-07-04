@@ -698,6 +698,148 @@ ${host}  http://eauction-dev.byustudio.in.ua
     ${link}=  Get Element Attribute  xpath=//*[contains(text(), "Посилання")]/../descendant::*[@class="h4"]/a@href
     [Return]  ${link}
 
+
+#################################### AWARDING + CONTRACTING ######################################
+Отримати кількість авардів в тендері
+    [Arguments]  ${username}  ${tender_uaid}
+    Run Keyword And Ignore Error  eauction.Перейти На Страницу Квалификации  ${username}  ${tender_uaid}
+    ${awards}=  Get Matching Xpath Count  xpath=//div[contains(@class, "qtable")]/descendant::div[@data-mtitle="№"]
+    ${n_awards}=  Convert To Integer  ${awards}
+    [Return]  ${n_awards}
+
+
+Завантажити протокол погодження в авард
+    [Arguments]  ${username}  ${tender_uaid}  ${file_path}  ${award_index}
+    Wait Until Keyword Succeeds  10 x  20 s  Run Keywords
+    ...  eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
+    ...  AND  Click Element  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
+    Wait Until Element Is Visible  //button[contains(text(), "Завантаження протоколу")]
+    Click Element  xpath=//button[contains(text(), "Завантаження протоколу")]
+    Wait Until Element Is Visible  //div[contains(text(), "Завантаження протоколу")]
+    Choose File  //div[@id="verification-form-upload-file"]/descendant::input[@name="FileUpload[file][]"]  ${file_path}
+    Wait Until Element Is Visible  //button[contains(@class, "delete-file-verification")]
+    Click Element  //button[@name="protokol_ok"]
+    Wait Until Element Is Not Visible  //button[@name="protokol_ok"]
+    Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
+    ...  Reload Page
+    ...  AND  Page Should Not Contain Element  //button[@onclick="window.location.reload();"]
+
+
+Активувати кваліфікацію учасника
+    [Arguments]  ${username}  ${tender_uaid}
+    eauction.Пошук Тендера По Ідентифікатору  ${ARGUMENTS[0]}  ${ARGUMENTS[1]}
+    Click Element  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
+    Wait Until Page Contains  Очікується підписання договору
+
+Завантажити протокол аукціону в авард
+    [Arguments]  ${username}  ${tender_uaid}  ${file_path}  ${award_index}
+    Wait Until Keyword Succeeds  10 x  20 s  Run Keywords
+    ...  eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
+    ...  AND  Click Element  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
+    Run Keyword And Ignore Error  Click Element  xpath=//button[@data-dismiss="modal"]
+    Wait Until Element Is Visible  //button[contains(text(), "Завантаження протоколу")]
+    Click Element  xpath=//button[contains(text(), "Завантаження протоколу")]
+    Wait Until Element Is Visible  //div[contains(text(), "Завантаження протоколу")]
+    Choose File  //div[@id="verification-form-upload-file"]/descendant::input[@name="FileUpload[file][]"]  ${file_path}
+    Wait Until Element Is Visible  //button[contains(@class, "delete-file-verification")]
+    Click Element  //button[@name="protokol_ok"]
+    Wait Until Element Is Not Visible  //button[@name="protokol_ok"]
+    Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
+    ...  Reload Page
+    ...  AND  Page Should Not Contain Element  //button[@onclick="window.location.reload();"]
+
+Підтвердити постачальника
+    [Arguments]  ${username}  ${tender_uaid}  ${number}
+    Wait Until Element Is Visible  //button[contains(text(), "Підтвердити отримання оплати")]
+    Click Element  //button[contains(text(), "Підтвердити отримання оплати")]
+    Wait Until Element Is Visible  //div[contains(text(), "Оплата буде підтверджена")]
+    Click Element  //*[@class="modal-footer"]/button[contains(text(), "Застосувати")]
+    Wait Until Element Is Not Visible  //*[@class="modal-footer"]/button[contains(text(), "Застосувати")]
+    Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
+    ...  Reload Page
+    ...  AND  Page Should Contain Element  xpath=//button[contains(text(), "Контракт")]
+
+
+Завантажити протокол дискваліфікації в авард
+  [Arguments]  ${username}  ${tender_uaid}  ${file_path}  ${award_index}
+  ###
+
+
+Дискваліфікувати постачальника
+    [Arguments]  ${username}  ${tender_uaid}  ${number}  ${description}
+    Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
+    ...  eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
+    ...  AND  Click Element  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
+    ${file}=  my_file_path
+    Wait Until Element Is Visible  //button[@data-toggle="modal"][contains(text(), "Дисквалiфiкувати")]
+    Click Element  //button[@data-toggle="modal"][contains(text(), "Дисквалiфiкувати")]
+    Wait Until Element Is Visible  //div[contains(@class, "h2")][contains(text(), "Дискваліфікація")]
+    Wait Until Element Is Visible  xpath=(//*[@name="Award[cause][]"])[1]/..
+    Click Element  xpath=(//*[@name="Award[cause][]"])[1]/..
+    Choose File  //div[@id="disqualification-form-upload-file"]/descendant::input[@name="FileUpload[file][]"]  ${file}
+    Input Text  //textarea[@id="award-description"]  ${description}
+    Click Element  //button[@id="disqualification"]
+    Wait Until Element Is Visible  //div[contains(@class,'alert-success')]
+
+Скасування рішення кваліфікаційної комісії
+    [Arguments]  ${username}  ${tender_uaid}  ${number}
+    Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
+    ...  eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
+    ...  AND  Click Element  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
+    Wait Until Element Is Visible  //button[contains(text(), "Забрати гарантійний внесок")]
+    Click Element  //button[contains(text(), "Забрати гарантійний внесок")]
+    Wait Until Element Is Visible  //div[contains(text(), "Подальшу участь буде скасовано")]
+    Click Element  //*[@class="modal-footer"]/button[contains(text(), "Застосувати")]
+    Wait Until Element Is Not Visible  //*[@class="modal-footer"]/button[contains(text(), "Застосувати")]
+    Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
+    ...  Reload Page
+    ...  AND  Wait Until Page Contains  Рiшення скасовано
+
+
+Завантажити протокол скасування в контракт
+    [Arguments]  ${username}  ${tender_uaid}  ${file_path}  ${award_index}
+    ###
+
+
+Скасувати контракт
+    [Arguments]  ${username}  ${tender_uaid}  ${number}
+    ###
+
+
+Встановити дату підписання угоди
+    [Arguments]  ${username}  ${tender_uaid}  ${index}  ${date}
+    ###
+
+
+Завантажити угоду до тендера
+    [Arguments]  ${username}  ${tender_uaid}  ${number}  ${file_path}
+    Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
+    ...  eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
+    ...  AND  Click Element  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
+    Wait Until Element Is Visible  xpath=//button[contains(text(), "Контракт")]
+    Click Element  xpath=//button[contains(text(), "Контракт")]
+    Wait Until Element Is Visible  //div[contains(@class, "h2")][contains(text(), "Контракт")]
+    Choose File  //div[@id="uploadcontract"]/descendant::input  ${file_path}
+    Input Text  //input[@id="contract-contractnumber"]  1234567890
+    Click Element  //button[@id="contract-fill-data"]
+    Wait Until Element Is Not Visible  //button[@id="contract-fill-data"]
+    Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
+    ...  Reload Page
+    ...  AND  Page Should Contain Element  //button[@id="contract-activate"]
+
+
+Підтвердити підписання контракту
+    [Arguments]  ${username}  ${tender_uaid}  ${number}
+    Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
+    ...  eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
+    ...  AND  Click Element  xpath=//*[contains(text(), "Таблиця квалiфiкацiї")]
+    Click Element  //button[@id="contract-activate"]
+    Confirm Action
+    Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
+    ...  Reload Page
+    ...  AND  Page Should Contain Element  //div[@data-test-id="status"][contains(text(), "Продаж завершений")]
+
+
 ##################################################################################
 Input Amount
     [Arguments]  ${locator}  ${value}
