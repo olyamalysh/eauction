@@ -707,7 +707,7 @@ ${host}  http://eauction-dev.byustudio.in.ua
     ${index}=  Set Variable  ${field.split('[')[1].split(']')[0]}
     ${index}=  Convert To Integer  ${index}
     Перейти на сторінку кваліфікації
-    ${value}=  Run Keyword If  'status' in '${field}'  Get Text  xpath=(//div[@data-mtitle="Статус:"]/input)[${index + 1}]@award_status
+    ${value}=  Run Keyword If  'status' in '${field}'  Get Element Attribute  xpath=(//div[@data-mtitle="Статус:"]/input)[${index + 1}]@award_status
     [Return]  ${value}
 
 
@@ -848,9 +848,9 @@ ${host}  http://eauction-dev.byustudio.in.ua
     ...  AND  Page Should Contain Element  //div[@data-test-id="status"][contains(text(), "Продаж завершений")]
 
 Перейти на сторінку кваліфікації
-    ${status}=  Run Keyword And Return Status  Wait Until Element Is Visible  xpath=//a[contains(@href, "/tender/award/")]  5
+    ${status}=  Run Keyword And Return Status  Page Should Contain Element  xpath=//a[contains(text(), "Таблиця квалiфiкацiї")]  10
     Run Keyword If  ${status}  Click Element  xpath=//a[contains(@href, "/tender/award/")]
-    ...  ELSE  Click Element  xpath=//a[contains(@href, "/tender/protokol/")]
+    ...  ELSE  Click Element  xpath=//a[contains(text(), "Протокол розкриття пропозицiй")]
     Wait Until Element Is Visible  xpath=//h1[contains(text(), "Квалiфiкацiя учасникiв")]
 
 ##################################################################################
