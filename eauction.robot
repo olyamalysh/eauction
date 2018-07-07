@@ -747,7 +747,6 @@ ${host}  http://eauction-dev.byustudio.in.ua
     [Arguments]  ${username}  ${tender_uaid}  ${file_path}  ${award_index}
     eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
     Перейти на сторінку кваліфікації
-    Run Keyword And Ignore Error  Click Element  xpath=//button[@data-dismiss="modal"]
     Wait Until Element Is Visible  //button[contains(text(), "Завантаження протоколу")]
     Click Element  xpath=//button[contains(text(), "Завантаження протоколу")]
     Wait Until Element Is Visible  //div[contains(text(), "Завантаження протоколу")]
@@ -852,6 +851,7 @@ ${host}  http://eauction-dev.byustudio.in.ua
     ${status_p}=  Run Keyword And Return Status  Page Should Contain Element  xpath=//a[contains(text(), "Протокол розкриття пропозицiй")]  2
     Run Keyword If  ${status_q}  Click Element  xpath=//a[contains(text(), "Таблиця квалiфiкацiї")]
     ...  ELSE IF  ${status_p}  Click Element  xpath=//a[contains(text(), "Протокол розкриття пропозицiй")]
+    Закрити Модалку
     Wait Until Element Is Visible  xpath=//h1[contains(text(), "Квалiфiкацiя учасникiв")]
 
 ##################################################################################
