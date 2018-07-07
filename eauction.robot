@@ -848,9 +848,10 @@ ${host}  http://eauction-dev.byustudio.in.ua
     ...  AND  Page Should Contain Element  //div[@data-test-id="status"][contains(text(), "Продаж завершений")]
 
 Перейти на сторінку кваліфікації
-    ${status}=  Run Keyword And Return Status  Page Should Contain Element  xpath=//a[contains(text(), "Таблиця квалiфiкацiї")]  10
-    Run Keyword If  ${status}  Click Element  xpath=//a[contains(text(), "Таблиця квалiфiкацiї")]
-    ...  ELSE  Click Element  xpath=//a[contains(text(), "Протокол розкриття пропозицiй")]
+    ${status_q}=  Run Keyword And Return Status  Page Should Contain Element  xpath=//a[contains(text(), "Таблиця квалiфiкацiї")]  5
+    Run Keyword If  ${status_q}  Click Element  xpath=//a[contains(text(), "Таблиця квалiфiкацiї")]
+    ${status_p}=  Run Keyword And Return Status  Page Should Contain Element  xpath=//a[contains(text(), "Протокол розкриття пропозицiй")]  5
+    Run Keyword If  ${status_p}  Click Element  xpath=//a[contains(text(), "Протокол розкриття пропозицiй")]
     Wait Until Element Is Visible  xpath=//h1[contains(text(), "Квалiфiкацiя учасникiв")]
 
 ##################################################################################
