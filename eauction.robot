@@ -708,6 +708,7 @@ ${host}  http://eauction-dev.byustudio.in.ua
     ${index}=  Convert To Integer  ${index}
     Перейти на сторінку кваліфікації
     Sleep  360  # Change for other platforms
+    Reload Page
     ${value}=  Get Element Attribute  xpath=(//div[@data-mtitle="Статус:"]/input)[${index + 1}]@award_status
     [Return]  ${value}
 
