@@ -707,7 +707,8 @@ ${host}  http://eauction-dev.byustudio.in.ua
     ${index}=  Set Variable  ${field.split('[')[1].split(']')[0]}
     ${index}=  Convert To Integer  ${index}
     Перейти на сторінку кваліфікації
-    ${value}=  Run Keyword If  'status' in '${field}'  Get Element Attribute  xpath=(//div[@data-mtitle="Статус:"]/input)[${index + 1}]@award_status
+    Sleep  360  # Change for other platforms
+    ${value}=  Get Element Attribute  xpath=(//div[@data-mtitle="Статус:"]/input)[${index + 1}]@award_status
     [Return]  ${value}
 
 
