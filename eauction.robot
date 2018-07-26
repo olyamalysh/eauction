@@ -161,7 +161,16 @@ ${host}  http://eauction-dev.byustudio.in.ua
 
 Завантажити документ для видалення об'єкта МП
     [Arguments]  ${username}  ${tender_uaid}  ${file_path}
-    eauction.Завантажити документ в об'єкт МП з типом  ${username}  ${tender_uaid}  ${file_path}  cancellationDetails
+    eauction.Пошук об’єкта МП по ідентифікатору  ${tender_owner}  ${tender_uaid}
+    Click Element  id=delete-asset
+    Wait Until Element Is Visible  id=form-delete-asset
+    Choose File  name=FileUpload[file][]  ${file_path}
+    Wait Until Element Is Visible  xpath=//input[contains(@name, "title")]
+    Click Element  xpath=//form[@id="form-delete-asset"]/descendant::button[contains(text(), "Видалити об’єкт")]
+    Wait Until Element Is Visible  //div[contains(@class,'alert-success')]
+    Wait Until Keyword Succeeds  30 x  10 s  Run Keywords
+    ...  Reload Page
+    ...  AND  Wait Until Page Contains  Об’єкт виключено  10
 
 
 Завантажити ілюстрацію в об'єкт МП
@@ -190,12 +199,7 @@ ${host}  http://eauction-dev.byustudio.in.ua
 
 Видалити об'єкт МП
     [Arguments]  ${username}  ${tender_uaid}
-    eauction.Пошук об’єкта МП по ідентифікатору  ${username}  ${tender_uaid}
-    Click Element  id=delete_btn
-    Wait Until Element Is Visible  xpath=//div[@class="modal-footer"]
-    Click Element  xpath=//button[@data-bb-handler="confirm"]
-    Wait Until Element Is Visible  //div[contains(@class,'alert-success')]
-
+    Log  Необхідні дії було виконано у "Завантажити документ для видалення об'єкта МП"
 
 
 Отримати інформацію із об'єкта МП
@@ -332,6 +336,7 @@ ${host}  http://eauction-dev.byustudio.in.ua
 Отримати інформацію із лоту
     [Arguments]  ${username}  ${tender_uaid}  ${field}
     Run Keyword If  'title' in '${field}'  Execute Javascript  $("[data-test-id|='title']").css("text-transform", "unset")
+    Run Keyword If  '${field}' == 'status'  Reload Page
     ${value}=  Run Keyword If  '${field}' == 'lotCustodian.identifier.legalName'  Get Text  xpath=//div[@data-test-id="procuringEntity.name"]
     ...  ELSE IF  'lotHolder.identifier.id' in '${field}'  Get Text  //*[@data-test-id="assetHolder.identifier.id"]
     ...  ELSE IF  'lotCustodian.identifier.scheme' in '${field}'  Get Text  //*[@data-test-id='lotCustodian.identifier.scheme']
@@ -359,7 +364,7 @@ ${host}  http://eauction-dev.byustudio.in.ua
     ...  Reload Page
     ...  AND  Page Should Contain Element  xpath=//div[@data-test-id="status"][contains(text(), "Аукціон")]
     ${value}=  Run Keyword If  'procurementMethodType' in '${field}'  Get Element Attribute  xpath=//input[@name="auction.${lot_index}.procurementMethodType"]@value
-    ...  ELSE IF  'value.amount' in '${field}'  Get Text  xpath=(//div[contains(text(), "Початкова ціна продажу лота")]/following-sibling::div)[${lot_index + 1}]
+    ...  ELSE IF  'value.amount' in '${field}'  Get Text  xpath=(//div[contains(text(), "Початкова ціна продажу")]/following-sibling::div)[${lot_index + 1}]
     ...  ELSE IF  'minimalStep.amount' in '${field}'  Get Text  xpath=(//div[contains(text(), "Крок аукціону")]/following-sibling::div)[${lot_index + 1}]
     ...  ELSE IF  'guarantee.amount' in '${field}'  Get Text  xpath=(//div[contains(text(), "Гарантійний внесок")]/following-sibling::div)[${lot_index + 1}]
     ...  ELSE IF  'tenderingDuration' in '${field}'  Get Text  xpath=(//div[contains(text(), "Період на подачу пропозицій")]/following-sibling::div)[${lot_index}]
@@ -475,7 +480,7 @@ ${host}  http://eauction-dev.byustudio.in.ua
     ...  ELSE IF  '${fieldname}' == 'minimalStep.amount'  Input Amount  name=Lot[auctions][${index}][minimalStep][amount]  ${fieldvalue}
     ...  ELSE IF  '${fieldname}' == 'guarantee.amount'  Input Amount  name=Lot[auctions][${index}][guarantee][amount]  ${fieldvalue}
     ...  ELSE IF  '${fieldname}' == 'registrationFee.amount'  Input Amount  name=Lot[auctions][${index}][registrationFee][amount]  ${fieldvalue}
-    ...  ELSE IF  '${fieldname}' == 'auctionPeriod.startDate'  Input Date Auction  name=Lot[auctions][${index}][auctionPeriod][startDate]  ${fieldvalue}
+    ...  ELSE IF  '${fieldname}' == 'auctionPeriod.startDate'  Input Date Auction  name=Lot[auctions][${index}][auctionPeriod][startDate]  ${fieldvalue}.000000+03:00
     Scroll To And Click Element  //*[@name="simple_submit"]
     Wait Until Element Is Visible  xpath=//div[@data-test-id="lotID"]
 
@@ -536,7 +541,6 @@ ${host}  http://eauction-dev.byustudio.in.ua
     ...  ELSE IF  'guarantee' in '${field}'  Get Text  xpath=//div[@data-test-id="guarantee"]
     ...  ELSE IF  '${field}' == 'cancellations[0].reason'  Get Text  xpath=//*[@data-test-id="${field.replace('[0]','')}"]
     ...  ELSE IF  '${field}' == 'cancellations[0].status'  Get Element Attribute  xpath=//*[contains(text(), "Причина скасування")]@data-test-id-cancellation-status
-    ...  ELSE IF  'awards' in '${field}'  Отримати інформацію із аварду  ${field}
     ...  ELSE  Get Text  xpath=//*[@data-test-id='${field.replace('auction', 'tender')}']
     ${value}=  adapt_data  ${field}  ${value}
     [Return]  ${value}
@@ -694,7 +698,7 @@ ${host}  http://eauction-dev.byustudio.in.ua
     [Return]  ${link}
 
 Отримати посилання на аукціон для глядача
-    [Arguments]  ${viewer}  ${tender_uaid}  ${lot_id}=${Empty}
+    [Arguments]  ${viewer}  ${tender_uaid}
     eauction.Пошук Тендера По Ідентифікатору  ${viewer}  ${tender_uaid}
     ${link}=  Get Element Attribute  xpath=//*[contains(text(), "Посилання")]/../descendant::*[@class="h4"]/a@href
     [Return]  ${link}
