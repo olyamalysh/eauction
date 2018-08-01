@@ -788,11 +788,11 @@ ${host}  http://eauction-dev.byustudio.in.ua
     Wait Until Element Is Visible  xpath=(//*[@name="Award[cause][]"])[1]/..
     Click Element  xpath=(//*[@name="Award[cause][]"])[1]/..
     Choose File  //div[@id="disqualification-form-upload-file"]/descendant::input[@name="FileUpload[file][]"]  ${file_path}
-    Input Text  //textarea[@id="award-description"]  ${description}
 
 
 Дискваліфікувати постачальника
     [Arguments]  ${username}  ${tender_uaid}  ${number}  ${description}
+    Input Text  //textarea[@id="award-description"]  ${description}
     Click Element  xpath=//button[@id="disqualification"]
     Wait Until Element Is Visible  xpath=//div[contains(@class,'alert-success')]
 
