@@ -732,16 +732,16 @@ ${host}  http://eauction-dev.byustudio.in.ua
     [Arguments]  ${username}  ${tender_uaid}  ${file_path}  ${award_index}
     eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
     Перейти на сторінку кваліфікації
-    Wait Until Element Is Visible  //button[contains(text(), "Завантаження протоколу")]
-    Click Element  xpath=//button[contains(text(), "Завантаження протоколу")]
-    Wait Until Element Is Visible  //div[contains(text(), "Завантаження протоколу")]
-    Choose File  //div[@id="verification-form-upload-file"]/descendant::input[@name="FileUpload[file][]"]  ${file_path}
-    Wait Until Element Is Visible  //button[contains(@class, "delete-file-verification")]
-    Click Element  //button[@name="protokol_ok"]
-    Wait Until Element Is Not Visible  //button[@name="protokol_ok"]
+    Wait Until Element Is Visible  xpath=//button[contains(text(), "Опублікувати рішення про викуп")]
+    Click Element  xpath=//button[contains(text(), "Опублікувати рішення про викуп")]
+    Wait Until Element Is Visible  xpath=//div[contains(text(), "Опублікувати рішення про викуп")]
+    Choose File  xpath=//div[@id="admission-form-upload-file"]/descendant::input[@name="FileUpload[file][]"]  ${file_path}
+    Wait Until Element Is Visible  xpath=//button[contains(@class, "delete-file-verification")]
+    Click Element  xpath=//button[@name="admission"]
+    Wait Until Element Is Not Visible  xpath=//button[@name="admission"]
     Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
     ...  Reload Page
-    ...  AND  Page Should Not Contain Element  //button[@onclick="window.location.reload();"]
+    ...  AND  Page Should Not Contain Element  xpath=//button[@onclick="window.location.reload();"]
 
 
 Активувати кваліфікацію учасника
@@ -755,24 +755,24 @@ ${host}  http://eauction-dev.byustudio.in.ua
     [Arguments]  ${username}  ${tender_uaid}  ${file_path}  ${award_index}
     eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
     Перейти на сторінку кваліфікації
-    Wait Until Element Is Visible  //button[contains(text(), "Завантаження протоколу")]
+    Wait Until Element Is Visible  xpath=//button[contains(text(), "Завантаження протоколу")]
     Click Element  xpath=//button[contains(text(), "Завантаження протоколу")]
-    Wait Until Element Is Visible  //div[contains(text(), "Завантаження протоколу")]
-    Choose File  //div[@id="verification-form-upload-file"]/descendant::input[@name="FileUpload[file][]"]  ${file_path}
-    Wait Until Element Is Visible  //button[contains(@class, "delete-file-verification")]
-    Click Element  //button[@name="protokol_ok"]
-    Wait Until Element Is Not Visible  //button[@name="protokol_ok"]
+    Wait Until Element Is Visible  xpath=//div[contains(text(), "Завантаження протоколу")]
+    Choose File  xpath=//div[@id="verification-form-upload-file"]/descendant::input[@name="FileUpload[file][]"]  ${file_path}
+    Wait Until Element Is Visible  xpath=//button[contains(@class, "delete-file-verification")]
+    Click Element  xpath=//button[@name="protokol_ok"]
+    Wait Until Element Is Not Visible  xpath=//button[@name="protokol_ok"]
     Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
     ...  Reload Page
-    ...  AND  Page Should Not Contain Element  //button[@onclick="window.location.reload();"]
+    ...  AND  Page Should Not Contain Element  xpath=//button[@onclick="window.location.reload();"]
 
 Підтвердити постачальника
     [Arguments]  ${username}  ${tender_uaid}  ${number}
-    Wait Until Element Is Visible  //button[contains(text(), "Підтвердити отримання оплати")]
-    Click Element  //button[contains(text(), "Підтвердити отримання оплати")]
-    Wait Until Element Is Visible  //div[contains(text(), "Оплата буде підтверджена")]
-    Click Element  //*[@class="modal-footer"]/button[contains(text(), "Застосувати")]
-    Wait Until Element Is Not Visible  //*[@class="modal-footer"]/button[contains(text(), "Застосувати")]
+    Wait Until Element Is Visible  xpath=//button[contains(text(), "Підтвердити отримання оплати")]
+    Click Element  xpath=//button[contains(text(), "Підтвердити отримання оплати")]
+    Wait Until Element Is Visible  xpath=//div[contains(text(), "Оплата буде підтверджена")]
+    Click Element  xpath=//*[@class="modal-footer"]/button[contains(text(), "Застосувати")]
+    Wait Until Element Is Not Visible  xpath=//*[@class="modal-footer"]/button[contains(text(), "Застосувати")]
     Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
     ...  Reload Page
     ...  AND  Page Should Contain Element  xpath=//button[contains(text(), "Контракт")]
