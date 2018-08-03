@@ -737,18 +737,15 @@ ${host}  http://eauction-dev.byustudio.in.ua
     Wait Until Element Is Visible  xpath=//div[contains(text(), "Опублікувати рішення про викуп")]
     Choose File  xpath=//div[@id="admission-form-upload-file"]/descendant::input[@name="FileUpload[file][]"]  ${file_path}
     Wait Until Element Is Visible  xpath=//button[contains(@class, "delete-file-verification")]
+
+
+Активувати кваліфікацію учасника
+    [Arguments]  ${username}  ${tender_uaid}
     Click Element  xpath=//button[@name="admission"]
     Wait Until Element Is Not Visible  xpath=//button[@name="admission"]
     Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
     ...  Reload Page
     ...  AND  Page Should Not Contain Element  xpath=//button[@onclick="window.location.reload();"]
-
-
-Активувати кваліфікацію учасника
-    [Arguments]  ${username}  ${tender_uaid}
-    eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
-    Перейти на сторінку кваліфікації
-    Wait Until Page Contains  Очікується підписання договору
 
 
 Завантажити протокол аукціону в авард
@@ -766,35 +763,32 @@ ${host}  http://eauction-dev.byustudio.in.ua
     ...  Reload Page
     ...  AND  Page Should Not Contain Element  xpath=//button[@onclick="window.location.reload();"]
 
+
 Підтвердити постачальника
     [Arguments]  ${username}  ${tender_uaid}  ${number}
-    Wait Until Element Is Visible  xpath=//button[contains(text(), "Підтвердити отримання оплати")]
-    Click Element  xpath=//button[contains(text(), "Підтвердити отримання оплати")]
-    Wait Until Element Is Visible  xpath=//div[contains(text(), "Оплата буде підтверджена")]
-    Click Element  xpath=//*[@class="modal-footer"]/button[contains(text(), "Застосувати")]
-    Wait Until Element Is Not Visible  xpath=//*[@class="modal-footer"]/button[contains(text(), "Застосувати")]
-    Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
-    ...  Reload Page
-    ...  AND  Page Should Contain Element  xpath=//button[contains(text(), "Контракт")]
+    Log  Необхідні дії було виконано у "Завантажити протокол аукціону в авард"
 
 
 Завантажити протокол дискваліфікації в авард
     [Arguments]  ${username}  ${tender_uaid}  ${file_path}  ${award_index}
     eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
     Перейти на сторінку кваліфікації
-    Wait Until Element Is Visible  //button[@data-toggle="modal"][contains(text(), "Дисквалiфiкувати")]
-    Click Element  //button[@data-toggle="modal"][contains(text(), "Дисквалiфiкувати")]
-    Wait Until Element Is Visible  //div[contains(@class, "h2")][contains(text(), "Дискваліфікація")]
+    Wait Until Element Is Visible  xpath=//button[@data-toggle="modal"][contains(text(), "Дисквалiфiкувати")]
+    Click Element  xpath=//button[@data-toggle="modal"][contains(text(), "Дисквалiфiкувати")]
+    Wait Until Element Is Visible  xpath=//div[contains(@class, "h2")][contains(text(), "Дискваліфікація")]
     Wait Until Element Is Visible  xpath=(//*[@name="Award[cause][]"])[1]/..
     Click Element  xpath=(//*[@name="Award[cause][]"])[1]/..
-    Choose File  //div[@id="disqualification-form-upload-file"]/descendant::input[@name="FileUpload[file][]"]  ${file_path}
+    Choose File  xpath=//div[@id="disqualification-form-upload-file"]/descendant::input[@name="FileUpload[file][]"]  ${file_path}
+    Wait Until Element Is Visible  xpath=//button[contains(@class, "delete-file-verification")]
 
 
 Дискваліфікувати постачальника
     [Arguments]  ${username}  ${tender_uaid}  ${number}  ${description}
     Input Text  //textarea[@id="award-description"]  ${description}
     Click Element  xpath=//button[@id="disqualification"]
-    Wait Until Element Is Visible  xpath=//div[contains(@class,'alert-success')]
+    Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
+    ...  Reload Page
+    ...  AND  Page Should Not Contain Element  xpath=//button[@onclick="window.location.reload();"]
 
 
 Скасування рішення кваліфікаційної комісії
@@ -813,12 +807,15 @@ ${host}  http://eauction-dev.byustudio.in.ua
 
 Завантажити протокол скасування в контракт
     [Arguments]  ${username}  ${tender_uaid}  ${file_path}  ${award_index}
-    ###
+    eauction.Завантажити протокол дискваліфікації в авард  ${username}  ${tender_uaid}  ${file_path}  ${award_index}
 
 
 Скасувати контракт
     [Arguments]  ${username}  ${tender_uaid}  ${number}
-    ###
+    Click Element  xpath=//button[@id="disqualification"]
+    Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
+    ...  Reload Page
+    ...  AND  Page Should Not Contain Element  xpath=//button[@onclick="window.location.reload();"]
 
 
 Встановити дату підписання угоди
