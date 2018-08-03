@@ -167,7 +167,7 @@ ${host}  http://eauction-dev.byustudio.in.ua
     Choose File  name=FileUpload[file][]  ${file_path}
     Wait Until Element Is Visible  xpath=//input[contains(@name, "title")]
     Click Element  xpath=//form[@id="form-delete-asset"]/descendant::button[contains(text(), "Видалити об’єкт")]
-    Wait Until Element Is Visible  //div[contains(@class,'alert-success')]
+    Wait Until Element Is Visible  xpath=//div[contains(@class,'alert-success')]
     Wait Until Keyword Succeeds  30 x  10 s  Run Keywords
     ...  Reload Page
     ...  AND  Wait Until Page Contains  Об’єкт виключено  10
@@ -786,6 +786,7 @@ ${host}  http://eauction-dev.byustudio.in.ua
     [Arguments]  ${username}  ${tender_uaid}  ${number}  ${description}
     Input Text  //textarea[@id="award-description"]  ${description}
     Click Element  xpath=//button[@id="disqualification"]
+    Wait Until Element Is Not Visible  xpath=//button[@id="disqualification"]
     Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
     ...  Reload Page
     ...  AND  Page Should Not Contain Element  xpath=//button[@onclick="window.location.reload();"]
@@ -832,24 +833,25 @@ ${host}  http://eauction-dev.byustudio.in.ua
     Wait Until Element Is Visible  xpath=//button[contains(text(), "Контракт")]
     Click Element  xpath=//button[contains(text(), "Контракт")]
     Wait Until Element Is Visible  //div[contains(@class, "h2")][contains(text(), "Контракт")]
-    Choose File  //div[@id="uploadcontract"]/descendant::input  ${file_path}
-    Input Text  //input[@id="contract-contractnumber"]  1234567890
-    Click Element  //button[@id="contract-fill-data"]
-    Wait Until Element Is Not Visible  //button[@id="contract-fill-data"]
+    Choose File  xpath=//div[@id="uploadcontract"]/descendant::input  ${file_path}
+    Input Text  xpath=//input[@id="contract-contractnumber"]  1234567890
+    Click Element  xpath=//button[@id="contract-fill-data"]
+    Wait Until Element Is Not Visible  xpath=//button[@id="contract-fill-data"]
     Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
     ...  Reload Page
-    ...  AND  Page Should Contain Element  //button[@id="contract-activate"]
+    ...  AND  Page Should Contain Element  xpath=//input[@id="contract-activate"]
 
 
 Підтвердити підписання контракту
     [Arguments]  ${username}  ${tender_uaid}  ${number}
     eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
     Перейти на сторінку кваліфікації
-    Click Element  //button[@id="contract-activate"]
-    Confirm Action
-    Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
+    Click Element  xpath=//input[@id="contract-activate"]
+    Wait Until Element Is Visible  xpath=//h4[contains(text(), "Активація контракту")]
+    Click Element  xpath=//button[@data-bb-handler="confirm"]
+    Wait Until Keyword Succeeds  10 x  5 s  Run Keywords
     ...  Reload Page
-    ...  AND  Page Should Contain Element  //div[@data-test-id="status"][contains(text(), "Продаж завершений")]
+    ...  AND  Page Should Contain Element  xpath=//div[@data-test-id="status"][contains(text(), "Продаж завершений")]
 
 Перейти на сторінку кваліфікації
     ${status_q}=  Run Keyword And Return Status  Page Should Contain Element  xpath=//a[contains(text(), "Таблиця квалiфiкацiї")]  3
