@@ -814,6 +814,7 @@ ${host}  http://eauction-dev.byustudio.in.ua
 Скасувати контракт
     [Arguments]  ${username}  ${tender_uaid}  ${number}
     Click Element  xpath=//button[@id="disqualification"]
+    Wait Until Element Is Not Visible  xpath=//button[@id="disqualification"]
     Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
     ...  Reload Page
     ...  AND  Page Should Not Contain Element  xpath=//button[@onclick="window.location.reload();"]
