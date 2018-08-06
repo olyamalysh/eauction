@@ -587,11 +587,9 @@ ${host}  http://eauction-dev.byustudio.in.ua
     Wait Until Keyword Succeeds   5 x   1 s  Run Keywords
     ...  Click Element  xpath=//button[@id="submit_bid"]
     ...  AND  Wait Until Page Contains  очікує модерації
-    Capture Page Screenshot
     Перевірити і підтвердити пропозицію  ${username}  ${bid.data.qualified}
     eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
     Page Should Contain Element  //*[contains(@class, "label-success")][contains(text(), "опубліковано")]
-    Capture Page Screenshot
 
 
 Перевірити і підтвердити пропозицію
@@ -815,9 +813,11 @@ ${host}  http://eauction-dev.byustudio.in.ua
     [Arguments]  ${username}  ${tender_uaid}  ${number}
     Click Element  xpath=//button[@id="disqualification"]
     Wait Until Element Is Not Visible  xpath=//button[@id="disqualification"]
+    Capture Page Screenshot
     Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
     ...  Reload Page
     ...  AND  Page Should Not Contain Element  xpath=//button[@onclick="window.location.reload();"]
+    Capture Page Screenshot
 
 
 Встановити дату підписання угоди
