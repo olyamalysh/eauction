@@ -827,6 +827,7 @@ ${host}  http://eauction-dev.byustudio.in.ua
 #    Click Element  xpath=//button[contains(text(), "Контракт")]
 #    Wait Until Element Is Visible  xpath=//div[contains(@class, "h2")][contains(text(), "Контракт")]
 #    Choose File  xpath=//div[@id="uploadcontract"]/descendant::input
+#    Input Date Auction  name=Contract[dateSigned]  ${date}
 #    Click Element  xpath=//button[@id="contract-fill-data"]
 #    Wait Until Element Is Not Visible  xpath=//button[@id="contract-fill-data"]
 #    Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
