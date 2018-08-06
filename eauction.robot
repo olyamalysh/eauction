@@ -824,16 +824,12 @@ ${host}  http://eauction-dev.byustudio.in.ua
     [Arguments]  ${username}  ${tender_uaid}  ${index}  ${date}
     eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
     Перейти на сторінку кваліфікації
-#    Wait Until Element Is Visible  xpath=//button[contains(text(), "Контракт")]
-#    Click Element  xpath=//button[contains(text(), "Контракт")]
-#    Wait Until Element Is Visible  xpath=//div[contains(@class, "h2")][contains(text(), "Контракт")]
-#    Choose File  xpath=//div[@id="uploadcontract"]/descendant::input
-#    Input Date Auction  name=Contract[dateSigned]  ${date}
-#    Click Element  xpath=//button[@id="contract-fill-data"]
-#    Wait Until Element Is Not Visible  xpath=//button[@id="contract-fill-data"]
-#    Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
-#    ...  Reload Page
-#    ...  AND  Page Should Not Contain Element  xpath=//*[@class="text-success"][contains(text(), "Завершити електронні торги")]
+    Wait Until Element Is Visible  xpath=//button[contains(text(), "Контракт")]
+    Click Element  xpath=//button[contains(text(), "Контракт")]
+    Wait Until Element Is Visible  xpath=//div[contains(@class, "h2")][contains(text(), "Контракт")]
+    Input Date Auction  name=Contract[dateSigned]  ${date}
+    Click Element  xpath=//button[@id="contract-fill-data"]
+    Wait Until Element Is Not Visible  xpath=//button[@id="contract-fill-data"]
 
 
 Завантажити угоду до тендера
