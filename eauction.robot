@@ -713,7 +713,7 @@ ${host}  http://eauction-dev.byustudio.in.ua
     ${index}=  Set Variable  ${field.split('[')[1].split(']')[0]}
     ${index}=  Convert To Integer  ${index}
     Перейти на сторінку кваліфікації
-    Sleep  360  # Change for other platforms
+#    Sleep  360  # Change for other platforms
     Reload Page
     ${value}=  Get Element Attribute  xpath=(//div[@data-mtitle="Статус:"]/input)[${index + 1}]@award_status
     [Return]  ${value}
@@ -823,7 +823,15 @@ ${host}  http://eauction-dev.byustudio.in.ua
     [Arguments]  ${username}  ${tender_uaid}  ${index}  ${date}
     eauction.Пошук Тендера По Ідентифікатору  ${username}  ${tender_uaid}
     Перейти на сторінку кваліфікації
-    Capture Page Screenshot
+#    Wait Until Element Is Visible  xpath=//button[contains(text(), "Контракт")]
+#    Click Element  xpath=//button[contains(text(), "Контракт")]
+#    Wait Until Element Is Visible  xpath=//div[contains(@class, "h2")][contains(text(), "Контракт")]
+#    Choose File  xpath=//div[@id="uploadcontract"]/descendant::input
+#    Click Element  xpath=//button[@id="contract-fill-data"]
+#    Wait Until Element Is Not Visible  xpath=//button[@id="contract-fill-data"]
+#    Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
+#    ...  Reload Page
+#    ...  AND  Page Should Not Contain Element  xpath=//*[@class="text-success"][contains(text(), "Завершити електронні торги")]
 
 
 Завантажити угоду до тендера
