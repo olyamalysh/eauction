@@ -711,7 +711,6 @@ ${host}  http://eauction-dev.byustudio.in.ua
     ${index}=  Set Variable  ${field.split('[')[1].split(']')[0]}
     ${index}=  Convert To Integer  ${index}
     Перейти на сторінку кваліфікації
-#    Sleep  360  # Change for other platforms
     Reload Page
     ${value}=  Get Element Attribute  xpath=(//div[@data-mtitle="Статус:"]/input)[${index + 1}]@award_status
     [Return]  ${value}
@@ -813,11 +812,9 @@ ${host}  http://eauction-dev.byustudio.in.ua
     [Arguments]  ${username}  ${tender_uaid}  ${number}
     Click Element  xpath=//button[@id="disqualification"]
     Wait Until Element Is Not Visible  xpath=//button[@id="disqualification"]
-    Capture Page Screenshot
     Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
     ...  Reload Page
     ...  AND  Page Should Not Contain Element  xpath=//button[@onclick="window.location.reload();"]
-    Capture Page Screenshot
 
 
 Встановити дату підписання угоди
